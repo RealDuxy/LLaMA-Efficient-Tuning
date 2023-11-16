@@ -367,6 +367,28 @@ register_template(
     efficient_eos=True
 )
 
+register_template(
+    name="chatglm3-anan",
+    prefix=[
+        {"token": "[gMASK]"},
+        {"token": "sop"},
+        "{{system}}"
+    ],
+    prompt=[
+        {"token": "<|user|>"},
+        "\n",
+        "{{query}}",
+        {"token": "<|assistant|>"}
+    ],
+    system="",
+    sep=[],
+    stop_words=[
+        "<|user|>",
+        "<|observation|>"
+    ],
+    efficient_eos=True
+)
+
 
 register_template(
     name="deepseek",
