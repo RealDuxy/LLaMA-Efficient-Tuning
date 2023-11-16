@@ -1,6 +1,6 @@
 #!/bin/bash
 
-accelerate config # 首先配置分布式环境
+#accelerate config # 首先配置分布式环境
 
 accelerate launch  ../src/train_bash.py \
     --stage sft \
@@ -27,7 +27,7 @@ accelerate launch  ../src/train_bash.py \
     --reserved_label_len 800  \
     --fp16  \
     --neft_alpha 5 \
-    --model_name_or_path THUDM/chatglm3-6b
+    --model_name_or_path /root/chatglm3-6b
 
 
 accelerate launch  ../src/train_bash.py \
@@ -37,7 +37,7 @@ accelerate launch  ../src/train_bash.py \
     --dataset high_quality_qa,normal_qa,alpaca_gpt4_zh,sharegpt_zh \
     --dataset_dir ../data \
     --finetuning_type lora \
-    --output_dir ../checkpoints/1116_exp1 \
+    --output_dir ../checkpoints/1116_exp2 \
     --max_samples 30000 \
     --overwrite_cache \
     --per_device_train_batch_size 4 \
@@ -55,6 +55,6 @@ accelerate launch  ../src/train_bash.py \
     --reserved_label_len 800  \
     --fp16  \
     --neft_alpha 5 \
-    --model_name_or_path THUDM/chatglm3-6b
+    --model_name_or_path /root/chatglm3-6b
 
 
