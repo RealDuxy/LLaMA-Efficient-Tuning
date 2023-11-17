@@ -27,7 +27,7 @@ accelerate launch  ../src/train_bash.py \
     --reserved_label_len 800  \
     --fp16  \
     --neft_alpha 5 \
-    --model_name_or_path /root/chatglm3-6b
+    --model_name_or_path THUDM/chatglm3-6b \
 
 
 accelerate launch  ../src/train_bash.py \
@@ -55,6 +55,6 @@ accelerate launch  ../src/train_bash.py \
     --reserved_label_len 800  \
     --fp16  \
     --neft_alpha 5 \
-    --model_name_or_path /root/chatglm3-6b
+    --model_name_or_path THUDM/chatglm3-6b \
 
 
