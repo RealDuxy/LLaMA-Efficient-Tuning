@@ -11,9 +11,10 @@ accelerate launch  ../src/train_bash.py \
     --finetuning_type lora \
     --output_dir ../checkpoints/1116_exp0 \
     --max_samples 30000 \
+    --preprocessing_num_workers 64 \
     --overwrite_cache \
     --per_device_train_batch_size 4 \
-    --gradient_accumulation_steps 64 \
+    --gradient_accumulation_steps 16 \
     --lr_scheduler_type cosine \
     --lora_rank 16 \
     --lora_alpha 32 \
@@ -38,9 +39,10 @@ accelerate launch  ../src/train_bash.py \
     --finetuning_type lora \
     --output_dir ../checkpoints/1116_exp1 \
     --max_samples 30000 \
+    --preprocessing_num_workers 64 \
     --overwrite_cache \
     --per_device_train_batch_size 4 \
-    --gradient_accumulation_steps 64 \
+    --gradient_accumulation_steps 16 \
     --lr_scheduler_type cosine \
     --lora_rank 16 \
     --lora_alpha 32 \
@@ -66,9 +68,10 @@ accelerate launch  ../src/train_bash.py \
     --finetuning_type lora \
     --output_dir ../checkpoints/1116_exp2 \
     --max_samples 30000 \
+    --preprocessing_num_workers 64 \
     --overwrite_cache \
     --per_device_train_batch_size 4 \
-    --gradient_accumulation_steps 64 \
+    --gradient_accumulation_steps 16 \
     --lr_scheduler_type cosine \
     --lora_rank 16 \
     --lora_alpha 32 \
