@@ -6,7 +6,7 @@ accelerate launch  ../src/train_bash.py \
     --stage sft \
     --do_train \
     --template chatglm3 \
-    --dataset high_quality_qa,normal_qa \
+    --dataset high_quality_qa,normal_qa,artical_interpre_qa \
     --dataset_dir ../data \
     --finetuning_type lora \
     --output_dir ../checkpoints/1116_exp0 \
@@ -33,7 +33,7 @@ accelerate launch  ../src/train_bash.py \
     --stage sft \
     --do_train \
     --template chatglm3 \
-    --dataset high_quality_qa,normal_qa,alpaca_gpt4_zh \
+    --dataset high_quality_qa,normal_qa,artical_interpre_qa,alpaca_gpt4_zh \
     --dataset_dir ../data \
     --finetuning_type lora \
     --output_dir ../checkpoints/1116_exp1 \
@@ -61,7 +61,7 @@ accelerate launch  ../src/train_bash.py \
     --stage sft \
     --do_train \
     --template chatglm3 \
-    --dataset high_quality_qa,normal_qa,alpaca_gpt4_zh,sharegpt_zh \
+    --dataset high_quality_qa,normal_qa,artical_interpre_qa,sharegpt_zh \
     --dataset_dir ../data \
     --finetuning_type lora \
     --output_dir ../checkpoints/1116_exp2 \

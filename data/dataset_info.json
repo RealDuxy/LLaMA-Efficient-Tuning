@@ -1,4 +1,14 @@
 {
+  "artical_interpre_qa": {
+    "script_url": "artical_interpre_qa",
+    "columns": {
+      "system": "system",
+      "prompt": "instruction",
+      "query": "input",
+      "response": "output",
+      "history": "history"
+    }
+  },
   "high_quality_qa": {
     "script_url": "high_quality_qa",
     "columns": {
