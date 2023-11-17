@@ -32,7 +32,7 @@ def preprocess_jsonline(file_name):
             output = data["output"]
             contexts = data["contexts"]
 
-            context_list = [f"【标题】：{context['title']}\n内容：{context['content']}" for context in contexts]
+            context_list = [f"【标题】：{context['title']}\n【内容】：{context['content']}" for context in contexts]
             context_str = "```\n\n```".join(context_list)
 
             prompt = template.replace("{question}", query).replace("{context}", context_str)
