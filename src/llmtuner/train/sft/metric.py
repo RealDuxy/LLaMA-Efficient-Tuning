@@ -16,10 +16,9 @@ if is_jieba_available():
 if is_nltk_available():
     from nltk.translate.bleu_score import sentence_bleu, SmoothingFunction
 
-if is_rouge_available():
-    from rouge_chinese import Rouge
+from rouge_chinese import Rouge
 
-
+print(is_rouge_available(), is_jieba_available(), is_nltk_available())
 @dataclass
 class ComputeMetrics:
     r"""
