@@ -9,14 +9,14 @@ accelerate launch  ../src/train_bash.py \
     --dataset high_quality_qa,normal_qa,artical_interpre_qa,alpaca_gpt4_zh \
     --dataset_dir ../data \
     --finetuning_type lora \
-    --output_dir ../checkpoints/1116_exp0 \
+    --output_dir ../checkpoints/1119_stage2_test \
     --max_samples 100 \
     --preprocessing_num_workers 64 \
     --overwrite_cache \
     --per_device_train_batch_size 4 \
     --gradient_accumulation_steps 16 \
     --lr_scheduler_type cosine \
-    --checkpoint_dir ../checkpoints/1119_stage1_spec_ft \
+    --checkpoint_dir ../checkpoints/1116_exp0 \
     --lora_rank 16 \
     --lora_alpha 32 \
     --lora_target all \
