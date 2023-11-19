@@ -9,7 +9,7 @@ accelerate launch  ../src/train_bash.py \
     --dataset high_quality_qa,normal_qa,artical_interpre_qa,alpaca_gpt4_zh \
     --dataset_dir ../data \
     --finetuning_type lora \
-    --output_dir ../checkpoints/1119_stage2_test \
+    --output_dir ../checkpoints/1116_exp0 \
     --max_samples 100 \
     --preprocessing_num_workers 64 \
     --overwrite_cache \
