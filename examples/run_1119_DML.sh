@@ -27,7 +27,7 @@ CUDA_VISIBLE_DEVICES=0 python  ../src/train_bash.py \
     --reserved_label_len 800  \
     --fp16  \
     --neft_alpha 5 \
-    --model_name_or_path /root/chatglm3-6b \
+    --model_name_or_path /root/autodl-tmp/chatglm3-6b \
 
 CUDA_VISIBLE_DEVICES=0 python  ../src/train_bash.py \
     --stage sft \
@@ -55,7 +55,7 @@ CUDA_VISIBLE_DEVICES=0 python  ../src/train_bash.py \
     --reserved_label_len 800  \
     --fp16  \
     --neft_alpha 5 \
-    --model_name_or_path /root/chatglm3-6b \
+    --model_name_or_path /root/autodl-tmp/chatglm3-6b \
 
 
 CUDA_VISIBLE_DEVICES=0 python  ../src/train_bash.py \
@@ -84,4 +84,4 @@ CUDA_VISIBLE_DEVICES=0 python  ../src/train_bash.py \
     --reserved_label_len 800  \
     --fp16  \
     --neft_alpha 5 \
-    --model_name_or_path /root/chatglm3-6b
+    --model_name_or_path /root/autodl-tmp/chatglm3-6b
