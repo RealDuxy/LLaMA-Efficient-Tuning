@@ -12,7 +12,7 @@ CUDA_VISIBLE_DEVICES=0 python  ../src/train_bash.py \
     --output_dir ../checkpoints/1119_mtl_alpaca_ft \
     --preprocessing_num_workers 64 \
     --overwrite_cache \
-    --per_device_train_batch_size 8 \
+    --per_device_train_batch_size 4 \
     --gradient_accumulation_steps 16 \
     --lr_scheduler_type cosine \
     --lora_rank 16 \
@@ -40,7 +40,7 @@ CUDA_VISIBLE_DEVICES=0 python  ../src/train_bash.py \
     --output_dir ../checkpoints/1119_mtl_sharegpt_ft \
     --preprocessing_num_workers 64 \
     --overwrite_cache \
-    --per_device_train_batch_size 8 \
+    --per_device_train_batch_size 4 \
     --gradient_accumulation_steps 16 \
     --lr_scheduler_type cosine \
     --lora_rank 16 \
@@ -68,7 +68,7 @@ CUDA_VISIBLE_DEVICES=0 python  ../src/train_bash.py \
     --output_dir ../checkpoints/1119_mtl_mod_alpaca_ft \
     --preprocessing_num_workers 64 \
     --overwrite_cache \
-    --per_device_train_batch_size 8 \
+    --per_device_train_batch_size 4 \
     --gradient_accumulation_steps 16 \
     --lr_scheduler_type cosine \
     --lora_rank 16 \
