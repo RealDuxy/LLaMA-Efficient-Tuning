@@ -1,11 +1,14 @@
 #!/bin/bash
 
+echo "Hello there! pls wait 3 hours"
+#sleep 1h
+echo "Oops! I fell asleep for a 3 hours!"
 
 CUDA_VISIBLE_DEVICES=0 python ../src/train_bash.py \
     --stage sft \
     --do_train \
     --template chatglm3 \
-    --dataset high_quality_qa,normal_qa,alpaca_gpt4_zh \
+    --dataset high_quality_qa,normal_qa,alpaca_gpt4_zh,sharegpt_zh \
     --dataset_dir ../data \
     --finetuning_type lora \
     --output_dir ../checkpoints/1116_local_run \
@@ -26,9 +29,100 @@ CUDA_VISIBLE_DEVICES=0 python ../src/train_bash.py \
     --reserved_label_len 800  \
     --fp16  \
     --neft_alpha 5 \
-    --model_name_or_path THUDM/chatglm3-6b \
+    --model_name_or_path /mnt/d/PycharmProjects/models/chatglm3-6b \
+#    --model_name_or_path THUDM/chatglm3-6b \
     #    --quantization_bit 8 \
 #    --lora_target query_key_value,dense \
 #!/bin/bash
+
+
+CUDA_VISIBLE_DEVICES=0 python ../src/train_bash.py \
+    --stage sft \
+    --do_train \
+    --template chatglm3 \
+    --dataset high_quality_qa,normal_qa,alpaca_gpt4_zh \
+    --dataset_dir ../data \
+    --finetuning_type lora \
+    --output_dir ../checkpoints/1116_local_run \
+    --max_samples 30000 \
+    --overwrite_cache \
+    --per_device_train_batch_size 2 \
+    --gradient_accumulation_steps 64 \
+    --lr_scheduler_type cosine \
+    --lora_rank 16 \
+    --lora_alpha 32 \
+    --lora_target all \
+    --logging_steps 10 \
+    --save_steps 500 \
+    --learning_rate 5e-5 \
+    --num_train_epochs 1.0 \
+    --plot_loss \
+    --cutoff_len 2500  \
+    --reserved_label_len 800  \
+    --fp16  \
+    --neft_alpha 5 \
+    --model_name_or_path /mnt/d/PycharmProjects/models/chatglm3-6b \
+
+#echo "Hello there! pls wait 3 hours"
+#sleep 1h
+#echo "Oops! I fell asleep for a 3 hours!"
+#CUDA_VISIBLE_DEVICES=0 python ../src/train_bash.py \
+#    --stage sft \
+#    --do_train \
+#    --template chatglm3 \
+#    --dataset high_quality_qa,normal_qa,alpaca_gpt4_zh \
+#    --dataset_dir ../data \
+#    --finetuning_type lora \
+#    --output_dir ../checkpoints/1116_local_run_1 \
+#    --max_samples 30000 \
+#    --overwrite_cache \
+#    --per_device_train_batch_size 2 \
+#    --gradient_accumulation_steps 64 \
+#    --lr_scheduler_type cosine \
+#    --lora_rank 16 \
+#    --lora_alpha 32 \
+#    --lora_target all \
+#    --logging_steps 10 \
+#    --save_steps 500 \
+#    --learning_rate 5e-5 \
+#    --num_train_epochs 1.0 \
+#    --plot_loss \
+#    --cutoff_len 2500  \
+#    --reserved_label_len 800  \
+#    --fp16  \
+#    --neft_alpha 5 \
+#    --model_name_or_path /mnt/d/PycharmProjects/models/chatglm3-6b-base \
+
+
+#CUDA_VISIBLE_DEVICES=0 python ../src/train_bash.py \
+#    --stage sft \
+#    --do_train \
+#    --template chatglm3 \
+#    --dataset high_quality_qa,normal_qa,alpaca_gpt4_zh,sharegpt_zh \
+#    --dataset_dir ../data \
+#    --finetuning_type lora \
+#    --output_dir ../checkpoints/1116_local_run \
+#    --max_samples 30000 \
+#    --overwrite_cache \
+#    --per_device_train_batch_size 1 \
+#    --gradient_accumulation_steps 32 \
+#    --lr_scheduler_type cosine \
+#    --lora_rank 16 \
+#    --lora_alpha 32 \
+#    --lora_target all \
+#    --logging_steps 10 \
+#    --save_steps 500 \
+#    --learning_rate 5e-5 \
+#    --num_train_epochs 1.0 \
+#    --plot_loss \
+#    --cutoff_len 2500  \
+#    --reserved_label_len 800  \
+#    --fp16  \
+#    --neft_alpha 5 \
+#    --model_name_or_path /mnt/d/PycharmProjects/models/chatglm3-6b \
+##    --model_name_or_path THUDM/chatglm3-6b \
+#    #    --quantization_bit 8 \
+##    --lora_target query_key_value,dense \
+##!/bin/bash
 
 
