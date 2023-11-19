@@ -29,6 +29,7 @@ def preprocess_jsonline(original_file, chatglm_file, is_train=True):
         for i, line in enumerate(f.readlines()):
             data = json.loads(line)
             chatglm_answer_list.append(data["predict"])
+    print(f"chatglm预测生成了{i}个答案")
 
     combined_answer = []
     example_dataset = json.load(open(original_file, "r", encoding="utf-8"))
@@ -38,7 +39,7 @@ def preprocess_jsonline(original_file, chatglm_file, is_train=True):
         # answer_gpt4 = data["output"]
 
         combined_answer.append({"instruction": instruction, "input": input, "output": chatglm_answer_list[key]})
-
+    print(f"alpaca共有{key}个问题")
     return combined_answer
 
 if __name__ == '__main__':
