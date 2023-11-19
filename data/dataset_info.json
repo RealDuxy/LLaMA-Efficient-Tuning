@@ -1,4 +1,7 @@
 {
+  "alpaca_chatglm3_zh": {
+    "file_name": "alpaca_chatglm3_data_zh.json"
+  },
   "artical_interpre_qa": {
     "script_url": "artical_interpre_qa",
     "columns": {
