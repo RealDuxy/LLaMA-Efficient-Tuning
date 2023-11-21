@@ -1,7 +1,7 @@
 #!/bin/bash
 
 echo "Hello there! pls wait 3 hours"
-#sleep 1h
+sleep 2h
 echo "Oops! I fell asleep for a 3 hours!"
 
 
@@ -12,7 +12,7 @@ CUDA_VISIBLE_DEVICES=0 python src/train_bash.py \
     --dataset sharegpt_zh \
     --template chatglm3 \
     --output_dir data/sharegpt_zh/ \
-    --per_device_eval_batch_size 32 \
+    --per_device_eval_batch_size 8 \
     --predict_with_generate \
 
 #accelerate launch src/train_bash.py \
