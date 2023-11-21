@@ -2,6 +2,15 @@
   "alpaca_chatglm3_zh": {
     "file_name": "alpaca_chatglm3_data_zh.json"
   },
+  "sharegpt_chatglm3_zh": {
+    "file_name": "sharegpt_chatglm3_zh_27k.json",
+    "columns": {
+      "prompt": "instruction",
+      "query": "input",
+      "response": "output",
+      "history": "history"
+    }
+  },
   "artical_interpre_qa": {
     "script_url": "artical_interpre_qa",
     "columns": {
