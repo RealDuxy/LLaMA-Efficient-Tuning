@@ -39,13 +39,14 @@ def run_ppo(
     reward_model = create_reward_model(model, model_args, finetuning_args)
 
     # Create ppo config
+    backward_batch_size = training_args.per_device_train_batch_size * training_args.gradient_accumulation_steps
     ppo_config = PPOConfig(
         model_name=model_args.model_name_or_path,
         learning_rate=training_args.learning_rate,
         mini_batch_size=training_args.per_device_train_batch_size,
-        batch_size=training_args.per_device_train_batch_size * training_args.gradient_accumulation_steps,
+        batch_size=backward_batch_size * finetuning_args.ppo_buffer_size,
         gradient_accumulation_steps=training_args.gradient_accumulation_steps,
-        ppo_epochs=1,
+        ppo_epochs=finetuning_args.ppo_epochs,
         max_grad_norm=training_args.max_grad_norm,
         seed=training_args.seed,
         optimize_device_cache=True,
@@ -62,9 +63,7 @@ def run_ppo(
     if training_args.max_steps > 0:
         num_training_steps = training_args.max_steps
     else:
-        total_train_batch_size = (
-            training_args.per_device_train_batch_size * training_args.gradient_accumulation_steps * training_args.world_size
-        )
+        total_train_batch_size = backward_batch_size * finetuning_args.ppo_buffer_size * training_args.world_size
         num_training_steps = training_args.num_train_epochs * math.ceil(len(dataset) / total_train_batch_size)
 
     lr_scheduler = get_scheduler(
@@ -94,7 +93,7 @@ def run_ppo(
 
     # Training
     if training_args.do_train:
-        ppo_trainer.ppo_train()
+        ppo_trainer.ppo_train(resume_from_checkpoint=training_args.resume_from_checkpoint)
         ppo_trainer.save_model()
         ppo_trainer.save_state() # must be called after save_model to have a folder
         if ppo_trainer.is_world_process_zero() and finetuning_args.plot_loss:

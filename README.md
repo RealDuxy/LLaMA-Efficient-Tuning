@@ -8,6 +8,7 @@
 [![GitHub pull request](https://img.shields.io/badge/PRs-welcome-blue)](https://github.com/hiyouga/LLaMA-Factory/pulls)
 [![Discord](https://dcbadge.vercel.app/api/server/c2EPEt5NU?compact=true&style=flat)](https://discord.gg/c2EPEt5NU)
 [![Spaces](https://img.shields.io/badge/🤗-Open%20In%20Spaces-blue)](https://huggingface.co/spaces/hiyouga/LLaMA-Board)
+[![Studios](https://img.shields.io/badge/ModelScope-Open%20In%20Studios-blue)](https://modelscope.cn/studios/hiyouga/LLaMA-Board)
 
 👋 Join our [WeChat](assets/wechat.jpg).
 
@@ -15,13 +16,38 @@
 
 ## LLaMA Board: A One-stop Web UI for Getting Started with LLaMA Factory
 
-Preview LLaMA Board at **[🤗 Spaces](https://huggingface.co/spaces/hiyouga/LLaMA-Board)**.
+Preview LLaMA Board at **[🤗 Spaces](https://huggingface.co/spaces/hiyouga/LLaMA-Board)** or **[ModelScope](https://modelscope.cn/studios/hiyouga/LLaMA-Board)**.
 
-Launch LLaMA Board via `CUDA_VISIBLE_DEVICES=0 python src/train_web.py`. (multiple GPUs are not supported yet)
+Launch LLaMA Board via `CUDA_VISIBLE_DEVICES=0 python src/train_web.py`. (multiple GPUs are not supported yet in this mode)
 
 Here is an example of altering the self-cognition of an instruction-tuned language model within 10 minutes on a single GPU.
 
 https://github.com/hiyouga/LLaMA-Factory/assets/16256802/6ba60acc-e2e2-4bec-b846-2d88920d5ba1
+
+## Table of Contents
+
+- [Benchmark](#benchmark)
+- [Changelog](#changelog)
+- [Supported Models](#supported-models)
+- [Supported Training Approaches](#supported-training-approaches)
+- [Provided Datasets](#provided-datasets)
+- [Requirement](#requirement)
+- [Getting Started](#getting-started)
+- [Projects using LLaMA Factory](#projects-using-llama-factory)
+- [License](#license)
+- [Citation](#citation)
+- [Acknowledgement](#acknowledgement)
+
+## Benchmark
+
+Compared to ChatGLM's [P-Tuning](https://github.com/THUDM/ChatGLM2-6B/tree/main/ptuning), LLaMA-Factory's LoRA tuning offers up to **3.7 times faster** training speed with a better Rouge score on the advertising text generation task. By leveraging 4-bit quantization technique, LLaMA-Factory's QLoRA further improves the efficiency regarding the GPU memory.
+
+![benchmark](assets/benchmark.svg)
+
+- **Training Speed**: the number of training samples processed per second during the training. (bs=4, cutoff_len=1024)
+- **Rouge Score**: Rouge-2 score on the development set of the [advertising text generation](https://aclanthology.org/D19-1321.pdf) task. (bs=4, cutoff_len=1024)
+- **GPU Memory**: Peak GPU memory usage in 4-bit quantized training. (bs=1, cutoff_len=1024)
+- We adopt `pre_seq_len=128` for ChatGLM's P-Tuning and `lora_rank=32` for LLaMA-Factory's LoRA tuning.
 
 ## Changelog
 
@@ -288,6 +314,8 @@ CUDA_VISIBLE_DEVICES=0 python src/train_bash.py \
     --per_device_train_batch_size 2 \
     --gradient_accumulation_steps 4 \
     --lr_scheduler_type cosine \
+    --top_k 0 \
+    --top_p 0.9 \
     --logging_steps 10 \
     --save_steps 1000 \
     --learning_rate 1e-5 \
@@ -295,6 +323,9 @@ CUDA_VISIBLE_DEVICES=0 python src/train_bash.py \
     --plot_loss \
     --fp16
 ```
+
+> [!WARNING]
+> Use `--per_device_train_batch_size=1` for LLaMA-2 models in fp16 PPO training.
 
 #### DPO Training
 
@@ -391,7 +422,7 @@ deepspeed --num_gpus 8 --master_port=9901 src/train_bash.py \
 
 </details>
 
-### Export model
+### Merge LoRA weights and export model
 
 ```bash
 python src/export_model.py \
@@ -412,7 +443,7 @@ python src/api_demo.py \
     --checkpoint_dir path_to_checkpoint
 ```
 
-> [!NOTE]
+> [!TIP]
 > Visit `http://localhost:8000/docs` for API documentation.
 
 ### CLI Demo
@@ -464,10 +495,14 @@ CUDA_VISIBLE_DEVICES=0 python src/train_bash.py \
     --output_dir path_to_predict_result \
     --per_device_eval_batch_size 8 \
     --max_samples 100 \
-    --predict_with_generate
+    --predict_with_generate \
+    --fp16
 ```
 
-> [!NOTE]
+> [!WARNING]
+> Use `--per_device_train_batch_size=1` for LLaMA-2 models in fp16 predict.
+
+> [!TIP]
 > We recommend using `--per_device_eval_batch_size=1` and `--max_target_length 128` at 4/8-bit predict.
 
 ## Projects using LLaMA Factory
@@ -476,6 +511,9 @@ CUDA_VISIBLE_DEVICES=0 python src/train_bash.py \
 - **[DISC-LawLLM](https://github.com/FudanDISC/DISC-LawLLM)**: A large language model specialized in Chinese legal domain, based on Baichuan-13B, is capable of retrieving and reasoning on legal knowledge.
 - **[Sunsimiao](https://github.com/thomas-yanxin/Sunsimiao)**: A large language model specialized in Chinese medical domain, based on Baichuan-7B and ChatGLM-6B.
 - **[CareGPT](https://github.com/WangRongsheng/CareGPT)**: A series of large language models for Chinese medical domain, based on LLaMA2-7B and Baichuan-13B.
+
+> [!TIP]
+> If you have a project that should be incorporated, please contact via email or create a pull request.
 
 ## License
 

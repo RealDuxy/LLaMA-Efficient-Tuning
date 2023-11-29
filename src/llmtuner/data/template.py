@@ -114,7 +114,7 @@ class Template:
             else:
                 prefix_ids = sep_ids + bos_ids
 
-            query_ids = self._convert_inputs_to_ids(tokenizer, context=self.prompt, query=query, idx=str(turn_idx))
+            query_ids = self._convert_inputs_to_ids(tokenizer, context=self.prompt, query=query, idx=str(turn_idx+1))
             resp_ids = self._convert_inputs_to_ids(tokenizer, context=[resp])
             encoded_pairs.append((prefix_ids + query_ids, resp_ids + eos_ids))
         return encoded_pairs
@@ -350,6 +350,37 @@ register_template(
     prefix=[
         {"token": "[gMASK]"},
         {"token": "sop"},
+        {"token": "<|system|>"},
+        "\n",
+        "{{system}}"
+    ],
+    prompt=[
+        {"token": "<|user|>"},
+        "\n",
+        "{{query}}",
+        {"token": "<|assistant|>"},
+        "\n" # add an extra newline to avoid error in ChatGLM's process_response method
+    ],
+    system=(
+        "You are ChatGLM3, a large language model trained by Zhipu.AI. "
+        "Follow the user's instructions carefully. Respond using markdown."
+    ),
+    sep=[],
+    stop_words=[
+        "<|user|>",
+        "<|observation|>"
+    ],
+    efficient_eos=True
+)
+
+
+register_template(
+    name="chatglm3_raw", # the raw template for tool tuning
+    prefix=[
+        {"token": "[gMASK]"},
+        {"token": "sop"},
+        {"token": "<|system|>"},
+        "\n",
         "{{system}}"
     ],
     prompt=[
@@ -358,7 +389,10 @@ register_template(
         "{{query}}",
         {"token": "<|assistant|>"}
     ],
-    system="",
+    system=(
+        "You are ChatGLM3, a large language model trained by Zhipu.AI. "
+        "Follow the user's instructions carefully. Respond using markdown."
+    ),
     sep=[],
     stop_words=[
         "<|user|>",
@@ -516,7 +550,9 @@ register_template(
         "[INST] {{query}} [/INST]"
     ],
     system="",
-    sep=[]
+    sep=[
+        " "
+    ]
 )
 
 
@@ -665,6 +701,22 @@ register_template(
     stop_words=[
         "<|End|>"
     ]
+)
+
+
+register_template(
+    name="yi",
+    prefix=[
+        "{{system}}"
+    ],
+    prompt=[
+        "<|im_start|>user\n{{query}}<|im_end|>\n<|im_start|>assistant\n"
+    ],
+    system="",
+    sep=[
+        "<|im_end|>\n"
+    ],
+    efficient_eos=True
 )
 
 

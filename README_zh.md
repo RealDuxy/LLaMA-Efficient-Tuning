@@ -8,6 +8,7 @@
 [![GitHub pull request](https://img.shields.io/badge/PRs-welcome-blue)](https://github.com/hiyouga/LLaMA-Factory/pulls)
 [![Discord](https://dcbadge.vercel.app/api/server/c2EPEt5NU?compact=true&style=flat)](https://discord.gg/c2EPEt5NU)
 [![Spaces](https://img.shields.io/badge/🤗-Open%20In%20Spaces-blue)](https://huggingface.co/spaces/hiyouga/LLaMA-Board)
+[![Studios](https://img.shields.io/badge/ModelScope-Open%20In%20Studios-blue)](https://modelscope.cn/studios/hiyouga/LLaMA-Board)
 
 👋 加入我们的[微信群](assets/wechat.jpg)。
 
@@ -15,13 +16,38 @@
 
 ## LLaMA Board: 通过一站式网页界面快速上手 LLaMA Factory
 
-通过 **[🤗 Spaces](https://huggingface.co/spaces/hiyouga/LLaMA-Board)** 预览 LLaMA Board。
+通过 **[🤗 Spaces](https://huggingface.co/spaces/hiyouga/LLaMA-Board)** 或 **[ModelScope](https://modelscope.cn/studios/hiyouga/LLaMA-Board)** 预览 LLaMA Board。
 
 使用 `CUDA_VISIBLE_DEVICES=0 python src/train_web.py` 启动 LLaMA Board。（该模式目前仅支持单卡训练）
 
 下面是使用单张 GPU 在 10 分钟内更改对话式大型语言模型自我认知的示例。
 
 https://github.com/hiyouga/LLaMA-Factory/assets/16256802/6ba60acc-e2e2-4bec-b846-2d88920d5ba1
+
+## 目录
+
+- [性能指标](#性能指标)
+- [更新日志](#更新日志)
+- [模型](#模型)
+- [训练方法](#训练方法)
+- [数据集](#数据集)
+- [软件依赖](#软件依赖)
+- [如何使用](#如何使用)
+- [使用了 LLaMA Factory 的项目](#使用了-llama-factory-的项目)
+- [协议](#协议)
+- [引用](#引用)
+- [致谢](#致谢)
+
+## 性能指标
+
+与 ChatGLM 官方的 [P-Tuning](https://github.com/THUDM/ChatGLM2-6B/tree/main/ptuning) 微调相比，LLaMA-Factory 的 LoRA 微调提供了 **3.7 倍**的加速比，同时在广告文案生成任务上取得了更高的 Rouge 分数。结合 4 比特量化技术，LLaMA-Factory 的 QLoRA 微调进一步降低了 GPU 显存消耗。
+
+![benchmark](assets/benchmark.svg)
+
+- **Training Speed**: 训练阶段每秒处理的样本数量。（批处理大小=4，截断长度=1024）
+- **Rouge Score**: [广告文案生成](https://aclanthology.org/D19-1321.pdf)任务验证集上的 Rouge-2 分数。（批处理大小=4，截断长度=1024）
+- **GPU Memory**: 4 比特量化训练的 GPU 显存峰值。（批处理大小=1，截断长度=1024）
+- 我们在 ChatGLM 的 P-Tuning 中采用 `pre_seq_len=128`，在 LLaMA-Factory 的 LoRA 微调中采用 `lora_rank=32`。
 
 ## 更新日志
 
@@ -288,12 +314,18 @@ CUDA_VISIBLE_DEVICES=0 python src/train_bash.py \
     --per_device_train_batch_size 2 \
     --gradient_accumulation_steps 4 \
     --lr_scheduler_type cosine \
+    --top_k 0 \
+    --top_p 0.9 \
     --logging_steps 10 \
     --save_steps 1000 \
     --learning_rate 1e-5 \
     --num_train_epochs 1.0 \
-    --plot_loss
+    --plot_loss \
+    --fp16
 ```
+
+> [!WARNING]
+> 如果使用 fp16 精度进行 LLaMA-2 模型的 PPO 训练，请使用 `--per_device_train_batch_size=1`。
 
 #### DPO 训练
 
@@ -390,7 +422,7 @@ deepspeed --num_gpus 8 --master_port=9901 src/train_bash.py \
 
 </details>
 
-### 导出微调后的完整模型
+### 合并 LoRA 权重并导出完整模型
 
 ```bash
 python src/export_model.py \
@@ -411,7 +443,7 @@ python src/api_demo.py \
     --checkpoint_dir path_to_checkpoint
 ```
 
-> [!NOTE]
+> [!TIP]
 > 关于 API 文档请见 `http://localhost:8000/docs`。
 
 ### 命令行测试
@@ -463,10 +495,14 @@ CUDA_VISIBLE_DEVICES=0 python src/train_bash.py \
     --output_dir path_to_predict_result \
     --per_device_eval_batch_size 8 \
     --max_samples 100 \
-    --predict_with_generate
+    --predict_with_generate \
+    --fp16
 ```
 
-> [!NOTE]
+> [!WARNING]
+> 如果使用 fp16 精度进行 LLaMA-2 模型的预测，请使用 `--per_device_eval_batch_size=1`。
+
+> [!TIP]
 > 我们建议在量化模型的预测中使用 `--per_device_eval_batch_size=1` 和 `--max_target_length 128`。
 
 ## 使用了 LLaMA Factory 的项目
@@ -475,6 +511,9 @@ CUDA_VISIBLE_DEVICES=0 python src/train_bash.py \
 - **[DISC-LawLLM](https://github.com/FudanDISC/DISC-LawLLM)**: 中文法律领域大模型 DISC-LawLLM，基于 Baichuan-13B 微调而得，具有法律推理和知识检索能力。
 - **[Sunsimiao](https://github.com/thomas-yanxin/Sunsimiao)**: 孙思邈中文医疗大模型 Sumsimiao，基于 Baichuan-7B 和 ChatGLM-6B 在中文医疗数据上微调而得。
 - **[CareGPT](https://github.com/WangRongsheng/CareGPT)**: 医疗大模型项目 CareGPT，基于 LLaMA2-7B 和 Baichuan-13B 在中文医疗数据上微调而得。
+
+> [!TIP]
+> 如果您有项目希望添加至上述列表，请通过邮件联系或者创建一个 PR。
 
 ## 协议
 

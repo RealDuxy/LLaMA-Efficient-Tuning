@@ -16,7 +16,10 @@ try:
     _is_bf16_available = is_torch_bf16_gpu_available() or is_torch_bf16_cpu_available()
 except ImportError:
     _is_fp16_available = torch.cuda.is_available()
-    _is_bf16_available = torch.cuda.is_bf16_supported()
+    try:
+        _is_bf16_available = torch.cuda.is_bf16_supported()
+    except:
+        _is_bf16_available = False
 
 if TYPE_CHECKING:
     from transformers import HfArgumentParser
@@ -66,8 +69,7 @@ def count_parameters(model: torch.nn.Module) -> Tuple[int, int]:
 
 def get_current_device() -> str:
     import accelerate
-    from accelerate import Accelerator
-    dummy_accelerator = Accelerator()
+    dummy_accelerator = accelerate.Accelerator()
     if accelerate.utils.is_xpu_available():
         return "xpu:{}".format(dummy_accelerator.local_process_index)
     else:

@@ -1,4 +1,5 @@
 import torch
+import inspect
 from typing import TYPE_CHECKING, Any, Dict, List, Optional, Set, Tuple
 
 from transformers.utils import cached_file
@@ -70,13 +71,14 @@ def find_all_linear_modules(
     return list(module_names)
 
 
-def generate_model_card(
+def get_modelcard_args(
     model_args: "ModelArguments",
     data_args: "DataArguments",
     finetuning_args: "FinetuningArguments"
 ) -> Dict[str, Any]:
     return {
         "tasks": "text-generation",
+        "license": "other",
         "finetuned_from": model_args.model_name_or_path,
         "dataset": [dataset.strip() for dataset in data_args.dataset.split(",")],
         "tags": ["llama-factory"] + (["lora"] if finetuning_args.finetuning_type == "lora" else [])
@@ -94,19 +96,35 @@ def load_valuehead_params(
     """
     kwargs = {
         "path_or_repo_id": path_or_repo_id,
-        "cache_dir": model_args.cache_dir,
-        "token": model_args.hf_hub_token
+        "cache_dir": model_args.cache_dir
     }
+
+    if "token" in inspect.signature(cached_file).parameters:
+        kwargs["token"] = model_args.hf_hub_token
+    elif "use_auth_token" in inspect.signature(cached_file).parameters: # for transformers==4.31.0
+        kwargs["use_auth_token"] = model_args.hf_hub_token
+    else:
+        logger.warning("Ignore `hf_hub_token` since matched parameter is not found.")
+
     try:
         vhead_file = cached_file(filename=WEIGHTS_NAME, **kwargs)
-    except:
-        try:
-            vhead_file = cached_file(filename=SAFE_WEIGHTS_NAME, **kwargs)
-        except:
-            logger.warning("Provided path ({}) does not contain valuehead weights.".format(path_or_repo_id))
-            return None
+        return torch.load(vhead_file, map_location="cpu")
+    except Exception as err:
+        logger.info("Failed to load {}: {}".format(WEIGHTS_NAME, str(err)))
 
-    return torch.load(vhead_file, map_location="cpu")
+    try:
+        from safetensors import safe_open
+        vhead_file = cached_file(filename=SAFE_WEIGHTS_NAME, **kwargs)
+        with safe_open(vhead_file, framework="pt", device="cpu") as f:
+            return {
+                "v_head.summary.weight": f.get_tensor("v_head.summary.weight"),
+                "v_head.summary.bias": f.get_tensor("v_head.summary.bias")
+            }
+    except Exception as err:
+        logger.info("Failed to load {}: {}".format(SAFE_WEIGHTS_NAME, str(err)))
+
+    logger.warning("Provided path ({}) does not contain valuehead weights.".format(path_or_repo_id))
+    return None
 
 
 def prepare_model_for_training(
@@ -140,7 +158,7 @@ def prepare_model_for_training(
         model.get_input_embeddings().register_forward_hook(neftune_forward_hook)
         logger.info("Using noisy embedding with alpha={:.2f}".format(finetuning_args.neft_alpha))
 
-    if use_gradient_checkpointing:
+    if use_gradient_checkpointing and getattr(model, "supports_gradient_checkpointing", False):
         if hasattr(model, "enable_input_require_grads"):
             model.enable_input_require_grads()
         else:

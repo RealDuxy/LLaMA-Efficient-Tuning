@@ -1,4 +1,3 @@
-import os
 import math
 import torch
 from types import MethodType
@@ -147,6 +146,9 @@ def load_model_and_tokenizer(
 
     # Quantization configurations (using bitsandbytes library)
     if model_args.quantization_bit is not None:
+        if getattr(config, "quantization_config", None):
+            raise ValueError("Remove `quantization_bit` if you are using a quantized model.")
+
         if is_deepspeed_zero3_enabled():
             raise ValueError("DeepSpeed ZeRO-3 is incompatible with quantization.")
 
@@ -202,6 +204,8 @@ def load_model_and_tokenizer(
     # Prepare model with valuehead for RLHF
     if stage in ["rm", "ppo"]:
         model: "AutoModelForCausalLMWithValueHead" = AutoModelForCausalLMWithValueHead.from_pretrained(model)
+        setattr(model, "_keys_to_ignore_on_save", [name for name, _ in model.named_parameters() if "pretrained_model" in name])
+        setattr(model, "tie_weights", MethodType(lambda _: None, model)) # use empty method
         vhead_path = (
             model_args.checkpoint_dir[-1] if model_args.checkpoint_dir is not None else model_args.model_name_or_path
         )
