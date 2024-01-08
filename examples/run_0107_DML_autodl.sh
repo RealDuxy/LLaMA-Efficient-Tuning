@@ -13,8 +13,8 @@ CUDA_VISIBLE_DEVICES=0 python  ../src/train_bash.py \
     --output_dir ../checkpoints/0107_stage1_spec_ft \
     --preprocessing_num_workers 64 \
     --overwrite_cache \
-    --per_device_train_batch_size 4 \
-    --gradient_accumulation_steps 16 \
+    --per_device_train_batch_size 16 \
+    --gradient_accumulation_steps 8 \
     --lr_scheduler_type cosine \
     --lora_rank 16 \
     --lora_alpha 32 \
@@ -42,8 +42,8 @@ CUDA_VISIBLE_DEVICES=0 python  ../src/train_bash.py \
     --output_dir ../checkpoints/0107_stage2_mix_alpaca_ft \
     --preprocessing_num_workers 64 \
     --overwrite_cache \
-    --per_device_train_batch_size 4 \
-    --gradient_accumulation_steps 16 \
+    --per_device_train_batch_size 16 \
+    --gradient_accumulation_steps 8 \
     --lr_scheduler_type cosine \
     --adapter_name_or_path ../checkpoints/0107_stage1_spec_ft \
     --lora_rank 16 \
