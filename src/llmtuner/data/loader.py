@@ -106,7 +106,6 @@ def get_dataset(
             sample_num = int(len(dataset) * ratios[i])
             dataset = dataset.select(range(sample_num))
             logger.info(f"Loading {ratios[i]*100}% of dataset, which is {sample_num} samples")
-            logger.info("Loading {} dataset {}...".format(dataset_attr))
 
         def convert_format(examples: Dict[str, List[Any]]) -> Dict[str, List[Any]]:
             # convert dataset from sharegpt format to alpaca format
