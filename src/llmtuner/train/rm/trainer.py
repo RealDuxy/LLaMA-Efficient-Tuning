@@ -39,7 +39,9 @@ class PairwiseTrainer(Trainer):
         """
         # Compute rewards
         _, _, values = model(**inputs, output_hidden_states=True, return_dict=True)
-        if values.size(0) != inputs["input_ids"].size(0): # adapt to chatglm2
+
+        unwrapped_model: "PreTrainedModel" = self.accelerator.unwrap_model(self.model)
+        if getattr(unwrapped_model.config, "model_type", None) == "chatglm":
             values = torch.transpose(values, 0, 1)
 
         # Split the inputs and rewards into two parts, chosen and rejected
