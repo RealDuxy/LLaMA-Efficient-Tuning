@@ -35,11 +35,11 @@ CUDA_VISIBLE_DEVICES=0 python  ../src/train_bash.py \
     --stage sft \
     --do_train \
     --template chatglm3 \
-    --dataset high_quality_qa,normal_qa,artical_interpre_qa,askbob_qa,sharegpt_zh \
-    --sample_ratio 0.0156,0.0156,0.0156,0.0156,1.0 \
+    --dataset high_quality_qa,normal_qa,artical_interpre_qa,askbob_qa,alpaca_gpt4_zh,self_cognition \
+    --sample_ratio 0.0156,0.0156,0.0156,0.0156,1.0,1.0 \
     --dataset_dir ../data \
     --finetuning_type lora \
-    --output_dir ../checkpoints/0107_stage2_mix_sharegpt_ft \
+    --output_dir ../checkpoints/0107_stage2_mix_alpaca_ft \
     --preprocessing_num_workers 64 \
     --overwrite_cache \
     --per_device_train_batch_size 4 \
