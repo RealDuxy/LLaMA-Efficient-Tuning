@@ -1,4 +1,5 @@
 import json
+import random
 
 from transformers import AutoTokenizer
 
@@ -19,10 +20,12 @@ tokenizer = AutoTokenizer.from_pretrained(
     "THUDM/chatglm3-6b", trust_remote_code=True
 )
 
+slash = "\n"
+
 def preprocess_jsonline(file_name):
     with open(file_name, "r", encoding="utf-8") as f:
         lines = []
-        for line in  f.readlines():
+        for line in f.readlines():
             data = json.loads(line)
 
             traning_prompt = data["traning_prompt"]
@@ -36,6 +39,7 @@ def preprocess_jsonline(file_name):
             context_str = "```\n\n```".join(context_list)
 
             prompt = template.replace("{question}", query).replace("{context}", context_str)
+
             lines.append({
                 "system": system,
                 'instruction': prompt,
@@ -45,10 +49,62 @@ def preprocess_jsonline(file_name):
             })
     return lines
 
+
+def preprocess_llm_data(file_name):
+    def get_context_content(context):
+        return context["keypoint"] if context["keypoint"] != "" else context["content"]
+    high_quality_datas = []
+    normal_quality_datas = []
+    askbob_datas = []
+    with open(file_name, "r", encoding="utf-8") as f:
+        data_list = json.load(f)
+
+        for data in data_list:
+
+            question_source = data["source_from"]
+            query_for_training = data["query_for_training"]
+            output = data["response"]
+            contexts = data["all_contexts"]
+            context_list = [f'''【标题】：{context['title']}\n【内容】：{get_context_content(context).replace(slash, " ")}''' for context in contexts]
+            random.shuffle(context_list)
+            context_str = "```\n\n```".join(context_list)
+
+            prompt = template.replace("{question}", query_for_training).replace("{context}", context_str)
+
+            if question_source == "./dataset/rag_dataset.json":
+                askbob_datas.append({
+                    "system": system,
+                    'instruction': prompt,
+                    'input': "",
+                    'output': output,
+                    'history': []
+                })
+            elif question_source == "./dataset/1107_highQuality_gen.json":
+                high_quality_datas.append({
+                    "system": system,
+                    'instruction': prompt,
+                    'input': "",
+                    'output': output,
+                    'history': []
+                })
+            elif question_source == "./dataset/1107_normal_gen.json":
+                normal_quality_datas.append({
+                    "system": system,
+                    'instruction': prompt,
+                    'input': "",
+                    'output': output,
+                    'history': []
+                })
+    return askbob_datas, high_quality_datas, normal_quality_datas
+
 if __name__ == '__main__':
-    train_data = preprocess_jsonline("1115_highQuality.json")
-    json.dump(train_data, open("train.json", "w"), ensure_ascii=False, indent=4)
+    # train_data = preprocess_jsonline("1115_highQuality.json")
+    # json.dump(train_data, open("train.json", "w"), ensure_ascii=False, indent=4)
+    #
+    # eval_data = preprocess_jsonline("1115_highQuality_eval.json")
+    # json.dump(eval_data, open("dev.json", "w"), ensure_ascii=False, indent=4)
 
-    eval_data = preprocess_jsonline("1115_highQuality_eval.json")
-    json.dump(eval_data, open("dev.json", "w"), ensure_ascii=False, indent=4)
-
+    askbob_datas, high_quality_datas, normal_quality_datas = preprocess_llm_data("llm_data.json")
+    json.dump(askbob_datas, open("train_askbob.json", "w"), ensure_ascii=False, indent=4)
+    json.dump(high_quality_datas, open("train_high_quality.json", "w"), ensure_ascii=False, indent=4)
+    json.dump(normal_quality_datas, open("train_normal.json", "w"), ensure_ascii=False, indent=4)
