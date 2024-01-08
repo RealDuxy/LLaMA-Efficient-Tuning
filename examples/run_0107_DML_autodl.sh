@@ -1,13 +1,13 @@
 #!/bin/bash
 
-accelerate config # 首先配置分布式环境
+#accelerate config # 首先配置分布式环境
 
 CUDA_VISIBLE_DEVICES=0 python  ../src/train_bash.py \
     --stage sft \
     --do_train \
     --template chatglm3 \
     --dataset high_quality_qa,normal_qa,artical_interpre_qa,askbob_qa \
-    --sample_ratio 0.0156,0.0156,0.0156,0.0156,1.0 \
+    --sample_ratio 1,1,1,1,1 \
     --dataset_dir ../data \
     --finetuning_type lora \
     --output_dir ../checkpoints/0107_stage1_spec_ft \
