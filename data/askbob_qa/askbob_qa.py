@@ -11,7 +11,6 @@ _URL = "./"
 
 _URLS = {
     "train": _URL + "train_askbob.json",
-    "test": _URL + "dev.json",
 }
 
 class AskBobQADataset(datasets.GeneratorBasedBuilder):
@@ -51,12 +50,6 @@ class AskBobQADataset(datasets.GeneratorBasedBuilder):
                 name=datasets.Split.TRAIN,
                 gen_kwargs={
                     "filepath": file_path["train"]
-                }
-            ),
-            datasets.SplitGenerator(
-                name=datasets.Split.TEST,
-                gen_kwargs={
-                    "filepath": file_path["test"]
                 }
             )
         ]
