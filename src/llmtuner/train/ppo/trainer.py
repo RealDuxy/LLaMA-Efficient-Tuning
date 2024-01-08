@@ -3,9 +3,10 @@ import sys
 import math
 import torch
 from tqdm import tqdm
-from typing import TYPE_CHECKING, List, Optional, Tuple
+from typing import TYPE_CHECKING, Dict, List, Optional, Tuple
 
-from transformers import BatchEncoding, GenerationConfig, Trainer, TrainerState, TrainerControl
+from transformers import GenerationConfig, Trainer, TrainerState, TrainerControl
+from transformers.utils import WEIGHTS_NAME, SAFE_WEIGHTS_NAME
 from transformers.trainer_utils import PREFIX_CHECKPOINT_DIR
 
 from trl import PPOTrainer
@@ -14,7 +15,7 @@ from trl.core import PPODecorators, logprobs_from_logits
 from llmtuner.extras.callbacks import LogCallback, SavePeftModelCallback
 from llmtuner.extras.logging import get_logger
 from llmtuner.extras.misc import AverageMeter, count_parameters, get_logits_processor
-from llmtuner.train.ppo.utils import dump_layernorm, restore_layernorm, replace_model
+from llmtuner.train.ppo.utils import dump_layernorm, get_rewards_from_server, restore_layernorm, replace_model
 
 if TYPE_CHECKING:
     from transformers import Seq2SeqTrainingArguments, TrainerCallback
@@ -55,17 +56,17 @@ class CustomPPOTrainer(PPOTrainer, Trainer):
 
         self.state = TrainerState()
         self.control = TrainerControl()
+        self.is_deepspeed_enabled = self.accelerator.distributed_type == "DEEPSPEED" and hasattr(
+            self.accelerator.state, "deepspeed_plugin"
+        )
         self.log_callback, self.save_callback = callbacks[0], callbacks[1]
         assert isinstance(self.log_callback, LogCallback) and isinstance(self.save_callback, SavePeftModelCallback)
 
         if self.args.max_steps > 0:
             logger.info("max_steps is given, it will override any value given in num_train_epochs")
 
-        if reward_model is not None:
-            is_deepspeed_enabled = self.accelerator.distributed_type == "DEEPSPEED" and hasattr(
-                self.accelerator.state, "deepspeed_plugin"
-            )
-            if is_deepspeed_enabled:
+        if finetuning_args.reward_model_type == "full":
+            if self.is_deepspeed_enabled:
                 if not (
                     getattr(reward_model.pretrained_model, "is_loaded_in_8bit", False)
                     or getattr(reward_model.pretrained_model, "is_loaded_in_4bit", False)
@@ -198,27 +199,33 @@ class CustomPPOTrainer(PPOTrainer, Trainer):
         )
 
     @torch.no_grad()
-    def get_inputs(self, batch: BatchEncoding) -> Tuple[List[torch.Tensor], List[torch.Tensor]]:
+    def get_inputs(self, batch: Dict[str, torch.Tensor]) -> Tuple[List[torch.Tensor], List[torch.Tensor]]:
         r"""
         Generates model's responses given queries.
         """
-        if self.finetuning_args.upcast_layernorm:
+        if self.model_args.upcast_layernorm:
             layernorm_params = dump_layernorm(self.model)
 
+        if batch["input_ids"].size(0) == 1: # handle llama2 ppo with gradient accumulation > 1
+            start_index = (batch["input_ids"][0] != self.tokenizer.pad_token_id).nonzero()[0].item()
+            for k, v in batch.items():
+                batch[k] = v[:, start_index:]
+
         unwrapped_model: "AutoModelForCausalLMWithValueHead" = self.accelerator.unwrap_model(self.model)
-        response: torch.Tensor = unwrapped_model.generate(
+        generate_output: torch.Tensor = unwrapped_model.generate(
             generation_config=self.generation_config,
             logits_processor=get_logits_processor(),
             **batch
         )
 
-        if self.finetuning_args.upcast_layernorm:
+        if self.model_args.upcast_layernorm:
             restore_layernorm(self.model, layernorm_params)
 
-        query, response = batch["input_ids"].detach().cpu(), response[:, batch["input_ids"].size(-1):].detach().cpu()
+        query = batch["input_ids"].detach().cpu()
+        response = generate_output[:, batch["input_ids"].size(-1):].detach().cpu()
         queries, responses = [], []
         for i in range(len(query)):
-            query_length = (query[i] != self.tokenizer.pad_token_id).nonzero()[0].item()
+            query_start_index = (query[i] != self.tokenizer.pad_token_id).nonzero()[0].item()
             response_index = (response[i] != self.tokenizer.pad_token_id).nonzero()
 
             if len(response_index) == 0:
@@ -226,7 +233,7 @@ class CustomPPOTrainer(PPOTrainer, Trainer):
             else:
                 response_length = response_index[-1].item() + 1
 
-            queries.append(query[i, query_length:]) # remove padding from left
+            queries.append(query[i, query_start_index:]) # remove padding from left
             responses.append(response[i, :response_length]) # remove padding from right
 
         return queries, responses
@@ -240,17 +247,26 @@ class CustomPPOTrainer(PPOTrainer, Trainer):
     ) -> List[torch.Tensor]:
         r"""
         Computes scores using given reward model.
+
+        Both inputs and outputs are put on CPU.
         """
-        if self.reward_model is None:
+        if self.finetuning_args.reward_model_type == "api":
+            token_ids = [torch.cat((q, r), dim=-1).tolist() for q, r in zip(queries, responses)]
+            messages = self.tokenizer.batch_decode(token_ids, skip_special_tokens=True)
+            return get_rewards_from_server(self.reward_model, messages)
+
+        if self.finetuning_args.reward_model_type == "lora":
             replace_model(unwrapped_model, target="reward")
+            reward_model = self.model
+        else:
+            reward_model = self.reward_model
 
         batch = self.prepare_model_inputs(queries, responses)
 
         with torch.cuda.amp.autocast(dtype=self.model_args.compute_dtype): # support bf16
-            reward_model = self.reward_model if self.reward_model is not None else self.model
             _, _, values = reward_model(**batch, output_hidden_states=True, return_dict=True)
 
-        if getattr(unwrapped_model.config, "model_type", None) == "chatglm":
+        if getattr(unwrapped_model.config, "model_type", None) == "chatglm": # assume same architecture
             values = torch.transpose(values, 0, 1)
 
         rewards = []
@@ -259,7 +275,7 @@ class CustomPPOTrainer(PPOTrainer, Trainer):
             end_index = end_indexes[-1].item() if len(end_indexes) else 0
             rewards.append(values[i, end_index].float().detach().cpu()) # use fp32 type
 
-        if self.reward_model is None:
+        if self.finetuning_args.reward_model_type == "lora":
             replace_model(unwrapped_model, target="default")
 
         return rewards
@@ -298,7 +314,8 @@ class CustomPPOTrainer(PPOTrainer, Trainer):
             with torch.cuda.amp.autocast(dtype=self.model_args.compute_dtype): # support bf16
                 logits, _, values = model(**input_kwargs)
 
-            if getattr(model.config, "model_type", None) == "chatglm":
+            unwrapped_model: "AutoModelForCausalLMWithValueHead" = self.accelerator.unwrap_model(self.model)
+            if getattr(unwrapped_model.config, "model_type", None) == "chatglm":
                 values = torch.transpose(values, 0, 1)
 
             logprobs = logprobs_from_logits(logits[:, :-1, :], input_ids[:, 1:])
@@ -344,4 +361,17 @@ class CustomPPOTrainer(PPOTrainer, Trainer):
         Subclass and override to inject custom behavior.
         """
         if self.args.should_save:
-            self._save(output_dir)
+            try:
+                self._save(output_dir, state_dict=self.accelerator.get_state_dict(self.model))
+            except ValueError:
+                logger.warning(
+                    " stage3_gather_16bit_weights_on_model_save=false. Saving the full checkpoint instead,"
+                    " use zero_to_fp32.py to recover weights"
+                )
+                self._save(output_dir, state_dict={})
+                for filename in [WEIGHTS_NAME, SAFE_WEIGHTS_NAME]: # remove dummy checkpoint
+                    file = os.path.join(output_dir, filename)
+                    if os.path.isfile(file):
+                        os.remove(file)
+
+                self.model.save_checkpoint(output_dir) # wrapped model

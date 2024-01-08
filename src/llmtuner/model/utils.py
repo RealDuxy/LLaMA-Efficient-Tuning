@@ -1,17 +1,16 @@
 import torch
 import inspect
-from typing import TYPE_CHECKING, Any, Dict, List, Optional, Set, Tuple
-
+from typing import TYPE_CHECKING, Any, Dict, List
+from transformers import PreTrainedModel
 from transformers.utils import cached_file
 from transformers.trainer import WEIGHTS_NAME, SAFE_WEIGHTS_NAME
 
-from llmtuner.extras.constants import LAYERNORM_NAMES
 from llmtuner.extras.logging import get_logger
-from llmtuner.hparams import ModelArguments, FinetuningArguments
+from llmtuner.extras.misc import get_current_device
 
 if TYPE_CHECKING:
-    from transformers.modeling_utils import PreTrainedModel
-    from llmtuner.hparams import DataArguments
+    from transformers import PretrainedConfig, PreTrainedTokenizer
+    from llmtuner.hparams import ModelArguments, DataArguments, FinetuningArguments
 
 
 logger = get_logger(__name__)
@@ -19,41 +18,48 @@ logger = get_logger(__name__)
 
 def dispatch_model(model: "PreTrainedModel") -> "PreTrainedModel":
     r"""
-    Dispatches a pre-trained model to GPUs with balanced memory.
-    Borrowed from: https://github.com/huggingface/transformers/blob/v4.31.0/src/transformers/modeling_utils.py#L2803
+    Dispatches a pre-trained model to GPUs with balanced memory when the GPU is available.
+    Borrowed from: https://github.com/huggingface/transformers/blob/v4.36.2/src/transformers/modeling_utils.py#L3570
     """
-    if getattr(model, "is_loaded_in_8bit", False) or getattr(model, "is_loaded_in_4bit", False): # do nothing
+    if getattr(model, "quantization_method", None): # already set on current device
         return model
 
-    if torch.cuda.device_count() > 1:
+    if (
+        torch.cuda.device_count() > 1
+        and isinstance(model, PreTrainedModel)
+        and getattr(model.config, "model_type", None) != "chatglm"
+    ):
         from accelerate import dispatch_model
         from accelerate.utils import infer_auto_device_map, get_balanced_memory
 
-        if model._no_split_modules is None:
+        if getattr(model, "_no_split_modules", None) is None:
             raise ValueError("The model class needs to implement the `_no_split_modules` attribute.")
 
-        kwargs = {"dtype": model.dtype, "no_split_module_classes": model._no_split_modules}
+        kwargs = {"dtype": model.dtype, "no_split_module_classes": model._get_no_split_modules("auto")}
         max_memory = get_balanced_memory(model, **kwargs)
         # Make sure tied weights are tied before creating the device map.
         model.tie_weights()
         device_map = infer_auto_device_map(model, max_memory=max_memory, **kwargs)
-        return dispatch_model(model, device_map)
+        device_map_kwargs = {"device_map": device_map}
+        if "skip_keys" in inspect.signature(dispatch_model).parameters:
+            device_map_kwargs["skip_keys"] = model._skip_keys_device_placement
+        return dispatch_model(model, **device_map_kwargs)
     else:
-        return model.cuda()
+        return model.to(device=get_current_device())
 
 
-def find_all_linear_modules(
-    model: "PreTrainedModel",
-    quantization_bit: Optional[int] = None
-) -> List[str]:
+def find_all_linear_modules(model: "PreTrainedModel") -> List[str]:
     r"""
     Finds all available modules to apply lora.
     """
-    if quantization_bit is not None:
-        import bitsandbytes as bnb
-        linear_cls = bnb.nn.Linear4bit if quantization_bit == 4 else bnb.nn.Linear8bitLt
-    else:
+    quantization_method = getattr(model, "quantization_method", None)
+    if quantization_method is None:
         linear_cls = torch.nn.Linear
+    elif quantization_method == "bitsandbytes":
+        import bitsandbytes as bnb
+        linear_cls = bnb.nn.Linear4bit if getattr(model, "is_loaded_in_4bit", False) else bnb.nn.Linear8bitLt
+    else:
+        raise ValueError("Finding linear modules for {} models is not supported.".format(quantization_method))
 
     output_layer_names = ["lm_head"]
     if model.config.model_type == "chatglm":
@@ -85,10 +91,7 @@ def get_modelcard_args(
     }
 
 
-def load_valuehead_params(
-    path_or_repo_id: str,
-    model_args: "ModelArguments"
-) -> Dict[str, torch.Tensor]:
+def load_valuehead_params(path_or_repo_id: str, model_args: "ModelArguments") -> Dict[str, torch.Tensor]:
     r"""
     Loads value head parameters from Hugging Face Hub or local disk.
 
@@ -96,21 +99,9 @@ def load_valuehead_params(
     """
     kwargs = {
         "path_or_repo_id": path_or_repo_id,
-        "cache_dir": model_args.cache_dir
+        "cache_dir": model_args.cache_dir,
+        "token": model_args.hf_hub_token
     }
-
-    if "token" in inspect.signature(cached_file).parameters:
-        kwargs["token"] = model_args.hf_hub_token
-    elif "use_auth_token" in inspect.signature(cached_file).parameters: # for transformers==4.31.0
-        kwargs["use_auth_token"] = model_args.hf_hub_token
-    else:
-        logger.warning("Ignore `hf_hub_token` since matched parameter is not found.")
-
-    try:
-        vhead_file = cached_file(filename=WEIGHTS_NAME, **kwargs)
-        return torch.load(vhead_file, map_location="cpu")
-    except Exception as err:
-        logger.info("Failed to load {}: {}".format(WEIGHTS_NAME, str(err)))
 
     try:
         from safetensors import safe_open
@@ -123,61 +114,20 @@ def load_valuehead_params(
     except Exception as err:
         logger.info("Failed to load {}: {}".format(SAFE_WEIGHTS_NAME, str(err)))
 
+    try:
+        vhead_file = cached_file(filename=WEIGHTS_NAME, **kwargs)
+        return torch.load(vhead_file, map_location="cpu")
+    except Exception as err:
+        logger.info("Failed to load {}: {}".format(WEIGHTS_NAME, str(err)))
+
     logger.warning("Provided path ({}) does not contain valuehead weights.".format(path_or_repo_id))
     return None
 
 
-def prepare_model_for_training(
-    model: "PreTrainedModel",
-    finetuning_args: "FinetuningArguments",
-    output_layer_name: Optional[str] = "lm_head",
-    use_gradient_checkpointing: Optional[bool] = True,
-    layernorm_names: Optional[Set[str]] = LAYERNORM_NAMES
-) -> "PreTrainedModel":
-    r"""
-    Includes:
-        (1) cast the layernorm in fp32
-        (2) make output embedding layer require grads
-        (3) upcast the lm_head to fp32
-    Inspired by: https://github.com/huggingface/peft/blob/v0.2.0/src/peft/utils/other.py#L33
-    """
-    if finetuning_args.upcast_layernorm:
-        for name, param in model.named_parameters():
-            if param.ndim == 1 and any(ln_name in name for ln_name in layernorm_names):
-                param.data = param.data.to(torch.float32)
-        logger.info("Upcasting weights in layernorm in float32.")
-
-    if finetuning_args.neft_alpha > 1e-6:
-        def neftune_forward_hook(module: torch.nn.Module, args: Tuple[torch.Tensor], output: torch.Tensor):
-            if module.training:
-                dims = torch.tensor(output.size(1) * output.size(2))
-                mag_norm = finetuning_args.neft_alpha / torch.sqrt(dims)
-                output = output + torch.zeros_like(output).uniform_(-mag_norm, mag_norm)
-            return output
-
-        model.get_input_embeddings().register_forward_hook(neftune_forward_hook)
-        logger.info("Using noisy embedding with alpha={:.2f}".format(finetuning_args.neft_alpha))
-
-    if use_gradient_checkpointing and getattr(model, "supports_gradient_checkpointing", False):
-        if hasattr(model, "enable_input_require_grads"):
-            model.enable_input_require_grads()
-        else:
-            def make_inputs_require_grad(module: torch.nn.Module, args: Tuple[torch.Tensor], output: torch.Tensor):
-                output.requires_grad_(True)
-            model.get_input_embeddings().register_forward_hook(make_inputs_require_grad)
-
-        model.gradient_checkpointing_enable()
-        model.config.use_cache = False # turn off when gradient checkpointing is enabled
-        logger.info("Gradient checkpointing enabled.")
-
-    if finetuning_args.finetuning_type != "full" and hasattr(model, output_layer_name):
-        output_layer = getattr(model, output_layer_name)
-        if isinstance(output_layer, torch.nn.Linear):
-            def fp32_forward_pre_hook(module: torch.nn.Module, args: Tuple[torch.Tensor]):
-                return args[0].to(output_layer.weight.dtype)
-            def fp32_forward_post_hook(module: torch.nn.Module, args: Tuple[torch.Tensor], output: torch.Tensor):
-                return output.to(torch.float32)
-            output_layer.register_forward_pre_hook(fp32_forward_pre_hook)
-            output_layer.register_forward_hook(fp32_forward_post_hook)
-
-    return model
+def register_autoclass(config: "PretrainedConfig", model: "PreTrainedModel", tokenizer: "PreTrainedTokenizer"):
+    if "AutoConfig" in getattr(config, "auto_map", {}):
+        config.__class__.register_for_auto_class()
+    if "AutoModelForCausalLM" in getattr(config, "auto_map", {}):
+        model.__class__.register_for_auto_class()
+    if "AutoTokenizer" in tokenizer.init_kwargs.get("auto_map", {}):
+        tokenizer.__class__.register_for_auto_class()

@@ -1,32 +1,27 @@
 import os
 import json
 import gradio as gr
+from collections import defaultdict
 from typing import Any, Dict, Optional
-from transformers.utils import (
-    WEIGHTS_NAME,
-    WEIGHTS_INDEX_NAME,
-    SAFE_WEIGHTS_NAME,
-    SAFE_WEIGHTS_INDEX_NAME,
-    ADAPTER_WEIGHTS_NAME,
-    ADAPTER_SAFE_WEIGHTS_NAME
+from peft.utils import WEIGHTS_NAME, SAFETENSORS_WEIGHTS_NAME
+
+from llmtuner.extras.constants import (
+    DEFAULT_MODULE,
+    DEFAULT_TEMPLATE,
+    PEFT_METHODS,
+    SUPPORTED_MODELS,
+    TRAINING_STAGES,
+    DownloadSource
 )
+from llmtuner.extras.misc import use_modelscope
+from llmtuner.hparams.data_args import DATA_CONFIG
 
-from llmtuner.extras.constants import DEFAULT_MODULE, DEFAULT_TEMPLATE, SUPPORTED_MODELS, TRAINING_STAGES
 
-
+ADAPTER_NAMES = {WEIGHTS_NAME, SAFETENSORS_WEIGHTS_NAME}
 DEFAULT_CACHE_DIR = "cache"
 DEFAULT_DATA_DIR = "data"
 DEFAULT_SAVE_DIR = "saves"
 USER_CONFIG = "user.config"
-DATA_CONFIG = "dataset_info.json"
-CKPT_NAMES = [
-    WEIGHTS_NAME,
-    WEIGHTS_INDEX_NAME,
-    SAFE_WEIGHTS_NAME,
-    SAFE_WEIGHTS_INDEX_NAME,
-    ADAPTER_WEIGHTS_NAME,
-    ADAPTER_SAFE_WEIGHTS_NAME
-]
 
 
 def get_save_dir(*args) -> os.PathLike:
@@ -58,7 +53,15 @@ def save_config(lang: str, model_name: Optional[str] = None, model_path: Optiona
 
 def get_model_path(model_name: str) -> str:
     user_config = load_config()
-    return user_config["path_dict"].get(model_name, None) or SUPPORTED_MODELS.get(model_name, "")
+    path_dict: Dict[DownloadSource, str] = SUPPORTED_MODELS.get(model_name, defaultdict(str))
+    model_path = user_config["path_dict"].get(model_name, None) or path_dict.get(DownloadSource.DEFAULT, None)
+    if (
+        use_modelscope()
+        and path_dict.get(DownloadSource.MODELSCOPE)
+        and model_path == path_dict.get(DownloadSource.DEFAULT)
+    ): # replace path
+        model_path = path_dict.get(DownloadSource.MODELSCOPE)
+    return model_path
 
 
 def get_prefix(model_name: str) -> str:
@@ -75,26 +78,29 @@ def get_template(model_name: str) -> str:
     return "default"
 
 
-def list_checkpoint(model_name: str, finetuning_type: str) -> Dict[str, Any]:
-    checkpoints = []
-    if model_name:
+def list_adapters(model_name: str, finetuning_type: str) -> Dict[str, Any]:
+    if finetuning_type not in PEFT_METHODS:
+        return gr.update(value=[], choices=[], interactive=False)
+
+    adapters = []
+    if model_name and finetuning_type == "lora":
         save_dir = get_save_dir(model_name, finetuning_type)
         if save_dir and os.path.isdir(save_dir):
-            for checkpoint in os.listdir(save_dir):
+            for adapter in os.listdir(save_dir):
                 if (
-                    os.path.isdir(os.path.join(save_dir, checkpoint))
-                    and any([os.path.isfile(os.path.join(save_dir, checkpoint, name)) for name in CKPT_NAMES])
+                    os.path.isdir(os.path.join(save_dir, adapter))
+                    and any([os.path.isfile(os.path.join(save_dir, adapter, name)) for name in ADAPTER_NAMES])
                 ):
-                    checkpoints.append(checkpoint)
-    return gr.update(value=[], choices=checkpoints)
+                    adapters.append(adapter)
+    return gr.update(value=[], choices=adapters, interactive=True)
 
 
-def load_dataset_info(dataset_dir: str) -> Dict[str, Any]:
+def load_dataset_info(dataset_dir: str) -> Dict[str, Dict[str, Any]]:
     try:
         with open(os.path.join(dataset_dir, DATA_CONFIG), "r", encoding="utf-8") as f:
             return json.load(f)
-    except:
-        print("Cannot find {} in {}.".format(DATA_CONFIG, dataset_dir))
+    except Exception as err:
+        print("Cannot open {} due to {}.".format(os.path.join(dataset_dir, DATA_CONFIG), str(err)))
         return {}
 
 

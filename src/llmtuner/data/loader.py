@@ -1,9 +1,10 @@
 import os
 from typing import TYPE_CHECKING, Any, Dict, List, Union
 
-from datasets import concatenate_datasets, interleave_datasets, load_dataset
+from datasets import concatenate_datasets, interleave_datasets, load_dataset, load_from_disk
 
-from llmtuner.data.utils import checksum, EXT2TYPE
+from llmtuner.data.utils import checksum
+from llmtuner.extras.constants import FILEEXT2TYPE
 from llmtuner.extras.logging import get_logger
 
 if TYPE_CHECKING:
@@ -21,30 +22,40 @@ def get_dataset(
     max_samples = data_args.max_samples
     all_datasets: List[Union["Dataset", "IterableDataset"]] = [] # support multiple datasets
 
+    if data_args.cache_path is not None:
+        if os.path.exists(data_args.cache_path):
+            logger.warning("Loading dataset from disk will ignore other data arguments.")
+            dataset = load_from_disk(data_args.cache_path)
+            if data_args.streaming:
+                dataset = dataset.to_iterable_dataset()
+            return dataset
+        elif data_args.streaming:
+            raise ValueError("Turn off dataset streaming to save cache files.")
+
     for dataset_attr in data_args.dataset_list:
         logger.info("Loading dataset {}...".format(dataset_attr))
 
-        if dataset_attr.load_from == "hf_hub":
+        data_path, data_name, data_dir, data_files = None, None, None, None
+        if dataset_attr.load_from in ["hf_hub", "ms_hub"]:
             data_path = dataset_attr.dataset_name
             data_name = dataset_attr.subset
-            data_files = None
+            data_dir = dataset_attr.folder
         elif dataset_attr.load_from == "script":
             data_path = os.path.join(data_args.dataset_dir, dataset_attr.dataset_name)
             data_name = dataset_attr.subset
-            data_files = None
         elif dataset_attr.load_from == "file":
-            data_path, data_name = None, None
-            data_files: List[str] = []
-            if os.path.isdir(os.path.join(data_args.dataset_dir, dataset_attr.dataset_name)): # is directory
-                for file_name in os.listdir(os.path.join(data_args.dataset_dir, dataset_attr.dataset_name)):
-                    data_files.append(os.path.join(data_args.dataset_dir, dataset_attr.dataset_name, file_name))
+            data_files = []
+            local_path: str = os.path.join(data_args.dataset_dir, dataset_attr.dataset_name)
+            if os.path.isdir(local_path): # is directory
+                for file_name in os.listdir(local_path):
+                    data_files.append(os.path.join(local_path, file_name))
                     if data_path is None:
-                        data_path = EXT2TYPE.get(file_name.split(".")[-1], None)
+                        data_path = FILEEXT2TYPE.get(file_name.split(".")[-1], None)
                     else:
-                        assert data_path == EXT2TYPE.get(file_name.split(".")[-1], None), "file types are not identical."
-            elif os.path.isfile(os.path.join(data_args.dataset_dir, dataset_attr.dataset_name)): # is file
-                data_files.append(os.path.join(data_args.dataset_dir, dataset_attr.dataset_name))
-                data_path = EXT2TYPE.get(dataset_attr.dataset_name.split(".")[-1], None)
+                        assert data_path == FILEEXT2TYPE.get(file_name.split(".")[-1], None), "file types are not identical."
+            elif os.path.isfile(local_path): # is file
+                data_files.append(local_path)
+                data_path = FILEEXT2TYPE.get(local_path.split(".")[-1], None)
             else:
                 raise ValueError("File not found.")
 
@@ -53,17 +64,37 @@ def get_dataset(
         else:
             raise NotImplementedError
 
-        dataset = load_dataset(
-            path=data_path,
-            name=data_name,
-            data_files=data_files,
-            split=data_args.split,
-            cache_dir=model_args.cache_dir,
-            token=model_args.hf_hub_token,
-            streaming=(data_args.streaming and (dataset_attr.load_from != "file"))
-        )
+        if dataset_attr.load_from == "ms_hub":
+            try:
+                from modelscope import MsDataset
+                from modelscope.utils.config_ds import MS_DATASETS_CACHE
 
-        if data_args.streaming and (dataset_attr.load_from == "file"):
+                cache_dir = model_args.cache_dir or MS_DATASETS_CACHE
+                dataset = MsDataset.load(
+                    dataset_name=data_path,
+                    subset_name=data_name,
+                    data_dir=data_dir,
+                    data_files=data_files,
+                    split=data_args.split,
+                    cache_dir=cache_dir,
+                    token=model_args.ms_hub_token,
+                    use_streaming=(data_args.streaming and (dataset_attr.load_from != "file"))
+                ).to_hf_dataset()
+            except ImportError:
+                raise ImportError("Please install modelscope via `pip install modelscope -U`")
+        else:
+            dataset = load_dataset(
+                path=data_path,
+                name=data_name,
+                data_dir=data_dir,
+                data_files=data_files,
+                split=data_args.split,
+                cache_dir=model_args.cache_dir,
+                token=model_args.hf_hub_token,
+                streaming=(data_args.streaming and (dataset_attr.load_from != "file"))
+            )
+
+        if data_args.streaming and (dataset_attr.load_from == "file"): # faster than specifying streaming=True
             dataset = dataset.to_iterable_dataset() # TODO: add num shards parameter
 
         if max_samples is not None: # truncate dataset
@@ -71,8 +102,8 @@ def get_dataset(
 
         def convert_format(examples: Dict[str, List[Any]]) -> Dict[str, List[Any]]:
             # convert dataset from sharegpt format to alpaca format
-            outputs = {"prompt": [], "query": [], "response": [], "history": []}
-            for msg_list in examples[dataset_attr.messages]:
+            outputs = {"prompt": [], "query": [], "response": [], "history": [], "system": []}
+            for i, msg_list in enumerate(examples[dataset_attr.messages]):
                 msg_list = msg_list[:len(msg_list) // 2 * 2] # should be multiples of 2
                 if len(msg_list) == 0:
                     continue
@@ -95,7 +126,8 @@ def get_dataset(
                     outputs["prompt"].append(msg_pairs[-1][0])
                     outputs["query"].append("")
                     outputs["response"].append(msg_pairs[-1][1])
-                    outputs["history"].append(msg_pairs[:-1])
+                    outputs["history"].append(msg_pairs[:-1] if len(msg_pairs) > 1 else None)
+                    outputs["system"].append(examples[dataset_attr.system][i] if dataset_attr.system else "")
 
             return outputs
 
@@ -116,16 +148,9 @@ def get_dataset(
                 **kwargs
             )
         else:
-            for column_name in ["prompt", "query", "response", "history"]: # align dataset
+            for column_name in ["prompt", "query", "response", "history", "system"]: # align dataset
                 if getattr(dataset_attr, column_name) and getattr(dataset_attr, column_name) != column_name:
                     dataset = dataset.rename_column(getattr(dataset_attr, column_name), column_name)
-
-        if dataset_attr.system_prompt: # add system prompt
-            system_prompt = dataset_attr.system_prompt
-            if data_args.streaming:
-                dataset = dataset.map(lambda _: {"system": system_prompt})
-            else:
-                dataset = dataset.add_column("system", [system_prompt] * len(dataset))
 
         all_datasets.append(dataset)
 

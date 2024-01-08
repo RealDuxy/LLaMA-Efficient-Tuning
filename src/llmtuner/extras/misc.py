@@ -1,28 +1,24 @@
 import gc
 import os
-import sys
 import torch
-from typing import TYPE_CHECKING, Any, Dict, Optional, Tuple
+from typing import TYPE_CHECKING, Tuple
 from transformers import InfNanRemoveLogitsProcessor, LogitsProcessorList
+from transformers.utils import (
+    is_torch_bf16_gpu_available,
+    is_torch_cuda_available,
+    is_torch_npu_available,
+    is_torch_xpu_available
+)
 
+_is_fp16_available = is_torch_npu_available() or is_torch_cuda_available()
 try:
-    from transformers.utils import (
-        is_torch_bf16_cpu_available,
-        is_torch_bf16_gpu_available,
-        is_torch_cuda_available,
-        is_torch_npu_available
-    )
-    _is_fp16_available = is_torch_npu_available() or is_torch_cuda_available()
-    _is_bf16_available = is_torch_bf16_gpu_available() or is_torch_bf16_cpu_available()
-except ImportError:
-    _is_fp16_available = torch.cuda.is_available()
-    try:
-        _is_bf16_available = torch.cuda.is_bf16_supported()
-    except:
-        _is_bf16_available = False
+    _is_bf16_available = is_torch_bf16_gpu_available()
+except:
+    _is_bf16_available = False
+
 
 if TYPE_CHECKING:
-    from transformers import HfArgumentParser
+    from llmtuner.hparams import ModelArguments
 
 
 class AverageMeter:
@@ -67,13 +63,20 @@ def count_parameters(model: torch.nn.Module) -> Tuple[int, int]:
     return trainable_params, all_param
 
 
-def get_current_device() -> str:
-    import accelerate
-    dummy_accelerator = accelerate.Accelerator()
-    if accelerate.utils.is_xpu_available():
-        return "xpu:{}".format(dummy_accelerator.local_process_index)
+def get_current_device() -> torch.device:
+    r"""
+    Gets the current available device.
+    """
+    if is_torch_xpu_available():
+        device = "xpu:{}".format(os.environ.get("LOCAL_RANK", "0"))
+    elif is_torch_npu_available():
+        device = "npu:{}".format(os.environ.get("LOCAL_RANK", "0"))
+    elif is_torch_cuda_available():
+        device = "cuda:{}".format(os.environ.get("LOCAL_RANK", "0"))
     else:
-        return dummy_accelerator.local_process_index if torch.cuda.is_available() else "cpu"
+        device = "cpu"
+
+    return torch.device(device)
 
 
 def get_logits_processor() -> "LogitsProcessorList":
@@ -97,17 +100,6 @@ def infer_optim_dtype(model_dtype: torch.dtype) -> torch.dtype:
         return torch.float32
 
 
-def parse_args(parser: "HfArgumentParser", args: Optional[Dict[str, Any]] = None) -> Tuple[Any]:
-    if args is not None:
-        return parser.parse_dict(args)
-    elif len(sys.argv) == 2 and sys.argv[1].endswith(".yaml"):
-        return parser.parse_yaml_file(os.path.abspath(sys.argv[1]))
-    elif len(sys.argv) == 2 and sys.argv[1].endswith(".json"):
-        return parser.parse_json_file(os.path.abspath(sys.argv[1]))
-    else:
-        return parser.parse_args_into_dataclasses()
-
-
 def torch_gc() -> None:
     r"""
     Collects GPU memory.
@@ -116,3 +108,23 @@ def torch_gc() -> None:
     if torch.cuda.is_available():
         torch.cuda.empty_cache()
         torch.cuda.ipc_collect()
+
+
+def try_download_model_from_ms(model_args: "ModelArguments") -> None:
+    if not use_modelscope() or os.path.exists(model_args.model_name_or_path):
+        return
+
+    try:
+        from modelscope import snapshot_download
+        revision = "master" if model_args.model_revision == "main" else model_args.model_revision
+        model_args.model_name_or_path = snapshot_download(
+            model_args.model_name_or_path,
+            revision=revision,
+            cache_dir=model_args.cache_dir
+        )
+    except ImportError:
+        raise ImportError("Please install modelscope via `pip install modelscope -U`")
+
+
+def use_modelscope() -> bool:
+    return bool(int(os.environ.get("USE_MODELSCOPE_HUB", "0")))
