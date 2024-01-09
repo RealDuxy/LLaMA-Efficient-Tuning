@@ -20,6 +20,7 @@ def get_dataset(
     data_args: "DataArguments"
 ) -> Union["Dataset", "IterableDataset"]:
     max_samples = data_args.max_samples
+    sample_ratio = data_args.sample_ratio
     all_datasets: List[Union["Dataset", "IterableDataset"]] = [] # support multiple datasets
 
     if data_args.cache_path is not None:
@@ -32,7 +33,7 @@ def get_dataset(
         elif data_args.streaming:
             raise ValueError("Turn off dataset streaming to save cache files.")
 
-    for dataset_attr in data_args.dataset_list:
+    for i, dataset_attr in enumerate(data_args.dataset_list):
         logger.info("Loading dataset {}...".format(dataset_attr))
 
         data_path, data_name, data_dir, data_files = None, None, None, None
@@ -99,6 +100,12 @@ def get_dataset(
 
         if max_samples is not None: # truncate dataset
             dataset = dataset.select(range(min(len(dataset), max_samples)))
+
+        if sample_ratio is not None: # sample dataset
+            ratios = [float(ratio) for ratio in sample_ratio.split(",")]
+            sample_num = int(len(dataset) * ratios[i])
+            dataset = dataset.select(range(sample_num))
+            logger.info(f"Loading {ratios[i]*100}% of dataset, which is {sample_num} samples")
 
         def convert_format(examples: Dict[str, List[Any]]) -> Dict[str, List[Any]]:
             # convert dataset from sharegpt format to alpaca format

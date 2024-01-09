@@ -96,6 +96,10 @@ class DataArguments:
         default=None,
         metadata={"help": "For debugging purposes, truncate the number of examples for each dataset."}
     )
+    sample_ratio: Optional[str] = field(
+        default=None,
+        metadata={"help": "sample the ratio of examples for each dataset."}
+    )
     eval_num_beams: Optional[int] = field(
         default=None,
         metadata={"help": "Number of beams to use for evaluation. This argument will be passed to `model.generate`"}
