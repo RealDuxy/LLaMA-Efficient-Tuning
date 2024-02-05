@@ -1,29 +1,29 @@
+import logging
 import os
 import time
-import logging
-import gradio as gr
 from threading import Thread
-from gradio.components import Component # cannot use TYPE_CHECKING here
 from typing import TYPE_CHECKING, Any, Dict, Generator, Optional, Tuple
 
+import gradio as gr
 import transformers
+from gradio.components import Component  # cannot use TYPE_CHECKING here
 from transformers.trainer import TRAINING_ARGS_NAME
 
-from llmtuner.extras.callbacks import LogCallback
-from llmtuner.extras.constants import TRAINING_STAGES
-from llmtuner.extras.logging import LoggerHandler
-from llmtuner.extras.misc import torch_gc
-from llmtuner.train import run_exp
-from llmtuner.webui.common import get_module, get_save_dir, load_config
-from llmtuner.webui.locales import ALERTS
-from llmtuner.webui.utils import gen_cmd, get_eval_results, update_process_bar
+from ..extras.callbacks import LogCallback
+from ..extras.constants import TRAINING_STAGES
+from ..extras.logging import LoggerHandler
+from ..extras.misc import get_device_count, torch_gc
+from ..train import run_exp
+from .common import get_module, get_save_dir, load_config
+from .locales import ALERTS
+from .utils import gen_cmd, get_eval_results, update_process_bar
+
 
 if TYPE_CHECKING:
-    from llmtuner.webui.manager import Manager
+    from .manager import Manager
 
 
 class Runner:
-
     def __init__(self, manager: "Manager", demo_mode: Optional[bool] = False) -> None:
         self.manager = manager
         self.demo_mode = demo_mode
@@ -67,6 +67,9 @@ class Runner:
         if self.demo_mode and (not from_preview):
             return ALERTS["err_demo"][lang]
 
+        if not from_preview and get_device_count() > 1:
+            return ALERTS["err_device_count"][lang]
+
         self.aborted = False
         self.logger_handler.reset()
         self.trainer_callback = LogCallback(self)
@@ -87,9 +90,12 @@ class Runner:
         user_config = load_config()
 
         if get("top.adapter_path"):
-            adapter_name_or_path = ",".join([
-                get_save_dir(get("top.model_name"), get("top.finetuning_type"), adapter)
-            for adapter in get("top.adapter_path")])
+            adapter_name_or_path = ",".join(
+                [
+                    get_save_dir(get("top.model_name"), get("top.finetuning_type"), adapter)
+                    for adapter in get("top.adapter_path")
+                ]
+            )
         else:
             adapter_name_or_path = None
 
@@ -118,21 +124,22 @@ class Runner:
             logging_steps=get("train.logging_steps"),
             save_steps=get("train.save_steps"),
             warmup_steps=get("train.warmup_steps"),
-            neftune_noise_alpha=get("train.neftune_alpha"),
-            train_on_prompt=get("train.train_on_prompt"),
+            neftune_noise_alpha=get("train.neftune_alpha") or None,
+            sft_packing=get("train.sft_packing"),
             upcast_layernorm=get("train.upcast_layernorm"),
             lora_rank=get("train.lora_rank"),
             lora_dropout=get("train.lora_dropout"),
             lora_target=get("train.lora_target") or get_module(get("top.model_name")),
-            additional_target=get("train.additional_target") if get("train.additional_target") else None,
+            additional_target=get("train.additional_target") or None,
             create_new_adapter=get("train.create_new_adapter"),
-            output_dir=get_save_dir(get("top.model_name"), get("top.finetuning_type"), get("train.output_dir"))
+            output_dir=get_save_dir(get("top.model_name"), get("top.finetuning_type"), get("train.output_dir")),
+            fp16=(get("train.compute_type") == "fp16"),
+            bf16=(get("train.compute_type") == "bf16"),
         )
-        args[get("train.compute_type")] = True
         args["disable_tqdm"] = True
 
         if TRAINING_STAGES[get("train.training_stage")] in ["rm", "ppo", "dpo"]:
-            args["create_new_adapter"] = (args["quantization_bit"] is None)
+            args["create_new_adapter"] = args["quantization_bit"] is None
 
         if args["stage"] == "ppo":
             args["reward_model"] = get_save_dir(
@@ -142,6 +149,7 @@ class Runner:
 
         if args["stage"] == "dpo":
             args["dpo_beta"] = get("train.dpo_beta")
+            args["dpo_ftx"] = get("train.dpo_ftx")
 
         if get("train.val_size") > 1e-6 and args["stage"] != "ppo":
             args["val_size"] = get("train.val_size")
@@ -156,15 +164,17 @@ class Runner:
         user_config = load_config()
 
         if get("top.adapter_path"):
-            adapter_name_or_path = ",".join([
-                get_save_dir(get("top.model_name"), get("top.finetuning_type"), adapter)
-            for adapter in get("top.adapter_path")])
+            adapter_name_or_path = ",".join(
+                [
+                    get_save_dir(get("top.model_name"), get("top.finetuning_type"), adapter)
+                    for adapter in get("top.adapter_path")
+                ]
+            )
         else:
             adapter_name_or_path = None
 
         args = dict(
             stage="sft",
-            do_eval=True,
             model_name_or_path=get("top.model_path"),
             adapter_name_or_path=adapter_name_or_path,
             cache_dir=user_config.get("cache_dir", None),
@@ -183,16 +193,19 @@ class Runner:
             max_new_tokens=get("eval.max_new_tokens"),
             top_p=get("eval.top_p"),
             temperature=get("eval.temperature"),
-            output_dir=get_save_dir(get("top.model_name"), get("top.finetuning_type"), get("eval.output_dir"))
+            output_dir=get_save_dir(get("top.model_name"), get("top.finetuning_type"), get("eval.output_dir")),
         )
 
         if get("eval.predict"):
-            args.pop("do_eval", None)
             args["do_predict"] = True
+        else:
+            args["do_eval"] = True
 
         return args
 
-    def _preview(self, data: Dict[Component, Any], do_train: bool) -> Generator[Tuple[str, Dict[str, Any]], None, None]:
+    def _preview(
+        self, data: Dict[Component, Any], do_train: bool
+    ) -> Generator[Tuple[str, Dict[str, Any]], None, None]:
         error = self._initialize(data, do_train, from_preview=True)
         if error:
             gr.Warning(error)
@@ -230,9 +243,11 @@ class Runner:
         get = lambda name: self.running_data[self.manager.get_elem_by_name(name)]
         self.running = True
         lang = get("top.lang")
-        output_dir = get_save_dir(get("top.model_name"), get("top.finetuning_type"), get(
-            "{}.output_dir".format("train" if self.do_train else "eval")
-        ))
+        output_dir = get_save_dir(
+            get("top.model_name"),
+            get("top.finetuning_type"),
+            get("{}.output_dir".format("train" if self.do_train else "eval")),
+        )
 
         while self.thread.is_alive():
             time.sleep(2)

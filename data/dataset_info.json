@@ -57,7 +57,7 @@
   },
   "alpaca_zh": {
     "file_name": "alpaca_data_zh_51k.json",
-    "file_sha1": "e655af3db557a4197f7b0cf92e1986b08fae6311"
+    "file_sha1": "0016a4df88f523aad8dc004ada7575896824a0dc"
   },
   "alpaca_gpt4_en": {
     "file_name": "alpaca_gpt4_data_en.json",
@@ -99,6 +99,15 @@
       "query": "input",
       "response": "output",
       "history": "history"
+    }
+  },
+  "glaive_toolcall": {
+    "file_name": "glaive_toolcall_10k.json",
+    "file_sha1": "a6917b85d209df98d31fdecb253c79ebc440f6f3",
+    "formatting": "sharegpt",
+    "columns": {
+      "messages": "conversations",
+      "tools": "tools"
     }
   },
   "example": {
@@ -217,9 +226,13 @@
     "hf_hub_url": "HuggingFaceH4/ultrachat_200k",
     "ms_hub_url": "AI-ModelScope/ultrachat_200k",
     "columns": {
-      "messages": "messages",
-      "role": "role",
-      "content": "content"
+      "messages": "messages"
+    },
+    "tags": {
+      "role_tag": "role",
+      "content_tag": "content",
+      "user_tag": "human",
+      "assistant_tag": "assistant"
     },
     "formatting": "sharegpt"
   },
@@ -232,9 +245,13 @@
     "hf_hub_url": "lmsys/lmsys-chat-1m",
     "ms_hub_url": "AI-ModelScope/lmsys-chat-1m",
     "columns": {
-      "messages": "conversation",
-      "role": "role",
-      "content": "content"
+      "messages": "conversation"
+    },
+    "tags": {
+      "role_tag": "role",
+      "content_tag": "content",
+      "user_tag": "human",
+      "assistant_tag": "assistant"
     },
     "formatting": "sharegpt"
   },
