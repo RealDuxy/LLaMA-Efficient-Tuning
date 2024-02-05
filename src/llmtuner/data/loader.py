@@ -107,6 +107,16 @@ def load_single_dataset(
         num_samples = min(data_args.max_samples, len(dataset))
         dataset = dataset.select(range(num_samples))
 
+    # if data_args.sample_ratio is not None: # sample dataset
+    #     ratios = [float(ratio) for ratio in data_args.sample_ratio.split(",")]
+    #     sample_num = int(len(dataset) * ratios[i])
+    #     dataset = dataset.select(range(sample_num))
+    #     logger.info(f"Loading {ratios[i]*100}% of dataset, which is {sample_num} samples")
+    #
+    #     num_samples = int(data_args.sample_ratio * len(dataset))
+    #     dataset = dataset.select(range(num_samples))
+
+
     return align_dataset(dataset, dataset_attr, data_args)
 
 

@@ -1,13 +1,14 @@
 #!/bin/bash
 
-#accelerate config # 首先配置分布式环境
+# This is multi-task learning with mixed training data in one-step training.
+
+#accelerate config #
 
 CUDA_VISIBLE_DEVICES=0 python  ../src/train_bash.py \
     --stage sft \
     --do_train \
     --template chatglm3 \
-    --dataset askbob_qa \
-    --sample_ratio 1 \
+    --dataset askbob_qa,  \
     --dataset_dir ../data \
     --finetuning_type lora \
     --output_dir ../checkpoints/0201_stage1_spec_ft \

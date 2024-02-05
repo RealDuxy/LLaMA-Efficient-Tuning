@@ -217,6 +217,10 @@
     "hf_hub_url": "totally-not-an-llm/sharegpt-hyperfiltered-3k",
     "formatting": "sharegpt"
   },
+  "sharegpt4_zh_only": {
+    "hf_hub_url": "larryvrh/ShareGPT-Zh_Only",
+    "formatting": "sharegpt"
+  },
   "sharegpt4": {
     "hf_hub_url": "shibing624/sharegpt_gpt4",
     "ms_hub_url": "AI-ModelScope/sharegpt_gpt4",
