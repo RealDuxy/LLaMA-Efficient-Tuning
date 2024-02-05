@@ -17,7 +17,7 @@ CUDA_VISIBLE_DEVICES=0 python src/train_bash.py \
 
 #accelerate launch src/train_bash.py \
 #    --stage sft \
-#    --model_name_or_path THUDM/chatglm3-6b \
+#    --model_name_or_path THUDM/chatglm \
 #    --do_predict \
 #    --dataset alpaca_gpt4_zh \
 #    --template chatglm3 \
@@ -27,7 +27,7 @@ CUDA_VISIBLE_DEVICES=0 python src/train_bash.py \
 
 #accelerate launch src/train_bash.py \
 #    --stage sft \
-#    --model_name_or_path THUDM/chatglm3-6b \
+#    --model_name_or_path THUDM/chatglm \
 #    --do_predict \
 #    --dataset sharegpt_zh \
 #    --template chatglm3 \
