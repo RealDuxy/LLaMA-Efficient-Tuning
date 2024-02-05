@@ -19,7 +19,7 @@ CUDA_VISIBLE_DEVICES=0 python  ../src/train_bash.py \
     --lora_alpha 32 \
     --lora_target all \
     --logging_steps 10 \
-    --save_steps 1375 \
+    --save_steps 1390 \
     --learning_rate 2e-5 \
     --num_train_epochs 3.0 \
     --plot_loss \
@@ -27,5 +27,5 @@ CUDA_VISIBLE_DEVICES=0 python  ../src/train_bash.py \
     --cutoff_len 1700  \
     --reserved_label_len 700  \
     --bf16  \
-    --model_name_or_path /root/autodl-tmp/chatglm3-6b \
+    --model_name_or_path ../chatglm3-6b \
     --neftune_noise_alpha 5 \

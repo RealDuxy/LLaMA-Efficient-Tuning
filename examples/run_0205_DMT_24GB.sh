@@ -21,7 +21,7 @@ CUDA_VISIBLE_DEVICES=0 python  ../src/train_bash.py \
     --lora_alpha 32 \
     --lora_target all \
     --logging_steps 10 \
-    --save_steps 372 \
+    --save_steps 186 \
     --learning_rate 2e-5 \
     --num_train_epochs 3.0 \
     --plot_loss \

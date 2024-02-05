@@ -218,7 +218,7 @@
     "formatting": "sharegpt"
   },
   "sharegpt_zh_38k": {
-    "file_name": "sharegpt_zh_38k.json",
+    "hf_hub_url": "FreedomIntelligence/ShareGPT-CN",
     "formatting": "sharegpt"
   },
   "sharegpt4": {
