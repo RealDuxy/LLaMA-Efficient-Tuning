@@ -7,15 +7,15 @@
 CUDA_VISIBLE_DEVICES=0 python  ../src/train_bash.py \
     --stage sft \
     --do_train \
-    --template chatglm3 \
-    --dataset askbob_qa,  \
+    --template chatglm3-anan \
+    --dataset askbob_qa  \
     --dataset_dir ../data \
     --finetuning_type lora \
-    --output_dir ../checkpoints/0201_stage1_spec_ft \
+    --output_dir ../checkpoints/0205_stage1_spec_ft \
     --preprocessing_num_workers 16 \
     --overwrite_cache \
     --per_device_train_batch_size 1 \
-    --gradient_accumulation_steps 16 \
+    --gradient_accumulation_steps 32 \
     --lr_scheduler_type cosine \
     --lora_rank 16 \
     --lora_alpha 32 \

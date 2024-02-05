@@ -5,7 +5,7 @@
 CUDA_VISIBLE_DEVICES=0 python  ../src/train_bash.py \
     --stage sft \
     --do_train \
-    --template chatglm3 \
+    --template chatglm3-anan \
     --dataset high_quality_qa,normal_qa,artical_interpre_qa \
     --sample_ratio
     --dataset_dir ../data \
