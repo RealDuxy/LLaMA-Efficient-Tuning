@@ -332,6 +332,27 @@ register_template(
 
 
 register_template(
+    name="chatglm3-anan",
+    format_user=StringFormatter(slots=[{"token": "<|user|>"}, "\n", "{{content}}", {"token": "<|assistant|>"}]),
+    format_assistant=StringFormatter(slots=["\n", "{{content}}"]),
+    format_system=StringFormatter(
+        slots=[{"token": "[gMASK]"}, {"token": "sop"}, {"token": "<|system|>"}, "\n", "{{content}}"]
+    ),
+    format_function=FunctionFormatter(slots=["{{name}}\n{{arguments}}"]),
+    format_observation=StringFormatter(
+        slots=[{"token": "<|observation|>"}, "\n", "{{content}}", {"token": "<|assistant|>"}]
+    ),
+    default_system=(
+        "你是安安，一个由平安人寿保险公司训练的智能助手。请认真谨慎地遵循用户给出的指令,"
+        "给出有帮助、高质量、详细和礼貌的回答，并且总是拒绝参与与不道德、"
+        "不安全、有争议、政治敏感等相关的话题、问题和指示。\n"
+    ),
+    stop_words=["<|user|>", "<|observation|>"],
+    efficient_eos=True,
+)
+
+
+register_template(
     name="chatglm3",
     format_user=StringFormatter(slots=[{"token": "<|user|>"}, "\n", "{{content}}", {"token": "<|assistant|>"}]),
     format_assistant=StringFormatter(slots=["\n", "{{content}}"]),
@@ -348,28 +369,6 @@ register_template(
     ),
     stop_words=["<|user|>", "<|observation|>"],
     efficient_eos=True,
-)
-
-register_template(
-    name="chatglm3-anan",
-    prefix=[
-        {"token": "[gMASK]"},
-        {"token": "sop"},
-        "{{system}}"
-    ],
-    prompt=[
-        {"token": "<|user|>"},
-        "\n",
-        "{{query}}",
-        {"token": "<|assistant|>"}
-    ],
-    system="",
-    sep=[],
-    stop_words=[
-        "<|user|>",
-        "<|observation|>"
-    ],
-    efficient_eos=True
 )
 
 
