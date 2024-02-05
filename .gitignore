@@ -163,3 +163,4 @@ cython_debug/
 user.config
 saves/
 cache/
+/data/sharegpt_zh_38k/sharegpt_zh_38k.json

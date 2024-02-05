@@ -218,17 +218,8 @@
     "formatting": "sharegpt"
   },
   "sharegpt_zh_38k": {
-    "file_name": "sharegpt_zh_38k.jsonl",
-    "formatting": "sharegpt",
-    "columns": {
-      "messages": "conversations"
-    },
-    "tags": {
-      "role_tag": "from",
-      "content_tag": "value",
-      "user_tag": "human",
-      "assistant_tag": "gpt"
-    }
+    "file_name": "sharegpt_zh_38k.json",
+    "formatting": "sharegpt"
   },
   "sharegpt4": {
     "hf_hub_url": "shibing624/sharegpt_gpt4",

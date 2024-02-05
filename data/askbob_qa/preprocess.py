@@ -119,6 +119,8 @@ def preprocess_askbob_data(file_name, replace_slash=False, shuffle_context=True)
     docs_nums = []
     tokenized_input_data_lens = []
     tokenized_source_data_lens = []
+    max_input_data_length = 0
+    max_output_data_length = 0
     with open(file_name, "r", encoding="utf-8") as f:
         data_list = json.load(f)
         random.shuffle(data_list)
@@ -149,17 +151,23 @@ def preprocess_askbob_data(file_name, replace_slash=False, shuffle_context=True)
             prompt = generate_answer_prompt.replace("{query}", query_for_training.strip()).replace("{context}",
                                                                                                    context_str.strip())
 
-            if (tokenized_source_data_len := len(tokenizer(prompt, output).input_ids)) >= 2048:
-                tokenized_input_data_len = len(tokenizer(prompt).input_ids)
+            tokenized_input_data_len = len(tokenizer(prompt).input_ids)
+            tokenized_source_data_len = len(tokenizer(prompt, output).input_ids)
+            tokenized_output_data_len = tokenized_source_data_len - tokenized_input_data_len
+
+            if tokenized_source_data_len >= 2048:
                 print(f"\ninput_len: {tokenized_input_data_len}")
-                print(f"source_len: {tokenized_source_data_len}")
+                print(f"output_len: {tokenized_output_data_len}")
                 # human_feedback_flag = input("keep? y/n:")
                 human_feedback_flag = "n"
                 if human_feedback_flag == "n":
                     continue
 
-            tokenized_input_data_lens.append(len(tokenizer(prompt).input_ids))
-            tokenized_source_data_lens.append(len(tokenizer(prompt, output).input_ids))
+            max_input_data_length = max(max_input_data_length, tokenized_input_data_len)
+            max_output_data_length = max(max_output_data_length, tokenized_output_data_len)
+
+            tokenized_input_data_lens.append(tokenized_input_data_len)
+            tokenized_source_data_lens.append(tokenized_source_data_len)
 
             if i <= train_nums:
                 train_datas.append({
@@ -180,6 +188,8 @@ def preprocess_askbob_data(file_name, replace_slash=False, shuffle_context=True)
 
     print(f"Loaded train: {len(train_datas)}")
     print(f"Loaded dev: {len(dev_datas)}")
+    print(f"max input: {max_input_data_length}")
+    print(f"max output: {max_output_data_length}")
 
     x = pd.DataFrame(docs_nums).describe(percentiles=[0.1, 0.25, 0.5, 0.75, 0.8, 0.95])
     y = pd.DataFrame(tokenized_input_data_lens).describe(percentiles=[0.1, 0.25, 0.5, 0.75, 0.8, 0.95])
