@@ -10,7 +10,8 @@ _LICENSE = ""
 _URL = "./"
 
 _URLS = {
-    "train": _URL + "train_askbob.json",
+    "train": _URL + "train_askbob_0201_ft.json",
+    "dev": _URL + "dev_askbob_0201_ft.json",
 }
 
 class AskBobQADataset(datasets.GeneratorBasedBuilder):
@@ -33,16 +34,26 @@ class AskBobQADataset(datasets.GeneratorBasedBuilder):
             citation=_CITATION
         )
 
-    # def _split_generators(self, dl_manager: datasets.DownloadManager) -> List[datasets.SplitGenerator]:
-    #     file_path = dl_manager.download(_URL)
-    #     return [
-    #         datasets.SplitGenerator(
-    #             name=datasets.Split.TRAIN,
-    #             gen_kwargs={
-    #                 "filepath": file_path
-    #             }
-    #         )
-    #     ]
+    def _split_generators(self, dl_manager: datasets.DownloadManager) -> List[datasets.SplitGenerator]:
+        # 使用dl_manager.download_and_extract来下载和解压（如果需要）文件
+        downloaded_files = dl_manager.download_and_extract(_URLS)
+
+        # 返回SplitGenerator实例的列表，分别为训练集和验证集指定正确的文件路径
+        return [
+            datasets.SplitGenerator(
+                name=datasets.Split.TRAIN,
+                gen_kwargs={
+                    "filepath": downloaded_files["train"]  # 为训练集指定文件路径
+                }
+            ),
+            datasets.SplitGenerator(
+                name=datasets.Split.VALIDATION,
+                gen_kwargs={
+                    "filepath": downloaded_files["dev"]  # 为验证集指定文件路径，注意这里使用的键与_URLS中的键匹配
+                }
+            )
+        ]
+
     def _split_generators(self, dl_manager: datasets.DownloadManager):
         file_path = dl_manager.download(_URLS)
         return [

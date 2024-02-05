@@ -131,7 +131,7 @@ class MMLU(datasets.GeneratorBasedBuilder):
 
     def _split_generators(self, dl_manager):
         data_dir = dl_manager.download_and_extract(_URL)
-        task_name = self.config.name
+        task_name = self.config.logger_name
         return [
             datasets.SplitGenerator(
                 name=datasets.Split.TEST,

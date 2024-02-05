@@ -205,7 +205,7 @@ def _prepare_model_for_training(
         if not getattr(model, "supports_gradient_checkpointing", False):
             logger.warning("Current model does not support gradient checkpointing.")
         else:
-            model.enable_input_require_grads()
+            # model.enable_input_require_grads()
             model.gradient_checkpointing_enable()
             model.config.use_cache = False # turn off when gradient checkpointing is enabled
             logger.info("Gradient checkpointing enabled.")
