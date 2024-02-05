@@ -54,17 +54,6 @@ class AskBobQADataset(datasets.GeneratorBasedBuilder):
             )
         ]
 
-    def _split_generators(self, dl_manager: datasets.DownloadManager):
-        file_path = dl_manager.download(_URLS)
-        return [
-            datasets.SplitGenerator(
-                name=datasets.Split.TRAIN,
-                gen_kwargs={
-                    "filepath": file_path["train"]
-                }
-            )
-        ]
-
     def _generate_examples(self, filepath: str) -> Dict[int, Dict[str, Any]]:
         example_dataset = json.load(open(filepath, "r", encoding="utf-8"))
         for key, example in enumerate(example_dataset):
