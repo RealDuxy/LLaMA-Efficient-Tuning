@@ -25,7 +25,6 @@ CUDA_VISIBLE_DEVICES=0 python  ../src/train_bash.py \
     --plot_loss \
     --overwrite_output_dir \
     --cutoff_len 1700  \
-    --reserved_label_len 700  \
     --bf16  \
     --model_name_or_path ../chatglm3-6b \
     --neftune_noise_alpha 5 \

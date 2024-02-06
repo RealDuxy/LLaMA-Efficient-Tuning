@@ -218,7 +218,16 @@
     "formatting": "sharegpt"
   },
   "sharegpt_zh_38k": {
-    "hf_hub_url": "FreedomIntelligence/ShareGPT-CN",
+    "file_name": "sharegpt_zh_38k.json",
+    "columns": {
+      "messages": "conversations"
+    },
+    "tags": {
+      "role_tag": "from",
+      "content_tag": "value",
+      "user_tag": "human",
+      "assistant_tag": "gpt"
+    },
     "formatting": "sharegpt"
   },
   "sharegpt4": {

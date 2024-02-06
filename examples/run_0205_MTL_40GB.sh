@@ -6,7 +6,7 @@ CUDA_VISIBLE_DEVICES=0 python  ../src/train_bash.py \
     --stage sft \
     --do_train \
     --template chatglm3-anan \
-    --dataset askbob_qa,sharegpt_zh_38k \
+    --dataset askbob_qa,sharegpt_zh_38k,self_cognition \
     --dataset_dir ../data \
     --finetuning_type lora \
     --output_dir ../checkpoints/0205_mtl_ft \
@@ -19,13 +19,12 @@ CUDA_VISIBLE_DEVICES=0 python  ../src/train_bash.py \
     --lora_alpha 32 \
     --lora_target all \
     --logging_steps 10 \
-    --save_steps 2000 \
+    --save_steps 695 \
     --learning_rate 2e-5 \
     --num_train_epochs 3.0 \
     --plot_loss \
     --overwrite_output_dir \
     --cutoff_len 1700  \
-    --reserved_label_len 700  \
     --bf16  \
     --model_name_or_path /root/autodl-tmp/chatglm3-6b \
     --neftune_noise_alpha 5 \
