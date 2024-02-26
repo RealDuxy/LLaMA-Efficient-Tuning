@@ -11,7 +11,7 @@ _URL = "./"
 
 _URLS = {
     "train": _URL + "train_askbob_0201_ft.json",
-    "dev": _URL + "dev_askbob_0201_ft.json",
+    "dev": _URL + "train_askbob_0201_ft.json",
 }
 
 class AskBobQADataset(datasets.GeneratorBasedBuilder):

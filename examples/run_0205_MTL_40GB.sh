@@ -6,7 +6,7 @@ CUDA_VISIBLE_DEVICES=0 python  ../src/train_bash.py \
     --stage sft \
     --do_train \
     --template chatglm3-anan \
-    --dataset askbob_qa,sharegpt_zh_38k,self_cognition \
+    --dataset askbob_qa,sharegpt_zh_38k,self_cognition, \
     --dataset_dir ../data \
     --finetuning_type lora \
     --output_dir ../checkpoints/0205_mtl_ft \

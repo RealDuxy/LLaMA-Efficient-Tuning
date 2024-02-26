@@ -113,7 +113,7 @@ def preprocess_llm_data(file_name):
     return askbob_datas, high_quality_datas, normal_quality_datas
 
 
-def preprocess_askbob_data(file_name, replace_slash=False, shuffle_context=True):
+def preprocess_askbob_data(file_name, replace_slash=False, shuffle_context=True, dev_ratio=0.1):
     train_datas = []
     dev_datas = []
     docs_nums = []
@@ -125,7 +125,7 @@ def preprocess_askbob_data(file_name, replace_slash=False, shuffle_context=True)
         data_list = json.load(f)
         random.shuffle(data_list)
 
-        train_nums = int(len(data_list) * 0.9)
+        train_nums = int(len(data_list) * (1-dev_ratio))
 
         print(f"Load train: {train_nums} data from {file_name}")
         print(f"Load dev: {len(data_list) - train_nums} data from {file_name}")
@@ -223,10 +223,12 @@ if __name__ == '__main__':
     # json.dump(train_datas, open("train_askbob_0201_tf.json", "w"), ensure_ascii=False, indent=4)
     # json.dump(dev_datas, open("dev_askbob_0201_tf.json", "w"), ensure_ascii=False, indent=4)
 
-    train_datas, dev_datas = preprocess_askbob_data("rag_dataset_0201.json", replace_slash=False, shuffle_context=True)
+    train_datas, dev_datas = preprocess_askbob_data("rag_dataset_0201.json", replace_slash=False, shuffle_context=True, dev_ratio=0)
     print("done")
-    json.dump(train_datas, open("train_askbob_0201_ft.json", "w"), ensure_ascii=False, indent=4)
-    json.dump(dev_datas, open("dev_askbob_0201_ft.json", "w"), ensure_ascii=False, indent=4)
+    print(f"train datasets: {len(train_datas)}")
+    print(f"eval datasets: {len(dev_datas)}")
+    json.dump(train_datas, open("askbob_0222_6k.json", "w"), ensure_ascii=False, indent=4)
+    # json.dump(dev_datas, open("dev_askbob_0222_ft.json", "w"), ensure_ascii=False, indent=4)
 
     # train_datas, dev_datas = preprocess_askbob_data("rag_dataset_0201.json", replace_slash=False, shuffle_context=False)
     # print("done")
