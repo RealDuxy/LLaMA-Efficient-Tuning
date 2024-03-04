@@ -51,6 +51,28 @@
       "history": "history"
     }
   },
+  "askbob_0301_chatglm3-stage1-ckpt282-glm4_comparision": {
+    "file_name": "askbob_0301_chatglm3-stage1-ckpt282-glm4_comparision.json",
+    "columns": {
+      "system": "system",
+      "prompt": "instruction",
+      "query": "input",
+      "response": "output",
+      "history": "history"
+    },
+    "ranking": true
+  },
+  "askbob_0301_chatglm3-vanilla-glm4_comparision": {
+    "file_name": "askbob_0301_chatglm3-vanilla-glm4_comparision.json",
+    "columns": {
+      "system": "system",
+      "prompt": "instruction",
+      "query": "input",
+      "response": "output",
+      "history": "history"
+    },
+    "ranking": true
+  },
   "alpaca_en": {
     "file_name": "alpaca_data_en_52k.json",
     "file_sha1": "607f94a7f581341e59685aef32f531095232cf23"

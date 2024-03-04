@@ -230,7 +230,7 @@ def _prepare_model_for_training(
             # use_reentrant=False might increase VRAM usage (have not been empirically verified yet)
             # According to: https://github.com/huggingface/transformers/issues/28339
             model.gradient_checkpointing_enable(gradient_checkpointing_kwargs={"use_reentrant": True})
-            model.enable_input_require_grads()
+            # model.enable_input_require_grads()
             model.config.use_cache = False  # turn off when gradient checkpointing is enabled
             logger.info("Gradient checkpointing enabled.")
 
