@@ -29,7 +29,7 @@ deepspeed --num_gpus=4  ../src/train_bash.py \
     --cutoff_len 1700  \
     --bf16  \
     --model_name_or_path /root/autodl-tmp/chatglm3-6b \
-    --max_samples 100 \
+    --deepspeed ds_config.json \
 
 # exp2 dpo from sft
 deepspeed --num_gpus=4  ../src/train_bash.py \
@@ -57,4 +57,4 @@ deepspeed --num_gpus=4  ../src/train_bash.py \
     --cutoff_len 1700  \
     --bf16  \
     --model_name_or_path /root/autodl-tmp/chatglm3-6b \
-    --max_samples 100 \
+    --deepspeed ds_config.json \
