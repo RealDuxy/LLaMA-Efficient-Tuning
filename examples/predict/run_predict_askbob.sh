@@ -1,17 +1,20 @@
 #!/bin/bash
 # evaluate
+
 CUDA_VISIBLE_DEVICES=0 python  ../src/train_bash.py \
     --stage sft \
     --do_predict \
     --template chatglm3-anan \
     --dataset askbob_qa \
+    --overwrite_cache \
+    --preprocessing_num_workers 64 \
     --max_samples 7000 \
     --dataset_dir ../data \
     --output_dir  ../prediction_outputs/chatglm3_vanilla_output \
     --split validation \
     --plot_loss \
     --cutoff_len 1700  \
-    --per_device_eval_batch_size 5 \
+    --per_device_eval_batch_size 4 \
     --bf16  \
     --predict_with_generate \
     --model_name_or_path /root/autodl-tmp/chatglm3-6b \
@@ -22,11 +25,13 @@ CUDA_VISIBLE_DEVICES=0 python  ../src/train_bash.py \
     --do_predict \
     --template chatglm3-anan \
     --dataset askbob_qa \
+    --overwrite_cache \
+    --preprocessing_num_workers 64 \
     --max_samples 7000 \
     --dataset_dir ../data \
     --finetuning_type lora \
-    --adapter_name_or_path  ../checkpoints/0205_stage1_spec_ft/checkpoint-94 \
-    --output_dir  ../prediction_outputs/chatglm3_stage1_output \
+    --adapter_name_or_path  ../checkpoints/0205_stage1_spec_ft/checkpoint-282 \
+    --output_dir  ../prediction_outputs/chatglm3_stage1-ckpt282_output \
     --split validation \
     --plot_loss \
     --cutoff_len 1700  \
@@ -34,3 +39,21 @@ CUDA_VISIBLE_DEVICES=0 python  ../src/train_bash.py \
     --bf16  \
     --predict_with_generate \
     --model_name_or_path /root/autodl-tmp/chatglm3-6b \
+
+
+## evaluate
+#CUDA_VISIBLE_DEVICES=0 python  ../src/train_bash.py \
+#    --stage sft \
+#    --do_predict \
+#    --template chatglm3 \
+#    --dataset sharegpt_zh_38k \
+#    --overwrite_cache \
+#    --preprocessing_num_workers 64 \
+#    --max_samples 40000 \
+#    --dataset_dir ../data \
+#    --cutoff_len 1700  \
+#    --output_dir  ../prediction_outputs/chatglm3_sharegpt-zh-38k_output \
+#    --per_device_eval_batch_size 8 \
+#    --bf16  \
+#    --predict_with_generate \
+#    --model_name_or_path /root/autodl-tmp/chatglm3-6b \
