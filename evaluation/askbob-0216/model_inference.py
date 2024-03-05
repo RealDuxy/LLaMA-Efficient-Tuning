@@ -157,6 +157,68 @@ def run_chatglm_predict_askbob0126(model_path, tokenizer_path, post_fix, peft_pa
     save_path = data_path.replace(".", f"-{post_fix}.")
     pd.DataFrame(new_df).to_excel(save_path)
 
+def run_qwen_predict_askbob0126(model_path, tokenizer_path, post_fix, peft_path=None, data_path="askbob-0216.xlsx"):
+    from vllm_wrapper import vLLMWrapper
+
+    # 加载模型
+    tokenizer = AutoTokenizer.from_pretrained(tokenizer_path, trust_remote_code=True)  # , trust_remote_code=True
+    if "14B" in model_path:
+        model = vLLMWrapper()
+    model = AutoModel.from_pretrained(model_path, device_map="auto", trust_remote_code=True).eval()#, trust_remote_code=True
+
+
+    model = prepare_model_for_half_training(model,
+                                            use_gradient_checkpointing=False,
+                                            output_embedding_layer_name="lm_head",  # output_layer
+                                            layer_norm_names=["post_attention_layernorm",
+                                                              "final_layernorm",
+                                                              "input_layernorm",
+                                                              ])
+
+    # model.gradient_checkpointing_enable()
+    # model.enable_input_require_grads()
+    model.is_parallelizable = True
+    model.model_parallel = True
+    model.config.use_cache = True
+    if peft_path:
+        model = PeftModel.from_pretrained(model, peft_path)
+    model = model.cuda(0)
+
+    df = pd.read_excel(data_path).to_dict("records")
+
+    new_df = []
+    for line in tqdm(df):
+        question = line["评估问题"]
+        if isinstance(question, str):
+            history_prompt = eval(line["prompt"])
+            history = history_prompt["history"]
+            prompt = history_prompt["prompt"]
+            seg_prompt = prompt.split("\n\n")
+            seg_prompt[-1] = question
+            prompt = "\n\n".join(seg_prompt)
+            # output = line["评估输出"]
+            output, history = model.chat(tokenizer, prompt, history=history, temperature=0.1)
+            # output = generate_answer_from_glm4(history, prompt)
+            # line["评估输出"] = output.strip()
+
+
+            first_round_retrieval_results = line["final_retrieval_result"]
+            first_round_retrieval_results = eval(first_round_retrieval_results)[:-1]
+            context = ""
+            for x in first_round_retrieval_results:
+                context += x + "\n\n"
+            extract_type = line[type_t]
+            # output = line["评估输出"]
+            new_df.append({
+                "问题": question,
+                "引文": context,
+                "问题类型": extract_type,
+                "回答": output
+            })
+    save_path = data_path.replace(".", f"-{post_fix}.")
+    pd.DataFrame(new_df).to_excel(save_path)
+
+
 if __name__ == '__main__':
     run_chatglm_predict_askbob0126(
         model_path="/root/autodl-tmp/chatglm3-6b",
