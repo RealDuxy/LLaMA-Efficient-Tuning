@@ -24,5 +24,7 @@ def run_test1():
             output = stepback_agent.invoke(query=question)
             df[i]["输出"] = output.strip()
 
+    pd.DataFrame(df).to_excel("评估集0304_output.xlsx", index=False)
+
 if __name__ == '__main__':
     run_test1()
