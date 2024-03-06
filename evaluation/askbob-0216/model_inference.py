@@ -220,16 +220,17 @@ def run_qwen_predict_askbob0126(model_path, tokenizer_path, post_fix, peft_path=
 
 
 if __name__ == '__main__':
+    model_path = "/root/autodl-tmp/chatglm3-6b"
     run_chatglm_predict_askbob0126(
-        model_path="/root/autodl-tmp/chatglm3-6b",
-        tokenizer_path="/root/autodl-tmp/chatglm3-6b",
+        model_path=model_path,
+        tokenizer_path=model_path,
         post_fix="0304_vanilla_dpo",
         peft_path="../checkpoints/0304_vanilla_dpo"
     )
 
     run_chatglm_predict_askbob0126(
-        model_path="/root/autodl-tmp/chatglm3-6b",
-        tokenizer_path="/root/autodl-tmp/chatglm3-6b",
+        model_path=model_path,
+        tokenizer_path=model_path,
         post_fix="0304_vanilla_dpo",
         peft_path="../checkpoints/0304_vanilla_dpo"
     )
