@@ -51,6 +51,16 @@
       "history": "history"
     }
   },
+  "stepback_query_generation": {
+    "script_url": "stepback_query_generation",
+    "columns": {
+      "system": "system",
+      "prompt": "instruction",
+      "query": "input",
+      "response": "output",
+      "history": "history"
+    }
+  },
   "askbob_0301_chatglm3-stage1-ckpt282-glm4_comparision": {
     "file_name": "askbob_0301_chatglm3-stage1-ckpt282-glm4_comparision.json",
     "columns": {
