@@ -42,7 +42,7 @@ class CustomDPOTrainer(DPOTrainer):
 
         self.ref_model = ref_model
         self.beta = beta
-        self.label_smoothing = 0
+        self.label_smoothing = 0.3
         self.loss_type = loss_type
         self.ftx_gamma = ftx_gamma
         self._stored_metrics = defaultdict(lambda: defaultdict(list))

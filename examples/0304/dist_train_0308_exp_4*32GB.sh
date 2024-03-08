@@ -31,10 +31,10 @@ deepspeed --num_gpus=4  ../src/train_bash.py \
     --plot_loss \
     --overwrite_output_dir \
     --cutoff_len 1700  \
-    --bf16  \
+    --fp16 \
     --model_name_or_path /mnt/e/UbuntuFiles/models_saved/chatglm3/ \
-    --deepspeed ../examples/0304/ds_config.json \
-#
+    --deepspeed ../examples/0304/v100_ds_config.json \
+
 ## exp2 dpo from sft
 #deepspeed --num_gpus=4  ../src/train_bash.py \
 #    --stage dpo \
