@@ -317,12 +317,12 @@ if __name__ == '__main__':
     # )
 
 
-    model_path = "/mnt/d/PycharmProjects/models/chatglm3-6b"
+    model_path = "/mnt/e/UbuntuFiles/models_saved/chatglm3/"
     data_path = "../../data/askbob_qa/askbob_0222_6k.json"
     run_chatglm_predict_askbobqa_3_times(
         model_path=model_path,
         tokenizer_path=model_path,
-        post_fix="askbobqa_3_times_test",
+        post_fix="stage1_askbobqa_3_times",
         peft_path="../../checkpoints/0205_stage1_spec_ft",
         data_path=data_path
     )
