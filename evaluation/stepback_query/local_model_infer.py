@@ -1,14 +1,14 @@
-import openai
+from contextlib import nullcontext
+
 import requests
 import torch
 from peft import PeftModel
 from pydantic import BaseModel, Field
 from tenacity import wait_random_exponential, retry, stop_after_attempt
 from transformers import AutoTokenizer, AutoModelForCausalLM
-from zhipuai import ZhipuAI
 
-model_path = "/mnd/d/PycharmProjects/models/chatglm-6b/"
-peft_path = None
+model_path = "/mnt/d/PycharmProjects/models/chatglm3-6b/"
+peft_path = "../../checkpoints/stepback_query_generation"
 
 
 def load_models(model_path, peft_path):
@@ -26,17 +26,23 @@ def load_models(model_path, peft_path):
             else:
                 param.data = param.data.to(torch.half)
 
-        if use_gradient_checkpointing:
-            # For backward compatibility
-            if hasattr(model, "enable_input_require_grads"):
-                model.enable_input_require_grads()
-            else:
-                def make_inputs_require_grad(module, input, output):
-                    output.requires_grad_(True)
+        context_maybe_zero3 = nullcontext()
+        with context_maybe_zero3:
+            current_embedding_size = model.get_input_embeddings().weight.size(0)
 
-                model.get_input_embeddings().register_forward_hook(make_inputs_require_grad)
-            # enable gradient checkpointing for memory efficiency
-            model.gradient_checkpointing_enable()
+        if len(tokenizer) > current_embedding_size:
+            new_embedding_size = model.get_input_embeddings().weight.size(0)
+            num_new_tokens = new_embedding_size - current_embedding_size
+            print("Resized token embeddings from {} to {}.".format(current_embedding_size, new_embedding_size))
+            model.resize_token_embeddings(len(tokenizer), pad_to_multiple_of=64)
+            # with context_maybe_zero3:
+            #     new_embedding_size = model.get_input_embeddings().weight.size(0)
+            #     num_new_tokens = new_embedding_size - current_embedding_size
+            #     _noisy_mean_initialization(model.get_input_embeddings().weight.data, num_new_tokens)
+            #     _noisy_mean_initialization(model.get_output_embeddings().weight.data, num_new_tokens)
+
+        # model.resize_token_embeddings(len(tokenizer), pad_to_multiple_of=64)
+
         return model
 
     # 加载模型

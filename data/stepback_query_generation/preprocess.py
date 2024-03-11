@@ -163,7 +163,7 @@ if __name__ == '__main__':
     # json.dump(dev_datas, open("dev_askbob_0201_tf.json", "w"), ensure_ascii=False, indent=4)
 
     # train_datas, dev_datas = preprocess_askbob_data("rag_dataset_0201_gen_eva_1138.json", replace_slash=False, shuffle_context=True, dev_ratio=0)
-    train_datas, dev_datas = preprocess_stpbk_json_data("rag_dataset_0201_gen_eva_1138.json", 0)
+    train_datas, dev_datas = preprocess_stpbk_json_data("0307_1000_gen.xlsx", 0)
     print("done")
     print(f"train datasets: {len(train_datas)}")
     print(f"eval datasets: {len(dev_datas)}")

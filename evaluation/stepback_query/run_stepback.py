@@ -6,6 +6,9 @@
 @Email   : du.xi.yang@qq.com
 @Software: PyCharm
 """
+import json
+import re
+
 import pandas as pd
 from tqdm import tqdm
 
@@ -13,18 +16,56 @@ from evaluation.stepback_query.base import BaseAgent
 from evaluation.stepback_query.local_model_infer import get_chatglm_response
 
 
-def run_test1():
-    data_path = "评估集0304.xlsx"
-    stepback_agent = BaseAgent(template_file="stepback.json", model_invoke=get_chatglm_response)
+def correct_list_str(list_str):
+    "修正可能错误的json string"
+    list_str = list_str.replace('\'', '"')
+    list_str = list_str.replace('“', '"').replace("”", '"')
+    list_str = list_str.replace('‘', '"').replace("’", '"')
+    list_str = list_str.replace("，", ',').replace("：", ':')
+    list_str = re.sub(r'\]\]+', ']', list_str)
+    list_str = re.sub(r'\[\[+', '[', list_str)
+    list_str = re.sub(r'\,\,+', ',', list_str)
+    list_str = re.sub(r'\:\:+', ':', list_str)
+    return list_str
+
+
+def extract_and_correct_list(text):
+    "提取答案中的list"
+    match = re.search(r'\[.*?\]', text)
+    if match:
+        list_str = match.group()
+        list_str = correct_list_str(list_str)
+        try:
+            list_str_data = eval(list_str)
+            if isinstance(list_str_data, list):
+                map(str, list_str_data)
+            return list_str_data
+        except Exception:
+            return []
+    else:
+        return []
+
+def run_test1(data_path, post_fix, template_file):
+    stepback_agent = BaseAgent(template_file=template_file, model_invoke=get_chatglm_response)
 
     df = pd.read_excel(data_path).to_dict("records")
     for i, line in tqdm(enumerate(df)):
         question = line["输入"]
         if isinstance(question, str):
             output = stepback_agent.invoke(query=question)
-            df[i]["输出"] = output.strip()
+            response = extract_and_correct_list(output)
+            if response == []:
+                print(f"current question: {question}")
+                print(f"current output: {output}")
+                print()
+            df[i]["输出"] = response
+        else:
+            print(f"current line: {line}")
+            df[i]["输出"] = []
+            df[i]["输出"] = response
+            continue
 
-    pd.DataFrame(df).to_excel("评估集0304_output.xlsx", index=False)
+    pd.DataFrame(df).to_excel(f"评估集0306_{post_fix}_output.xlsx", index=False)
 
 if __name__ == '__main__':
-    run_test1()
+    run_test1(data_path="评估集0306.xlsx", post_fix="stepback_query_generation", template_file="stepback_new_forglm.json")

@@ -8,6 +8,7 @@
 """
 import json
 from concurrent.futures.thread import ThreadPoolExecutor
+from copy import deepcopy
 
 from tenacity import wait_random_exponential, retry, stop_after_attempt
 from typing import List
@@ -21,8 +22,7 @@ class BaseAgent:
         self.model_invoke = model_invoke
 
     def assemble_messages(self, **kwargs):
-        chat_templates = self.templates
-
+        chat_templates = deepcopy(self.templates)
 
         user_prompt = chat_templates["prompt"]
         messages = chat_templates["history"]
