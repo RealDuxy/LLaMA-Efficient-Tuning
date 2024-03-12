@@ -266,7 +266,7 @@ def run_chatglm_predict_askbobqa_3_times(model_path,
         # model.config.use_cache = True
         if peft_path:
             model = PeftModel.from_pretrained(model, model_id=peft_path, trust_remote_code=True)
-        model = model.cuda(device)
+        model = model.to(f"cuda:{device}")
 
         return model,tokenizer
 
@@ -281,7 +281,6 @@ def run_chatglm_predict_askbobqa_3_times(model_path,
 
     new_df = []
     for line in tqdm(df[s:e]):
-        line = df[line]
         system = line["system"]
         if isinstance(system, str):
             history =  [{"role": "system", "content": system}]
