@@ -274,7 +274,7 @@ def run_chatglm_predict_askbobqa_3_times(model_path,
     device = kwargs["device"]
 
     print(f"runnning [{s,e}] of {data_path.split('/')[-1]}")
-    model, tokenizer = load_all(device=device)
+    model, tokenizer = load_all(device=0)
 
     with open(data_path, "r") as f:
         df = json.load(f)
@@ -340,7 +340,6 @@ if __name__ == '__main__':
     data_path = "../../data/askbob_qa/askbob_0222_6k.json"
     data_nums = len(json.load(open(data_path, "r")))
     device = args.device
-
 
     print("="*20)
     print(f"torch.cuda.is_available(): {torch.cuda.is_available()}")
