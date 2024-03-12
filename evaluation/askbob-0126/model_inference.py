@@ -6,6 +6,7 @@
 @Email   : du.xi.yang@qq.com
 @Software: PyCharm
 """
+import argparse
 import json
 import random
 
@@ -237,51 +238,63 @@ def run_qwen_predict_askbob0126(model_path, tokenizer_path, post_fix, peft_path=
     save_path = data_path.replace(".", f"-{post_fix}.")
     pd.DataFrame(new_df).to_excel(save_path)
 
-def run_chatglm_predict_askbobqa_3_times(model_path, tokenizer_path, post_fix, peft_path=None, data_path="../../data/askbob_qaaskbob_0222_6k.json"):
-    # device = "cuda:0"
-    # offload_folder = "./offload"
+def run_chatglm_predict_askbobqa_3_times(model_path,
+                                         tokenizer_path,
+                                         post_fix,
+                                         peft_path=None,
+                                         data_path="../../data/askbob_qa/askbob_0222_6k.json",
+                                         **kwargs,
+                                         ):
+    def load_all(device=0):
+        tokenizer = AutoTokenizer.from_pretrained(tokenizer_path, trust_remote_code=True)  # , trust_remote_code=True
+        # model = AutoModel.from_pretrained(MODEL_PATH, device_map="auto", trust_remote_code=True).eval()#, trust_remote_code=True
+        model = AutoModelForCausalLM.from_pretrained(
+            model_path,trust_remote_code=True
+        )
+        model = prepare_model_for_half_training(model,
+                                                use_gradient_checkpointing=False,
+                                                output_embedding_layer_name="lm_head",  # output_layer
+                                                layer_norm_names=["post_attention_layernorm",
+                                                                  "final_layernorm",
+                                                                  "input_layernorm",
+                                                                  ])
+
+        # model.gradient_checkpointing_enable()
+        # model.enable_input_require_grads()
+        # model.is_parallelizable = True
+        # model.model_parallel = True
+        # model.config.use_cache = True
+        if peft_path:
+            model = PeftModel.from_pretrained(model, model_id=peft_path, trust_remote_code=True)
+        model = model.cuda(device)
+
+        return model,tokenizer
+
+    s, e = kwargs["start"], kwargs["end"]
+    device = kwargs["device"]
+
+    print(f"runnning [{s,e}] of {data_path.split('/')[-1]}")
+    model, tokenizer = load_all(device=device)
+
     with open(data_path, "r") as f:
         df = json.load(f)
-    # 加载模型
-    tokenizer = AutoTokenizer.from_pretrained(tokenizer_path, trust_remote_code=True)  # , trust_remote_code=True
-    # model = AutoModel.from_pretrained(MODEL_PATH, device_map="auto", trust_remote_code=True).eval()#, trust_remote_code=True
-    model = AutoModelForCausalLM.from_pretrained(
-        model_path,trust_remote_code=True
-    )
-
-    model = prepare_model_for_half_training(model,
-                                            use_gradient_checkpointing=False,
-                                            output_embedding_layer_name="lm_head",  # output_layer
-                                            layer_norm_names=["post_attention_layernorm",
-                                                              "final_layernorm",
-                                                              "input_layernorm",
-                                                              ])
-
-    # model.gradient_checkpointing_enable()
-    # model.enable_input_require_grads()
-    # model.is_parallelizable = True
-    # model.model_parallel = True
-    # model.config.use_cache = True
-    if peft_path:
-        model = PeftModel.from_pretrained(model, model_id=peft_path, trust_remote_code=True)
-    model = model.cuda(0)
-
 
     new_df = []
-    for line in tqdm(df):
+    for line in tqdm(df[s:e]):
+        line = df[line]
         system = line["system"]
         if isinstance(system, str):
             history =  [{"role": "system", "content": system}]
             prompt = line["instruction"]
             outputs = []
-            for _ in range(3):
+            for _ in range(4):
                 seed = random.randint(0, 10000)
                 transformers.set_seed(seed)
                 output, history = model.chat(tokenizer, prompt, history=history, temperature=0.9)
                 outputs.append(output)
             # output = line["评估输出"]
             new_df.append(line.update({"output":outputs}))
-    save_path = data_path.replace(".", f"-{post_fix}.")
+    save_path = data_path.replace(".", f"-{post_fix}-{s,e}.")
     pd.DataFrame(new_df).to_excel(save_path)
 
 
@@ -316,13 +329,27 @@ if __name__ == '__main__':
     #     peft_path="../../checkpoints/0304_qwen7B_stage1_spec_ft"
     # )
 
+    parser = argparse.ArgumentParser(description='Evaluation')
+
+    parser.add_argument('--device', type=int, default=0,
+                        help='device'
+                             "0,1,2,3")
+
+    args = parser.parse_args()
 
     model_path = "/mnt/e/UbuntuFiles/models_saved/chatglm3/"
     data_path = "../../data/askbob_qa/askbob_0222_6k.json"
+    data_nums = len(json.load(open(data_path, "r")))
+    device = args.device
+    range_options = list(range(0, data_nums, data_nums//4))
+    s, e = range_options[device], range_options[device]+data_nums//4
+
     run_chatglm_predict_askbobqa_3_times(
         model_path=model_path,
         tokenizer_path=model_path,
         post_fix="stage1_askbobqa_3_times",
         peft_path="../../checkpoints/0205_stage1_spec_ft",
-        data_path=data_path
+        data_path=data_path,
+        device=device, start=s, end=e,
+
     )
