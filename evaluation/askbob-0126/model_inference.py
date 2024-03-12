@@ -342,9 +342,9 @@ if __name__ == '__main__':
     device = args.device
 
     print("="*20)
+    os.environ["CUDA_VISIBLE_DEVICES"]=str(device)
     print(f"torch.cuda.is_available(): {torch.cuda.is_available()}")
     print(f"torch.cuda.device_count(): {torch.cuda.device_count()}")
-    os.environ["CUDA_VISIBLE_DEVICES"]= str(device)
     print(f"setting CUDA_VISIBLE_DEVICES to {os.environ['CUDA_VISIBLE_DEVICES']}")
     print("=" * 20)
 
