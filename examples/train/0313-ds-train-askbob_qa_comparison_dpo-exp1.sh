@@ -26,7 +26,6 @@ deepspeed --num_gpus=4  ../src/train_bash.py \
     --plot_loss \
     --overwrite_output_dir \
     --cutoff_len 1700  \
-    --bf16  \
     --model_name_or_path /mnt/e/UbuntuFiles/models_saved/chatglm3/ \
     --deepspeed ../examples/train/v100_ds_config.json \
 
