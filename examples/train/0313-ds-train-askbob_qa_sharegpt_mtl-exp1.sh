@@ -7,6 +7,7 @@ deepspeed --num_gpus=4  ../src/train_bash.py \
     --do_train \
     --template chatglm3 \
     --dataset askbob_qa, alpaca_chatglm3_zh  \
+    --max_samples 30000 \
     --dataset_dir ../data \
     --finetuning_type lora \
     --output_dir ../checkpoints/0313_askbob_alpaca_chatglm3_zh_mtl \
@@ -33,6 +34,7 @@ deepspeed --num_gpus=4  ../src/train_bash.py \
     --do_train \
     --template chatglm3 \
     --dataset askbob_qa, alpaca_gpt4_zh  \
+    --max_samples 30000 \
     --dataset_dir ../data \
     --finetuning_type lora \
     --output_dir ../checkpoints/0313_askbob_alpaca_gpt4_zh_mtl \
