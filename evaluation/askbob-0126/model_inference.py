@@ -9,7 +9,10 @@
 import argparse
 import json
 import random
+import re
+from concurrent.futures.thread import ThreadPoolExecutor
 
+import requests
 import transformers
 
 """
@@ -245,6 +248,7 @@ def run_chatglm_predict_askbobqa_3_times(model_path,
                                          data_path="../../data/askbob_qa/askbob_0222_6k.json",
                                          **kwargs,
                                          ):
+
     def load_all(device=0):
         tokenizer = AutoTokenizer.from_pretrained(tokenizer_path, trust_remote_code=True)  # , trust_remote_code=True
         # model = AutoModel.from_pretrained(MODEL_PATH, device_map="auto", trust_remote_code=True).eval()#, trust_remote_code=True
@@ -297,6 +301,80 @@ def run_chatglm_predict_askbobqa_3_times(model_path,
     pd.DataFrame(new_df).to_excel(save_path)
 
 
+def run_api_model_predict_askbobqa_3_times(post_fix="0205-spec-ft",
+                                           data_path="../../data/askbob_qa/askbob_0222_6k.json",
+                                           adpater_name="default",
+                                           **kwargs,
+                                           ):
+    # def batch_invoke(batch_datas, max_worker=4):
+    def invoke(query, history):
+        LOCAL_URL = "http://127.0.0.1:8081/chat"
+        headers = {"Content-Type": "application/json", "cache-control": "no-cache"}
+        data = {"query": query,
+                "history": history,
+                "gen_kwargs": {
+                    "seed": random.randint(0, 10000),
+                    "temperature": 0.9,
+                    "skip_lora": True,
+                    "adapter_name": adpater_name
+                }}
+        # print(data
+        res = requests.post(LOCAL_URL, data=json.dumps(data), headers=headers)
+        return res.json()["response"]
+
+
+    def extract_context_and_question_from_instruction(text):
+        # 使用正则表达式提取检索资料和用户问题
+        search_info_pattern = r"```(.*?)```"
+        question_pattern = r"解答用户的问题：(.*?)如果检索资料可以支持"
+
+        # 使用非贪婪模式进行匹配，确保正确提取每个检索资料
+        search_info_matches = re.findall(search_info_pattern, text, flags=re.DOTALL)
+        # 提取用户问题
+        question_match = re.search(question_pattern, text, flags=re.DOTALL)
+
+        question = question_match.group(1).strip() if question_match else None
+
+        return search_info_matches, question
+
+    with open(data_path, "r") as f:
+        df = json.load(f)
+
+    start, end = kwargs["start"], kwargs["end"]
+    print(f"runnning [{start,end}] of {data_path.split('/')[-1]}")
+    new_df = []
+    for line in tqdm(df[start: end]):
+        system = line["system"]
+        if isinstance(system, str):
+            history = [{"role": "system", "content": system}]
+            prompt = line["instruction"]
+            outputs = []
+            for _ in range(2):
+                output = invoke(prompt, history)
+                outputs.append(output)
+
+            contexts, question = extract_context_and_question_from_instruction(prompt)
+
+            if not isinstance(question, str):
+                print(question)
+
+            for context in contexts:
+                if not isinstance(context, str):
+                    print(context)
+
+            new_line = {
+                "query": question,
+                "contexts": contexts,
+                "outputs": outputs.copy()
+            }
+
+            new_df.append(new_line)
+    save_path = data_path.replace(".json", f"-{post_fix}-{start}-{end}.json")
+    json.dump(new_df, fp=open(save_path, "w"), ensure_ascii=False)
+
+    print(f"saving {len(new_df)} datas into {save_path}")
+    return new_df
+
 if __name__ == '__main__':
     # model_path = "/mnt/d/PycharmProjects/models/chatglm3-6b"
     # run_chatglm_predict_askbob0126(
@@ -328,18 +406,19 @@ if __name__ == '__main__':
     #     peft_path="../../checkpoints/0304_qwen7B_stage1_spec_ft"
     # )
 
-    parser = argparse.ArgumentParser(description='Evaluation')
-
-    parser.add_argument('--device', type=int, default=0,
-                        help='device'
-                             "0,1,2,3")
-
-    args = parser.parse_args()
+    # parser = argparse.ArgumentParser(description='Evaluation')
+    #
+    # parser.add_argument('--device', type=int, default=0,
+    #                     help='device'
+    #                          "0,1,2,3")
+    #
+    # args = parser.parse_args()
 
     model_path = "/mnt/e/UbuntuFiles/models_saved/chatglm3/"
     data_path = "../../data/askbob_qa/askbob_0222_6k.json"
     data_nums = len(json.load(open(data_path, "r")))
-    device = args.device
+
+    # device = args.device
 
     print("="*20)
     print(f"torch.cuda.is_available(): {torch.cuda.is_available()}")
@@ -348,14 +427,19 @@ if __name__ == '__main__':
     print("=" * 20)
 
     range_options = list(range(0, data_nums, data_nums//4))
-    s, e = range_options[device], range_options[device]+data_nums//4
+    post_fix="0205_stage1_spec_ft"
+    data_path = "../../data/askbob_qa/askbob_0222_6k.json"
+    thread_num = 4
 
-    run_chatglm_predict_askbobqa_3_times(
-        model_path=model_path,
-        tokenizer_path=model_path,
-        post_fix="stage1_askbobqa_3_times",
-        peft_path="../../checkpoints/0205_stage1_spec_ft",
-        data_path=data_path,
-        device=device, start=s, end=e,
+    executor = ThreadPoolExecutor(max_workers=thread_num)
+    outputs = []
 
-    )
+
+    input_kwargs = [{"start":range_options[thread],
+                     "end": range_options[thread]+data_nums//thread_num} for thread in range(thread_num)]
+    for output in executor.map(lambda x: run_api_model_predict_askbobqa_3_times(**x), input_kwargs):
+        outputs += output
+
+    save_path = data_path.replace(".json", f"-{post_fix}.json")
+    json.dump(outputs, fp=open(save_path, "w") ,ensure_ascii=False, indent=4)
+    print(f"saving all {len(outputs)} datas into {save_path}")

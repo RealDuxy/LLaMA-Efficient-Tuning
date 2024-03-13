@@ -111,10 +111,10 @@ if __name__ == '__main__':
         is_train=True)
 
     json.dump(train_data, open(
-        "../../data/askbob_qa_comparison_1/train_askbob_0301_chatglm3-vanilla-glm4_comparision.json", "w"), ensure_ascii=False, indent=4)
+        "../../data/askbob_qa_comparison/train_askbob_0301_chatglm3-vanilla-glm4_comparision.json", "w"), ensure_ascii=False, indent=4)
 
     # train_data = concat_data_and_prediction_into_comparison(
     #     original_file="../../data/askbob_qa/dev_askbob_0201_ft.json",
     #     prediction_file="generated_predictions.jsonl",
     #     is_train=True)
-    # json.dump(train_data, open("../../data/askbob_qa_comparison_1/dev_askbob_0301_chatglm3-vanilla-glm4_comparision.json", "w"), ensure_ascii=False, indent=4)
+    # json.dump(train_data, open("../../data/askbob_qa_comparison/dev_askbob_0301_chatglm3-vanilla-glm4_comparision.json", "w"), ensure_ascii=False, indent=4)

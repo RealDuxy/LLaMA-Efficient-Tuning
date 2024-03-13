@@ -61,19 +61,18 @@
       "history": "history"
     }
   },
-  "askbob_0301_chatglm3-stage1-ckpt282-glm4_comparision": {
-    "file_name": "askbob_0301_chatglm3-stage1-ckpt282-glm4_comparision.json",
+  "rephrase_query_generation": {
+    "script_url": "rephrase_query_generation",
     "columns": {
       "system": "system",
       "prompt": "instruction",
       "query": "input",
       "response": "output",
       "history": "history"
-    },
-    "ranking": true
+    }
   },
-  "askbob_0301_chatglm3-vanilla-glm4_comparision": {
-    "file_name": "askbob_0301_chatglm3-vanilla-glm4_comparision.json",
+  "askbob_qa_comparison": {
+    "file_name": "askbob_qa_comparison.json",
     "columns": {
       "system": "system",
       "prompt": "instruction",

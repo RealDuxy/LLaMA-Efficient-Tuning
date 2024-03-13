@@ -23,7 +23,7 @@ from transformers import AutoTokenizer
 # 20230201
 generate_answer_prompt = """用户提问：{query}"""
 
-system = """你是一个具有丰富保险专业知识和尝试的专家，你的任务是根据用户提出的问题，退一步思考，并将用户提问改写成多个更加通用的、更简单的“回退问题”, 以Python List格式输出"""
+system = """你是一个具有丰富保险专业知识和常识的专家，你的任务是根据用户提出的问题，退一步思考，并将用户提问改写成多个更加通用的、更简单的“回退问题”, 以Python List格式输出"""
 
 tokenizer = AutoTokenizer.from_pretrained(
     "THUDM/chatglm3-6b", trust_remote_code=True
