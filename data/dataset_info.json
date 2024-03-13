@@ -1,6 +1,12 @@
 {
   "alpaca_chatglm3_zh": {
-    "file_name": "alpaca_chatglm3_data_zh.json"
+    "file_name": "alpaca_chatglm3_data_zh.json",
+    "columns": {
+      "prompt": "instruction",
+      "query": "input",
+      "response": "output",
+      "history": "history"
+    }
   },
   "sharegpt_chatglm3_zh": {
     "file_name": "sharegpt_chatglm3_zh_27k.json",

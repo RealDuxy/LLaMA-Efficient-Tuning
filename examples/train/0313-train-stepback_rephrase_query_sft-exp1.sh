@@ -11,7 +11,7 @@ CUDA_VISIBLE_DEVICES=0 python  ../src/train_bash.py \
     --template chatglm3 \
     --dataset_dir ../data \
     --finetuning_type lora \
-    --output_dir ../checkpoints/stepback_rephrase_query_generation_exp1 \
+    --output_dir ../checkpoints/stepback_rephrase_query_generation_exp2 \
     --preprocessing_num_workers 32 \
     --overwrite_cache \
     --per_device_train_batch_size 4 \
