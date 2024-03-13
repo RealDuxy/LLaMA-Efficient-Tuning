@@ -12,8 +12,8 @@ import re
 import pandas as pd
 from tqdm import tqdm
 
-from evaluation.stepback_query.base import BaseAgent
-from evaluation.stepback_query.local_model_infer import get_chatglm_response
+from evaluation.multi_query.base import BaseAgent
+from evaluation.multi_query.local_model_infer import get_chatglm_response
 
 
 def correct_list_str(list_str):
@@ -68,4 +68,7 @@ def run_test1(data_path, post_fix, template_file):
     pd.DataFrame(df).to_excel(f"评估集0306_{post_fix}_output.xlsx", index=False)
 
 if __name__ == '__main__':
-    run_test1(data_path="评估集0306.xlsx", post_fix="stepback_query_generation", template_file="stepback_new_forglm.json")
+
+    # run_test1(data_path="评估集0306.xlsx", post_fix="stepback_query_generation", template_file="stepback_new_forglm.json")
+    # run_test1(data_path="评估集0306.xlsx", post_fix="rephrase_query_generation", template_file="rephrase_new_forglm.json")
+    run_test1(data_path="评估集0306.xlsx", post_fix="rephrase_query_generation_vanilla_chatglm", template_file="rephrase.json")

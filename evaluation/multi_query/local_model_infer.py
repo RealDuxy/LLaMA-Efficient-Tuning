@@ -8,10 +8,10 @@ from tenacity import wait_random_exponential, retry, stop_after_attempt
 from transformers import AutoTokenizer, AutoModelForCausalLM
 
 model_path = "/mnt/d/PycharmProjects/models/chatglm3-6b/"
-peft_path = "../../checkpoints/stepback_query_generation"
+adapater_path = "../../checkpoints/stepback_rephrase_query_generation_exp2"
 
 
-def load_models(model_path, peft_path):
+def load_models(model_path, peft_path=None):
     def prepare_model_for_half_training(model, output_embedding_layer_name="lm_head",
                                         use_gradient_checkpointing=True, layer_norm_names=["layer_norm"]):
         #  不要使用 model.half(), 这样会先截取精度再训练了, 最初data就要保持half
@@ -63,12 +63,14 @@ def load_models(model_path, peft_path):
     model.model_parallel = True
     model.config.use_cache = True
     if peft_path:
+        print(f"加载adapter: {peft_path}")
         model = PeftModel.from_pretrained(model, peft_path)
     model = model.cuda(0)
     return model, tokenizer
 
 
-model, tokenizer = load_models(model_path, peft_path)
+# model, tokenizer = load_models(model_path, adapter_path)
+model, tokenizer = load_models(model_path)
 
 
 @retry(wait=wait_random_exponential(multiplier=1, max=40), stop=stop_after_attempt(10))
