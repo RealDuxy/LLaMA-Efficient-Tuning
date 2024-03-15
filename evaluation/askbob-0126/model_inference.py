@@ -430,32 +430,32 @@ if __name__ == '__main__':
     #
     # args = parser.parse_args()
 
-    model_path = "/mnt/e/UbuntuFiles/models_saved/chatglm3/"
-    data_path = "../../data/askbob_qa/askbob_0222_6k.json"
-    data_nums = len(json.load(open(data_path, "r")))
-
-    # device = args.device
-
-    print("="*20)
-    print(f"torch.cuda.is_available(): {torch.cuda.is_available()}")
-    print(f"torch.cuda.device_count(): {torch.cuda.device_count()}")
-    # print(f"setting CUDA_VISIBLE_DEVICES to {os.environ['CUDA_VISIBLE_DEVICES']}")
-    print("=" * 20)
-
-    range_options = list(range(0, data_nums, data_nums//4))
-    post_fix="0205_stage1_spec_ft"
-    data_path = "../../data/askbob_qa/askbob_0222_6k.json"
-    thread_num = 4
-
-    executor = ThreadPoolExecutor(max_workers=thread_num)
-    outputs = []
-
-
-    input_kwargs = [{"start":range_options[thread],
-                     "end": range_options[thread]+data_nums//thread_num} for thread in range(thread_num)]
-    for output in executor.map(lambda x: run_api_model_predict_askbobqa_3_times(**x), input_kwargs):
-        outputs += output
-
-    save_path = data_path.replace(".json", f"-{post_fix}.json")
-    json.dump(outputs, fp=open(save_path, "w") ,ensure_ascii=False, indent=4)
-    print(f"saving all {len(outputs)} datas into {save_path}")
+    # model_path = "/mnt/e/UbuntuFiles/models_saved/chatglm3/"
+    # data_path = "../../data/askbob_qa/askbob_0222_6k.json"
+    # data_nums = len(json.load(open(data_path, "r")))
+    #
+    # # device = args.device
+    #
+    # print("="*20)
+    # print(f"torch.cuda.is_available(): {torch.cuda.is_available()}")
+    # print(f"torch.cuda.device_count(): {torch.cuda.device_count()}")
+    # # print(f"setting CUDA_VISIBLE_DEVICES to {os.environ['CUDA_VISIBLE_DEVICES']}")
+    # print("=" * 20)
+    #
+    # range_options = list(range(0, data_nums, data_nums//4))
+    # post_fix="0205_stage1_spec_ft"
+    # data_path = "../../data/askbob_qa/askbob_0222_6k.json"
+    # thread_num = 4
+    #
+    # executor = ThreadPoolExecutor(max_workers=thread_num)
+    # outputs = []
+    #
+    #
+    # input_kwargs = [{"start":range_options[thread],
+    #                  "end": range_options[thread]+data_nums//thread_num} for thread in range(thread_num)]
+    # for output in executor.map(lambda x: run_api_model_predict_askbobqa_3_times(**x), input_kwargs):
+    #     outputs += output
+    #
+    # save_path = data_path.replace(".json", f"-{post_fix}.json")
+    # json.dump(outputs, fp=open(save_path, "w") ,ensure_ascii=False, indent=4)
+    # print(f"saving all {len(outputs)} datas into {save_path}")
