@@ -1,12 +1,7 @@
 {
   "alpaca_chatglm3_zh": {
     "file_name": "alpaca_chatglm3_data_zh.json",
-    "columns": {
-      "prompt": "instruction",
-      "query": "input",
-      "response": "output",
-      "history": "history"
-    }
+    "file_sha1": "257ed6097d27ec4cced97562b73d9d0e1705a22f"
   },
   "sharegpt_chatglm3_zh": {
     "file_name": "sharegpt_chatglm3_zh_27k.json",
