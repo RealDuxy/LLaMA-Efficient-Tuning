@@ -376,6 +376,22 @@ def run_api_model_predict_askbobqa_3_times(post_fix="0205-spec-ft",
     return new_df
 
 if __name__ == '__main__':
+    # 預測單個askbob0126
+
+    model_path = "/mnt/e/UbuntuFiles/models_saved/chatglm3/"
+    run_chatglm_predict_askbob0126(
+        model_path=model_path,
+        tokenizer_path=model_path,
+        post_fix="0313_askbob_alpaca_chatglm3_zh_mtl",
+        peft_path="../../checkpoints/0313_askbob_alpaca_chatglm3_zh_mtl/"
+    )
+    run_chatglm_predict_askbob0126(
+        model_path=model_path,
+        tokenizer_path=model_path,
+        post_fix="checkpoints/0313_askbob_alpaca_gpt4_zh_mtl/",
+        peft_path="../../checkpoints/0313_askbob_alpaca_gpt4_zh_mtl/"
+    )
+
     # model_path = "/mnt/d/PycharmProjects/models/chatglm3-6b"
     # run_chatglm_predict_askbob0126(
     #     model_path=model_path,
@@ -383,7 +399,7 @@ if __name__ == '__main__':
     #     post_fix="0304_vanilla_dpo",
     #     peft_path="../../checkpoints/0304_vanilla_dpo"
     # )
-    #
+
     # run_chatglm_predict_askbob0126(
     #     model_path=model_path,
     #     tokenizer_path=model_path,
