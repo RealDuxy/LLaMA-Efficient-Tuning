@@ -155,12 +155,12 @@ def run_chatglm_predict_askbob0126(model_path, tokenizer_path, post_fix, peft_pa
             context = ""
             for x in first_round_retrieval_results:
                 context += x + "\n\n"
-            extract_type = line[type_t]
+            # extract_type = line[type_t]
             # output = line["评估输出"]
             new_df.append({
                 "问题": question,
                 "引文": context,
-                "问题类型": extract_type,
+                # "问题类型": extract_type,
                 "回答": output
             })
     save_path = data_path.replace(".xlsx", f"-{post_fix}.xlsx")
