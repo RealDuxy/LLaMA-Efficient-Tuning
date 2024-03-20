@@ -70,8 +70,8 @@ EventSourceResponse.DEFAULT_PING_INTERVAL = 1000
 # TOKENIZER_PATH = "/root/.cache/modelscope/hub/ZhipuAI/chatglm3-6b"
 # PEFT_MODEL_PATH = "model_sft/ins_moderation/checkpoint-100"
 
-type_t='''原文：5 
- 相似：5  
+type_t='''原文：5
+ 相似：5
 抽取：10
  综合推理：10'''
 
@@ -106,7 +106,7 @@ def prepare_model_for_half_training(model, output_embedding_layer_name="lm_head"
     return model
 
 
-def run_chatglm_predict_askbob0126(model_path, tokenizer_path, post_fix, peft_path=None, data_path="askbob-0126.xlsx"):
+def run_chatglm_predict_askbob0126(model_path, tokenizer_path, post_fix, peft_path=None, data_path="./askbob-0126.xlsx"):
 
     tokenizer = AutoTokenizer.from_pretrained(tokenizer_path, trust_remote_code=True)  # , trust_remote_code=True
     # model = AutoModel.from_pretrained(MODEL_PATH, device_map="auto", trust_remote_code=True).eval()#, trust_remote_code=True
@@ -163,7 +163,7 @@ def run_chatglm_predict_askbob0126(model_path, tokenizer_path, post_fix, peft_pa
                 "问题类型": extract_type,
                 "回答": output
             })
-    save_path = data_path.replace(".", f"-{post_fix}.")
+    save_path = data_path.replace(".xlsx", f"-{post_fix}.xlsx")
     pd.DataFrame(new_df).to_excel(save_path)
 
 def run_qwen_predict_askbob0126(model_path, tokenizer_path, post_fix, peft_path=None, data_path="askbob-0126.xlsx"):
@@ -380,7 +380,7 @@ if __name__ == '__main__':
 
     model_path = "/mnt/e/UbuntuFiles/models_saved/chatglm3/"
 
-    post_fix = "checkpoints/0313_askbob_alpaca_gpt4_zh_mtl/",
+    post_fix = "0313_askbob_alpaca_gpt4_zh_mtl/",
     peft_path = "../../checkpoints/0313_askbob_alpaca_gpt4_zh_mtl/"
     run_chatglm_predict_askbob0126(
         model_path=model_path,
