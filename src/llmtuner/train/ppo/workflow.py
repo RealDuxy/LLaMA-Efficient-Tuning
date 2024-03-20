@@ -12,9 +12,9 @@ from ...data import get_dataset
 from ...extras.callbacks import FixValueHeadModelCallback
 from ...extras.misc import fix_valuehead_checkpoint
 from ...extras.ploting import plot_loss
-from ...model import load_model_and_tokenizer
-from ...train.ppo.trainer import CustomPPOTrainer
-from ...train.utils import create_ref_model, create_reward_model
+from ...model import load_model, load_tokenizer
+from ..utils import create_custom_optimzer, create_ref_model, create_reward_model
+from .trainer import CustomPPOTrainer
 
 
 if TYPE_CHECKING:
@@ -31,10 +31,9 @@ def run_ppo(
     generating_args: "GeneratingArguments",
     callbacks: Optional[List["TrainerCallback"]] = None,
 ):
-    model, tokenizer = load_model_and_tokenizer(
-        model_args, finetuning_args, training_args.do_train, add_valuehead=True
-    )
+    tokenizer = load_tokenizer(model_args)
     dataset = get_dataset(tokenizer, model_args, data_args, training_args, stage="ppo")
+    model = load_model(tokenizer, model_args, finetuning_args, training_args.do_train, add_valuehead=True)
 
     tokenizer.padding_side = "left"  # use left-padding in generation while using right-padding in training
     data_collator = DataCollatorWithPadding(tokenizer=tokenizer)
@@ -61,10 +60,14 @@ def run_ppo(
         use_score_norm=finetuning_args.ppo_score_norm,
         whiten_rewards=finetuning_args.ppo_whiten_rewards,
         accelerator_kwargs={"step_scheduler_with_optimizer": False},
+        project_kwargs={"logging_dir": training_args.logging_dir},
     )
 
     # Create optimizer and scheduler
-    optimizer = AdamW(filter(lambda p: p.requires_grad, model.parameters()), lr=training_args.learning_rate)
+    optimizer = create_custom_optimzer(model, dataset, training_args, finetuning_args)
+    if optimizer is None:
+        optimizer = AdamW(filter(lambda p: p.requires_grad, model.parameters()), lr=training_args.learning_rate)
+
     if training_args.max_steps > 0:
         num_training_steps = training_args.max_steps
     else:
