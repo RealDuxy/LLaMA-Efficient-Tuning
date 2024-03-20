@@ -135,7 +135,7 @@ def run_chatglm_predict_askbob0126(model_path, tokenizer_path, post_fix, peft_pa
     df = pd.read_excel(data_path).to_dict("records")
 
     new_df = []
-    for line in tqdm(df):
+    for line in tqdm(df[:1]):
         question = line["评估问题"]
         if isinstance(question, str):
             history_prompt = eval(line["prompt"])
@@ -380,7 +380,7 @@ if __name__ == '__main__':
 
     model_path = "/mnt/e/UbuntuFiles/models_saved/chatglm3/"
 
-    post_fix = "0313_askbob_alpaca_gpt4_zh_mtl/",
+    post_fix = "0313_askbob_alpaca_gpt4_zh_mtl",
     peft_path = "../../checkpoints/0313_askbob_alpaca_gpt4_zh_mtl/"
     run_chatglm_predict_askbob0126(
         model_path=model_path,
