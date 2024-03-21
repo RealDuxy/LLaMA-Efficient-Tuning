@@ -250,10 +250,14 @@ def _prepare_model_for_training(
             model.gradient_checkpointing_enable(gradient_checkpointing_kwargs={"use_reentrant": True})
             # 关闭qwen的input embedding的梯度获取
 
-            model.get_input_embeddings().eval()
+            # a1
+            # model.get_input_embeddings().eval()
+            # a2
+            model.enable_trainable_mode(True)
+            # # a3
             # def make_inputs_require_grads(module, input, output):
             #         output.requires_grad_(True)
-                # register_forward_hook(make_inputs_require_grads)
+            # model.get_input_embeddings().register_forward_hook(make_inputs_require_grads)
             # ChatGLM训练需要注释掉这一行
             # model.enable_input_require_grads()
 
