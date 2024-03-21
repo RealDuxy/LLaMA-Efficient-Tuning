@@ -6,7 +6,7 @@
 deepspeed --num_gpus=4  ../src/train_bash.py \
     --stage dpo \
     --do_train \
-    --template chatglm3-anan \
+    --template chatglm3 \
     --dataset askbob_qa_comparison  \
     --dataset_dir ../data \
     --finetuning_type lora \
