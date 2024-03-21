@@ -12,14 +12,14 @@ python  ../src/train_bash.py \
     --dataset askbob_qa  \
     --dataset_dir ../data \
     --finetuning_type lora \
-    --output_dir ../checkpoints/qwen/0320_askbob_stage1_qwen14b_gptq_int8 \
+    --output_dir ../checkpoints/qwen/0320_askbob_stage1_qwen14b_gptq_int4 \
     --preprocessing_num_workers 64 \
     --per_device_train_batch_size 2 \
     --gradient_accumulation_steps 8 \
     --lr_scheduler_type cosine \
     --lora_rank 16 \
     --lora_alpha 32 \
-    --lora_target all \
+    --lora_target c_attn,attn.c_proj,w1,w2,mlp.c_proj \
     --logging_steps 10 \
     --learning_rate 2e-5 \
     --num_train_epochs 3.0 \
