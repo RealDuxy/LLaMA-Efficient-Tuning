@@ -248,7 +248,16 @@ def _prepare_model_for_training(
             # use_reentrant=False might increase VRAM usage (have not been empirically verified yet)
             # According to: https://github.com/huggingface/transformers/issues/28339
             model.gradient_checkpointing_enable(gradient_checkpointing_kwargs={"use_reentrant": True})
+            # 关闭qwen的input embedding的梯度获取
+
+            model.get_input_embeddings().eval()
+            # def make_inputs_require_grads(module, input, output):
+            #         output.requires_grad_(True)
+                # register_forward_hook(make_inputs_require_grads)
+            # ChatGLM训练需要注释掉这一行
             # model.enable_input_require_grads()
+
+
             setattr(model.config, "use_cache", False)  # turn off when gradient checkpointing is enabled
             logger.info("Gradient checkpointing enabled.")
 
