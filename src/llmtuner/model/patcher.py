@@ -253,13 +253,13 @@ def _prepare_model_for_training(
             # a1
             # model.get_input_embeddings().eval()
             # a2
-            model.enable_trainable_mode(True)
+            # model.enable_trainable_mode(True)
             # # a3
             # def make_inputs_require_grads(module, input, output):
             #         output.requires_grad_(True)
             # model.get_input_embeddings().register_forward_hook(make_inputs_require_grads)
             # ChatGLM训练需要注释掉这一行
-            # model.enable_input_require_grads()
+            model.enable_input_require_grads()
 
 
             setattr(model.config, "use_cache", False)  # turn off when gradient checkpointing is enabled
