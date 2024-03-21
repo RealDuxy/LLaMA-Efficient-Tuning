@@ -10,7 +10,7 @@ _LICENSE = ""
 _URL = "./"
 
 _URLS = {
-    "train": _URL + "askbob_qa_comparison.json"
+    "train": _URL + "askbob_0321_4k_comparison.json"
 }
 
 class AskBobQADataset(datasets.GeneratorBasedBuilder):
