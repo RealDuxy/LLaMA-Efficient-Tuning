@@ -14,7 +14,6 @@ python  ../src/train_bash.py \
     --finetuning_type lora \
     --output_dir ../checkpoints/qwen/0320_askbob_stage1_qwen14b_gptq_int8 \
     --preprocessing_num_workers 64 \
-    --overwrite_cache \
     --per_device_train_batch_size 2 \
     --gradient_accumulation_steps 8 \
     --lr_scheduler_type cosine \
@@ -29,4 +28,5 @@ python  ../src/train_bash.py \
     --cutoff_len 1700  \
     --fp16 \
     --save_steps 562 \
-    --model_name_or_path /mnt/e/UbuntuFiles/models_saved/Qwen1.5-14B-Chat-GPTQ-Int4
+    --model_name_or_path /mnt/e/UbuntuFiles/models_saved/Qwen1.5-14B-Chat-GPTQ-Int4 \
+#    --overwrite_cache \
