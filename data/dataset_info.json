@@ -73,13 +73,12 @@
     }
   },
   "askbob_qa_comparison": {
-    "file_name": "askbob_qa_comparison.json",
+    "file_name": "askbob_0321_4k_comparison.json",
     "columns": {
       "system": "system",
       "prompt": "instruction",
       "query": "input",
-      "response": "output",
-      "history": "history"
+      "response": "output"
     },
     "ranking": true
   },

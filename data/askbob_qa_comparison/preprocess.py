@@ -88,9 +88,11 @@ def convert_ranker_results_into_judge_datasets(ranker_results, save_file):
         return search_info_matches, question
 
 if __name__ == '__main__':
-    data_file = "askbob_0321_4k_comparison.json"
+    data_file = "../askbob_0321_4k_comparison.json"
 
     datas = json.load(open(data_file, encoding="utf-8"))
+    for i, data in enumerate(datas):
+        datas[i]["output"] = datas[i].pop("outputs")
     json.dump(datas, open(data_file, "w", encoding="utf-8"), ensure_ascii=False, indent=4)
 
 
