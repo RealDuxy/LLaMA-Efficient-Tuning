@@ -19,7 +19,7 @@ python  ../src/train_bash.py \
     --lr_scheduler_type cosine \
     --lora_rank 16 \
     --lora_alpha 32 \
-    --lora_target c_attn,attn.c_proj,w1,w2,mlp.c_proj \
+    --lora_target k_proj,o_proj,q_proj,v_proj,down_proj,gate_proj,up_proj \
     --logging_steps 10 \
     --learning_rate 2e-5 \
     --num_train_epochs 3.0 \
