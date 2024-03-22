@@ -230,12 +230,12 @@ def run_qwen_predict_askbob0126(model_path, tokenizer_path, post_fix, peft_path=
             context = ""
             for x in first_round_retrieval_results:
                 context += x + "\n\n"
-            extract_type = line[type_t]
+            # extract_type = line[type_t]
             # output = line["评估输出"]
             new_df.append({
                 "问题": question,
                 "引文": context,
-                "问题类型": extract_type,
+                # "问题类型": extract_type,
                 "回答": output
             })
     save_path = data_path.replace(".", f"-{post_fix}.")
@@ -378,15 +378,23 @@ def run_api_model_predict_askbobqa_3_times(post_fix="0205-spec-ft",
 if __name__ == '__main__':
     # 預測單個askbob0126
 
-    model_path = "/mnt/e/UbuntuFiles/models_saved/chatglm3/"
+    # model_path = "/mnt/e/UbuntuFiles/models_saved/chatglm3/"
+    #
+    # post_fix = "0322_chatglm3-stage1_dpo"
+    # peft_path = "../../checkpoints/0322_chatglm3-stage1_dpo/"
+    # run_chatglm_predict_askbob0126(
+    #     model_path=model_path,
+    #     tokenizer_path=model_path,
+    #     post_fix=post_fix,
+    #     peft_path=peft_path
+    # )
 
-    post_fix = "0322_chatglm3-stage1_dpo"
-    peft_path = "../../checkpoints/0322_chatglm3-stage1_dpo/"
-    run_chatglm_predict_askbob0126(
+    model_path = "/mnt/e/UbuntuFiles/models_saved/Qwen1.5-14B-Chat-GPTQ-Int4"
+    run_qwen_predict_askbob0126(
         model_path=model_path,
         tokenizer_path=model_path,
-        post_fix=post_fix,
-        peft_path=peft_path
+        post_fix="0320_askbob_stage1_qwen14b_gptq_int4",
+        peft_path="../../checkpoints/0320_askbob_stage1_qwen14b_gptq_int4"
     )
 
     # peft_path = "../../checkpoints/0313_askbob_alpaca_chatglm3_zh_mtl/"
