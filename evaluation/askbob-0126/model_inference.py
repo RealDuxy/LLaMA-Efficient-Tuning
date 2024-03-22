@@ -166,11 +166,11 @@ def run_chatglm_predict_askbob0126(model_path, tokenizer_path, post_fix, peft_pa
     save_path = data_path.replace(".xlsx", f"-{post_fix}.xlsx")
     pd.DataFrame(new_df).to_excel(save_path)
 
-def run_qwen_predict_askbob0126(model_path, tokenizer_path, post_fix, peft_path=None, data_path="askbob-0126.xlsx"):
+def run_qwen_predict_askbob0126(model_path, tokenizer_path, post_fix, peft_path=None, data_path="askbob-0126.xlsx", dtype=torch.bfloat16):
     device = "cuda:0"
     # offload_folder = "./offload"
     # 加载模型
-    model = AutoModelForCausalLM.from_pretrained(model_path, device_map="auto",torch_dtype=torch.bfloat16)
+    model = AutoModelForCausalLM.from_pretrained(model_path, device_map="auto",torch_dtype=dtype)
     tokenizer = AutoTokenizer.from_pretrained(tokenizer_path)
 
     # model = prepare_model_for_half_training(model,
@@ -240,6 +240,7 @@ def run_qwen_predict_askbob0126(model_path, tokenizer_path, post_fix, peft_path=
             })
     save_path = data_path.replace(".", f"-{post_fix}.")
     pd.DataFrame(new_df).to_excel(save_path)
+
 
 def run_chatglm_predict_askbobqa_3_times(model_path,
                                          tokenizer_path,
@@ -394,7 +395,8 @@ if __name__ == '__main__':
         model_path=model_path,
         tokenizer_path=model_path,
         post_fix="0320_askbob_stage1_qwen14b_gptq_int4",
-        peft_path="../../checkpoints/qwen/0320_askbob_stage1_qwen14b_gptq_int4"
+        peft_path="../../checkpoints/qwen/0320_askbob_stage1_qwen14b_gptq_int4",
+        dtype=torch.float16
     )
 
     # peft_path = "../../checkpoints/0313_askbob_alpaca_chatglm3_zh_mtl/"
