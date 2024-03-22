@@ -28,8 +28,9 @@ CUDA_VISIBLE_DEVICES=0 python  ../src/train_bash.py \
     --cutoff_len 1700  \
     --fp16 \
     --save_steps 562 \
-    --model_name_or_path /mnt/e/UbuntuFiles/models_saved/Qwen1.5-14B-Chat-GPTQ-Int4 \ > 0320_sft.log 2>&1
-#    --overwrite_cache \
+    --model_name_or_path /mnt/e/UbuntuFiles/models_saved/Qwen1.5-14B-Chat-GPTQ-Int4
+     >> 0320_sft.log 2>&1
+
 deepspeed --num_gpus=4  ../src/train_bash.py \
     --stage dpo \
     --do_train \
@@ -55,4 +56,5 @@ deepspeed --num_gpus=4  ../src/train_bash.py \
     --cutoff_len 1700  \
     --fp16 \
     --model_name_or_path /mnt/e/UbuntuFiles/models_saved/chatglm3/ \
-    --deepspeed ../examples/train/v100_ds_config.json \ > 0320_dpo.log 2>&1
+    --deepspeed ../examples/train/v100_ds_config.json
+     >> 0320_dpo.log 2>&1
