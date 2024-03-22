@@ -380,8 +380,8 @@ if __name__ == '__main__':
 
     model_path = "/mnt/e/UbuntuFiles/models_saved/chatglm3/"
 
-    post_fix = "0313_askbob_alpaca_gpt4_zh_mtl"
-    peft_path = "../../checkpoints/0313_askbob_alpaca_gpt4_zh_mtl/"
+    post_fix = "0322_chatglm3-stage1_dpo"
+    peft_path = "../../checkpoints/0322_chatglm3-stage1_dpo/"
     run_chatglm_predict_askbob0126(
         model_path=model_path,
         tokenizer_path=model_path,
@@ -389,14 +389,14 @@ if __name__ == '__main__':
         peft_path=peft_path
     )
 
-    peft_path = "../../checkpoints/0313_askbob_alpaca_chatglm3_zh_mtl/"
-    post_fix = "0313_askbob_alpaca_chatglm3_zh_mtl"
-    run_chatglm_predict_askbob0126(
-        model_path=model_path,
-        tokenizer_path=model_path,
-        post_fix=post_fix,
-        peft_path=peft_path
-    )
+    # peft_path = "../../checkpoints/0313_askbob_alpaca_chatglm3_zh_mtl/"
+    # post_fix = "0313_askbob_alpaca_chatglm3_zh_mtl"
+    # run_chatglm_predict_askbob0126(
+    #     model_path=model_path,
+    #     tokenizer_path=model_path,
+    #     post_fix=post_fix,
+    #     peft_path=peft_path
+    # )
 
     # model_path = "/mnt/d/PycharmProjects/models/chatglm3-6b"
     # run_chatglm_predict_askbob0126(
