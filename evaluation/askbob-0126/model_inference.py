@@ -394,7 +394,7 @@ if __name__ == '__main__':
         model_path=model_path,
         tokenizer_path=model_path,
         post_fix="0320_askbob_stage1_qwen14b_gptq_int4",
-        peft_path="../../checkpoints/0320_askbob_stage1_qwen14b_gptq_int4"
+        peft_path="../../checkpoints/qwen/0320_askbob_stage1_qwen14b_gptq_int4"
     )
 
     # peft_path = "../../checkpoints/0313_askbob_alpaca_chatglm3_zh_mtl/"
