@@ -390,12 +390,20 @@ if __name__ == '__main__':
     #     peft_path=peft_path
     # )
 
+
     model_path = "/mnt/e/UbuntuFiles/models_saved/Qwen1.5-14B-Chat-GPTQ-Int4"
+    # run_qwen_predict_askbob0126(
+    #     model_path=model_path,
+    #     tokenizer_path=model_path,
+    #     post_fix="0320_askbob_stage1_qwen14b_gptq_int4",
+    #     peft_path="../../checkpoints/qwen/0320_askbob_stage1_qwen14b_gptq_int4",
+    #     dtype=torch.float16
+    # )
     run_qwen_predict_askbob0126(
         model_path=model_path,
         tokenizer_path=model_path,
-        post_fix="0320_askbob_stage1_qwen14b_gptq_int4",
-        peft_path="../../checkpoints/qwen/0320_askbob_stage1_qwen14b_gptq_int4",
+        post_fix="vanilla_qwen14b_gptq_int4",
+        peft_path=None,
         dtype=torch.float16
     )
 
