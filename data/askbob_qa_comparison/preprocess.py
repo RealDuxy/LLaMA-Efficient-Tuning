@@ -6,6 +6,7 @@
 @Email   : du.xi.yang@qq.com
 @Software: PyCharm
 """
+import json
 import re
 
 
@@ -86,5 +87,24 @@ def convert_ranker_results_into_judge_datasets(ranker_results, save_file):
 
         return search_info_matches, question
 
-    ...
+if __name__ == '__main__':
+    data_file = "../askbob_0321_4k_comparison.json"
+
+    datas = json.load(open(data_file, encoding="utf-8"))
+    for i, data in enumerate(datas):
+        datas[i]["output"] = datas[i].pop("outputs")
+    json.dump(datas, open(data_file, "w", encoding="utf-8"), ensure_ascii=False, indent=4)
+
+
+    # for i, data in enumerate(datas):
+    #     output = json.loads(data["output"])
+    #     output = output["choices"][0]["message"]["content"]
+    #     datas[i]["output"] = output
+    #
+    # json.dump(datas, open("askbob_0321_4k_comparison_judge_response.json", "w", encoding="utf-8"), ensure_ascii=False, indent=4)
+
+
+
+
+
 

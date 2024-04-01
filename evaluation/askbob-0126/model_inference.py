@@ -70,8 +70,8 @@ EventSourceResponse.DEFAULT_PING_INTERVAL = 1000
 # TOKENIZER_PATH = "/root/.cache/modelscope/hub/ZhipuAI/chatglm3-6b"
 # PEFT_MODEL_PATH = "model_sft/ins_moderation/checkpoint-100"
 
-type_t='''原文：5 
- 相似：5  
+type_t='''原文：5
+ 相似：5
 抽取：10
  综合推理：10'''
 
@@ -135,7 +135,7 @@ def run_chatglm_predict_askbob0126(model_path, tokenizer_path, post_fix, peft_pa
     df = pd.read_excel(data_path).to_dict("records")
 
     new_df = []
-    for line in tqdm(df):
+    for line in tqdm(df[:]):
         question = line["评估问题"]
         if isinstance(question, str):
             history_prompt = eval(line["prompt"])
@@ -155,22 +155,22 @@ def run_chatglm_predict_askbob0126(model_path, tokenizer_path, post_fix, peft_pa
             context = ""
             for x in first_round_retrieval_results:
                 context += x + "\n\n"
-            extract_type = line[type_t]
+            # extract_type = line[type_t]
             # output = line["评估输出"]
             new_df.append({
                 "问题": question,
                 "引文": context,
-                "问题类型": extract_type,
+                # "问题类型": extract_type,
                 "回答": output
             })
     save_path = data_path.replace(".xlsx", f"-{post_fix}.xlsx")
     pd.DataFrame(new_df).to_excel(save_path)
 
-def run_qwen_predict_askbob0126(model_path, tokenizer_path, post_fix, peft_path=None, data_path="askbob-0126.xlsx"):
+def run_qwen_predict_askbob0126(model_path, tokenizer_path, post_fix, peft_path=None, data_path="askbob-0126.xlsx", dtype=torch.bfloat16):
     device = "cuda:0"
     # offload_folder = "./offload"
     # 加载模型
-    model = AutoModelForCausalLM.from_pretrained(model_path, device_map="auto",torch_dtype=torch.bfloat16)
+    model = AutoModelForCausalLM.from_pretrained(model_path, device_map="auto",torch_dtype=dtype)
     tokenizer = AutoTokenizer.from_pretrained(tokenizer_path)
 
     # model = prepare_model_for_half_training(model,
@@ -230,16 +230,17 @@ def run_qwen_predict_askbob0126(model_path, tokenizer_path, post_fix, peft_path=
             context = ""
             for x in first_round_retrieval_results:
                 context += x + "\n\n"
-            extract_type = line[type_t]
+            # extract_type = line[type_t]
             # output = line["评估输出"]
             new_df.append({
                 "问题": question,
                 "引文": context,
-                "问题类型": extract_type,
+                # "问题类型": extract_type,
                 "回答": output
             })
     save_path = data_path.replace(".", f"-{post_fix}.")
     pd.DataFrame(new_df).to_excel(save_path)
+
 
 def run_chatglm_predict_askbobqa_3_times(model_path,
                                          tokenizer_path,
@@ -378,25 +379,42 @@ def run_api_model_predict_askbobqa_3_times(post_fix="0205-spec-ft",
 if __name__ == '__main__':
     # 預測單個askbob0126
 
-    model_path = "/mnt/e/UbuntuFiles/models_saved/chatglm3/"
+    # model_path = "/mnt/e/UbuntuFiles/models_saved/chatglm3/"
+    #
+    # post_fix = "0322_chatglm3-stage1_dpo"
+    # peft_path = "../../checkpoints/0322_chatglm3-stage1_dpo/"
+    # run_chatglm_predict_askbob0126(
+    #     model_path=model_path,
+    #     tokenizer_path=model_path,
+    #     post_fix=post_fix,
+    #     peft_path=peft_path
+    # )
 
-    post_fix = "0313_askbob_alpaca_gpt4_zh_mtl/",
-    peft_path = "../../checkpoints/0313_askbob_alpaca_gpt4_zh_mtl/"
-    run_chatglm_predict_askbob0126(
+
+    model_path = "/mnt/e/UbuntuFiles/models_saved/Qwen1.5-14B-Chat-GPTQ-Int4"
+    # run_qwen_predict_askbob0126(
+    #     model_path=model_path,
+    #     tokenizer_path=model_path,
+    #     post_fix="0320_askbob_stage1_qwen14b_gptq_int4",
+    #     peft_path="../../checkpoints/qwen/0320_askbob_stage1_qwen14b_gptq_int4",
+    #     dtype=torch.float16
+    # )
+    run_qwen_predict_askbob0126(
         model_path=model_path,
         tokenizer_path=model_path,
-        post_fix=post_fix,
-        peft_path=peft_path
+        post_fix="vanilla_qwen14b_gptq_int4",
+        peft_path=None,
+        dtype=torch.float16
     )
 
-    peft_path = "../../checkpoints/0313_askbob_alpaca_chatglm3_zh_mtl/"
-    post_fix = "0313_askbob_alpaca_chatglm3_zh_mtl"
-    run_chatglm_predict_askbob0126(
-        model_path=model_path,
-        tokenizer_path=model_path,
-        post_fix=post_fix,
-        peft_path=peft_path
-    )
+    # peft_path = "../../checkpoints/0313_askbob_alpaca_chatglm3_zh_mtl/"
+    # post_fix = "0313_askbob_alpaca_chatglm3_zh_mtl"
+    # run_chatglm_predict_askbob0126(
+    #     model_path=model_path,
+    #     tokenizer_path=model_path,
+    #     post_fix=post_fix,
+    #     peft_path=peft_path
+    # )
 
     # model_path = "/mnt/d/PycharmProjects/models/chatglm3-6b"
     # run_chatglm_predict_askbob0126(
