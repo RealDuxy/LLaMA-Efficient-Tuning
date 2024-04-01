@@ -42,6 +42,8 @@ def preprocess_jsonline(original_file, chatglm_file, is_train=True):
     print(f"alpaca共有{key}个问题")
     return combined_answer
 
+
+
 if __name__ == '__main__':
     train_data = preprocess_jsonline(original_file="../alpaca_gpt4_data_zh.json",
                                      chatglm_file="generated_predictions.jsonl",
