@@ -8,14 +8,18 @@ CUDA_VISIBLE_DEVICES=0 python ../../../src/train_bash.py \
     --dataset_dir ../../../data \
     --template default \
     --finetuning_type full \
-    --output_dir ../../../saves/LLaMA2-7B/galore/sft \
+    --use_badam \
+    --badam_switch_mode descending \
+    --badam_switch_block_every 50 \
+    --badam_verbose 2 \
+    --output_dir ../../../saves/LLaMA2-7B/badam/sft \
     --overwrite_cache \
     --overwrite_output_dir \
     --cutoff_len 1024 \
     --preprocessing_num_workers 16 \
     --per_device_train_batch_size 1 \
     --per_device_eval_batch_size 1 \
-    --gradient_accumulation_steps 1 \
+    --gradient_accumulation_steps 8 \
     --lr_scheduler_type cosine \
     --logging_steps 10 \
     --warmup_steps 20 \
@@ -28,4 +32,4 @@ CUDA_VISIBLE_DEVICES=0 python ../../../src/train_bash.py \
     --max_samples 3000 \
     --val_size 0.1 \
     --plot_loss \
-    --fp16
+    --pure_bf16
