@@ -1,8 +1,10 @@
+import copy
 from typing import TYPE_CHECKING, Any, Dict
 
 from transformers import AutoConfig, AutoModelForCausalLM, AutoTokenizer
 from trl import AutoModelForCausalLMWithValueHead
 
+from qwen2.modeling_qwen2 import EMOQwen2ForCausalLM
 from ..extras.constants import MOD_SUPPORTED_MODELS
 from ..extras.logging import get_logger
 from ..extras.misc import count_parameters, get_current_device, try_download_model_from_ms
@@ -102,8 +104,12 @@ def load_model(
 
         if model_args.mixture_of_depths == "load":
             from MoD import AutoMoDModelForCausalLM
-
             model = AutoMoDModelForCausalLM.from_pretrained(**init_kwargs)
+        elif finetuning_args.training_mode == "emo":
+            model = EMOQwen2ForCausalLM.from_pretrained(**init_kwargs)
+            cost_embedding = copy.deepcopy(model.lm_head.weight.data)
+            model.register_buffer("cost_embedding", cost_embedding)
+            logger.info(f'cost embedding registered, shape: {model.cost_embedding.shape}')
         else:
             model = AutoModelForCausalLM.from_pretrained(**init_kwargs)
 

@@ -96,11 +96,11 @@ class RLHFArguments:
 
     dpo_beta: float = field(
         default=0.1,
-        metadata={"help": "The beta parameter for the DPO loss."},
+        metadata={"help": "The beta parameter for the DPO loss.py."},
     )
     dpo_loss: Literal["sigmoid", "hinge", "ipo", "kto_pair"] = field(
         default="sigmoid",
-        metadata={"help": "The type of DPO loss to use."},
+        metadata={"help": "The type of DPO loss.py to use."},
     )
     dpo_label_smoothing: float = field(
         default=0.0,
@@ -108,11 +108,11 @@ class RLHFArguments:
     )
     dpo_ftx: float = field(
         default=0.0,
-        metadata={"help": "The supervised fine-tuning loss coefficient in DPO training."},
+        metadata={"help": "The supervised fine-tuning loss.py coefficient in DPO training."},
     )
     orpo_beta: float = field(
         default=0.1,
-        metadata={"help": "The beta (lambda) parameter in ORPO loss representing the weight of the SFT loss."},
+        metadata={"help": "The beta (lambda) parameter in ORPO loss.py representing the weight of the SFT loss.py."},
     )
     ppo_buffer_size: int = field(
         default=1,
@@ -272,9 +272,13 @@ class FinetuningArguments(FreezeArguments, LoraArguments, RLHFArguments, GaloreA
         default=False,
         metadata={"help": "Whether or not to make only the parameters in the expanded blocks trainable."},
     )
+    training_mode: str = field(
+        default="mle",
+        metadata={"help": "The training mode of the model."}
+    )
     plot_loss: bool = field(
         default=False,
-        metadata={"help": "Whether or not to save the training loss curves."},
+        metadata={"help": "Whether or not to save the training loss.py curves."},
     )
 
     def __post_init__(self):
@@ -300,7 +304,7 @@ class FinetuningArguments(FreezeArguments, LoraArguments, RLHFArguments, GaloreA
             raise ValueError("`reward_model_type` cannot be lora for Freeze/Full PPO training.")
 
         if self.stage == "dpo" and self.dpo_loss != "sigmoid" and self.dpo_label_smoothing > 1e-6:
-            raise ValueError("`dpo_label_smoothing` is only valid for sigmoid loss function.")
+            raise ValueError("`dpo_label_smoothing` is only valid for sigmoid loss.py function.")
 
         if self.use_llama_pro and self.finetuning_type == "full":
             raise ValueError("`use_llama_pro` is only valid for the Freeze or LoRA training.")
