@@ -17,7 +17,7 @@ from ..extras.logging import get_logger
 from ..extras.misc import get_current_device, infer_optim_dtype
 from ..extras.packages import is_flash_attn2_available
 from ..extras.patches.llama_patch import apply_llama_patch
-from ..extras.patches.mixtral_patch import patch_mixtral_replace_moe_impl
+# from ..extras.patches.mixtral_patch import patch_mixtral_replace_moe_impl
 from .utils import QuantizationMethod
 
 

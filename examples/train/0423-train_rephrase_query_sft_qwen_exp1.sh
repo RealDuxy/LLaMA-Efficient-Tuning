@@ -11,6 +11,7 @@ CUDA_VISIBLE_DEVICES=0 python  ../src/train_bash.py \
     --template qwen \
     --dataset_dir ../data \
     --finetuning_type lora \
+    --use_rslora False \
     --output_dir ../checkpoints/0423_rephrase_query_qwen_exp1 \
     --preprocessing_num_workers 32 \
     --val_size 0.1 \
@@ -21,7 +22,7 @@ CUDA_VISIBLE_DEVICES=0 python  ../src/train_bash.py \
     --lr_scheduler_type cosine \
     --lora_rank 16 \
     --lora_alpha 32 \
-    --lora_target all \
+    --lora_target q_proj,v_proj,k_proj,o_proj,down_proj,up_proj,gate_proj \
     --logging_steps 10 \
     --save_steps  80 \
     --eval_steps 80 \
@@ -32,5 +33,5 @@ CUDA_VISIBLE_DEVICES=0 python  ../src/train_bash.py \
     --plot_loss \
     --overwrite_output_dir \
     --cutoff_len 512  \
-    --bf16  \
+    --fp16  \
     --model_name_or_path /mnt/d/PycharmProjects/models/Qwen1.5-14B-Chat-GPTQ-Int4 \
