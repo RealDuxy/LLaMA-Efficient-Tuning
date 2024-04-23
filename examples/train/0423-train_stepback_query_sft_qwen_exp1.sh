@@ -7,12 +7,12 @@
 CUDA_VISIBLE_DEVICES=0 python  ../src/train_bash.py \
     --stage sft \
     --do_train \
-    --dataset rephrase_query_generation  \
+    --dataset stepback_query_generation  \
     --template qwen \
     --dataset_dir ../data \
     --finetuning_type lora \
     --use_rslora False \
-    --output_dir ../checkpoints/0423_rephrase_query_qwen_exp1 \
+    --output_dir ../checkpoints/0423_stepback_query_qwen_exp1 \
     --preprocessing_num_workers 32 \
     --val_size 0.1 \
     --overwrite_cache \
