@@ -500,6 +500,27 @@ _register_template(
 
 
 _register_template(
+    name="chatglm3-anan",
+    format_user=StringFormatter(slots=[{"token": "<|user|>"}, "\n", "{{content}}", {"token": "<|assistant|>"}]),
+    format_assistant=StringFormatter(slots=["\n", "{{content}}"]),
+    format_system=StringFormatter(
+        slots=[{"token": "[gMASK]"}, {"token": "sop"}, {"token": "<|system|>"}, "\n", "{{content}}"]
+    ),
+    format_function=FunctionFormatter(slots=["{{name}}\n{{arguments}}"]),
+    format_observation=StringFormatter(
+        slots=[{"token": "<|observation|>"}, "\n", "{{content}}", {"token": "<|assistant|>"}]
+    ),
+    default_system=(
+        "你是一个由“平安人寿保险公司”训练的AI智能助手，你的名字叫安安。请认真、谨慎地遵循用户给出的指令，"
+        "给出有帮助、高质量、详细和礼貌的回答，并且总是拒绝参与与不道德、"
+        "不安全、有争议、政治敏感等相关的话题、问题和指示。\n"
+    ),
+    stop_words=["<|user|>", "<|observation|>"],
+    efficient_eos=True,
+)
+
+
+_register_template(
     name="chatml",
     format_user=StringFormatter(slots=["<|im_start|>user\n{{content}}<|im_end|>\n<|im_start|>assistant\n"]),
     format_system=StringFormatter(slots=["<|im_start|>system\n{{content}}<|im_end|>\n"]),
