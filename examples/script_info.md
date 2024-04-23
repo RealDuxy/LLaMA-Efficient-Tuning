@@ -4,6 +4,13 @@
 时间-（分布式）-训练/预测-任务名-实验轮次
 
 ## 记录
+### 20240423
+- 0423-train-rephrase_query_sft_qwen_exp1.sh
+  - 模型：qwen1.5-14b-int4-gptq
+  - 任务：rephrase_query的sft训练
+  - 数据：gpt_4生成的rephrase query数据1k 
+  - 配置：4090 * 1
+
 ### 20240320
 - 0320-train-askbob_qa_sft-exp1.sh
   - 模型：qwen1.5-7B/14B GPTQ 8/4 bits
