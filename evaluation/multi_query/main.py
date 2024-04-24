@@ -13,7 +13,7 @@ import pandas as pd
 from tqdm import tqdm
 
 from evaluation.multi_query.base import BaseAgent
-from evaluation.multi_query.local_model_infer import get_chatglm_response
+from evaluation.multi_query.local_model_infer import get_chatglm_response, get_qwen_response
 
 
 def correct_list_str(list_str):
@@ -45,14 +45,16 @@ def extract_and_correct_list(text):
     else:
         return []
 
-def run_test1(data_path, post_fix, template_file):
-    stepback_agent = BaseAgent(template_file=template_file, model_invoke=get_chatglm_response)
-
+def run_test_for_multi_query_generation(data_path,
+                                        post_fix,
+                                        template_file,
+                                        model_invoke=get_qwen_response):
+    multiquery_agent = BaseAgent(template_file=template_file, model_invoke=model_invoke)
     df = pd.read_excel(data_path).to_dict("records")
     for i, line in tqdm(enumerate(df)):
         question = line["输入"]
         if isinstance(question, str):
-            output = stepback_agent.invoke(query=question)
+            output = multiquery_agent.invoke(query=question)
             response = extract_and_correct_list(output)
             if response == []:
                 print(f"current question: {question}")
@@ -68,9 +70,17 @@ def run_test1(data_path, post_fix, template_file):
     pd.DataFrame(df).to_excel(f"评估集0306_{post_fix}_output.xlsx", index=False)
 
 if __name__ == '__main__':
-
-    # run_test1(data_path="评估集0306.xlsx", post_fix="stepback_query_generation", template_file="stepback_new_forglm.json")
-    # run_test1(data_path="评估集0306.xlsx", post_fix="rephrase_query_generation", template_file="rephrase_new_forglm.json")
-    # run_test1(data_path="评估集0306.xlsx", post_fix="rephrase_query_generation_vanilla_chatglm", template_file="rephrase.json")
-    run_test1(data_path="评估集0306.xlsx", post_fix="stepback_query_generation", template_file="stepback_new_forglm.json")
-    run_test1(data_path="评估集0306.xlsx", post_fix="rephrase_query_generation", template_file="rephrase_new_forglm.json")
+    # qwen的rephrase
+    # mle训练
+    run_test_for_multi_query_generation(data_path="评估集0306.xlsx", post_fix="qwen_stepback_query_generation_mle",
+                                        template_file="./template/rephrase_0424.json")
+    # emo训练
+    run_test_for_multi_query_generation(data_path="评估集0306.xlsx", post_fix="qwen_stepback_query_generation_emo",
+                                        template_file="./template/rephrase_0424.json")
+    # qwen的stepback
+    # mle训练
+    run_test_for_multi_query_generation(data_path="评估集0306.xlsx", post_fix="qwen_stepback_query_generation_mle",
+                                        template_file="./template/stepback_0424.json")
+    # emo训练
+    run_test_for_multi_query_generation(data_path="评估集0306.xlsx", post_fix="qwen_stepback_query_generation_emo",
+                                        template_file="./template/stepback_0424.json")
