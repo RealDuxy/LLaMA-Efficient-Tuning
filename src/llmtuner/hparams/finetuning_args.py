@@ -272,7 +272,7 @@ class FinetuningArguments(FreezeArguments, LoraArguments, RLHFArguments, GaloreA
         default=False,
         metadata={"help": "Whether or not to make only the parameters in the expanded blocks trainable."},
     )
-    training_mode: str = field(
+    training_mode:  Literal["mle", "emo"] = field(
         default="mle",
         metadata={"help": "The training mode of the model."}
     )

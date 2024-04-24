@@ -71,4 +71,6 @@ if __name__ == '__main__':
 
     # run_test1(data_path="评估集0306.xlsx", post_fix="stepback_query_generation", template_file="stepback_new_forglm.json")
     # run_test1(data_path="评估集0306.xlsx", post_fix="rephrase_query_generation", template_file="rephrase_new_forglm.json")
-    run_test1(data_path="评估集0306.xlsx", post_fix="rephrase_query_generation_vanilla_chatglm", template_file="rephrase.json")
+    # run_test1(data_path="评估集0306.xlsx", post_fix="rephrase_query_generation_vanilla_chatglm", template_file="rephrase.json")
+    run_test1(data_path="评估集0306.xlsx", post_fix="stepback_query_generation", template_file="stepback_new_forglm.json")
+    run_test1(data_path="评估集0306.xlsx", post_fix="rephrase_query_generation", template_file="rephrase_new_forglm.json")

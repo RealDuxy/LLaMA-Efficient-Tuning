@@ -13,10 +13,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 """ Qwen2 model configuration"""
-
-from ...configuration_utils import PretrainedConfig
-from ...utils import logging
-
+from transformers import PretrainedConfig
+from transformers.utils import logging
 
 logger = logging.get_logger(__name__)
 

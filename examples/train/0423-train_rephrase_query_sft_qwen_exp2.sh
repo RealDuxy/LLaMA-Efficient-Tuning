@@ -7,11 +7,11 @@
 CUDA_VISIBLE_DEVICES=0 python  ../src/train_bash.py \
     --stage sft \
     --do_train \
-    --training_mode emo \
     --dataset rephrase_query_generation  \
     --template qwen \
     --dataset_dir ../data \
     --finetuning_type lora \
+    --training_mode emo \
     --use_rslora False \
     --output_dir ../checkpoints/0423_rephrase_query_qwen_exp2 \
     --preprocessing_num_workers 32 \

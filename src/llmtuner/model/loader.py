@@ -4,7 +4,7 @@ from typing import TYPE_CHECKING, Any, Dict
 from transformers import AutoConfig, AutoModelForCausalLM, AutoTokenizer
 from trl import AutoModelForCausalLMWithValueHead
 
-from qwen2.modeling_qwen2 import EMOQwen2ForCausalLM
+from ..qwen2 import EMOQwen2ForCausalLM
 from ..extras.constants import MOD_SUPPORTED_MODELS
 from ..extras.logging import get_logger
 from ..extras.misc import count_parameters, get_current_device, try_download_model_from_ms

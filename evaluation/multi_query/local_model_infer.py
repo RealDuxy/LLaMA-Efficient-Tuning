@@ -52,16 +52,16 @@ def load_models(model_path, peft_path=None):
         model_path, trust_remote_code=True
     )
 
-    model = prepare_model_for_half_training(model,
-                                            use_gradient_checkpointing=False,
-                                            output_embedding_layer_name="lm_head",  # output_layer
-                                            layer_norm_names=["post_attention_layernorm",
-                                                              "final_layernorm",
-                                                              "input_layernorm",
-                                                              ])
-    model.is_parallelizable = True
-    model.model_parallel = True
-    model.config.use_cache = True
+    # model = prepare_model_for_half_training(model,
+    #                                         use_gradient_checkpointing=False,
+    #                                         output_embedding_layer_name="lm_head",  # output_layer
+    #                                         layer_norm_names=["post_attention_layernorm",
+    #                                                           "final_layernorm",
+    #                                                           "input_layernorm",
+    #                                                           ])
+    # model.is_parallelizable = True
+    # model.model_parallel = True
+    # model.config.use_cache = True
     if peft_path:
         print(f"加载adapter: {peft_path}")
         model = PeftModel.from_pretrained(model, peft_path)
@@ -73,9 +73,10 @@ def load_models(model_path, peft_path=None):
 model, tokenizer = load_models(model_path)
 
 
-@retry(wait=wait_random_exponential(multiplier=1, max=40), stop=stop_after_attempt(10))
 def get_chatglm_response(messages):
     prompt = messages[-1]["content"]
     history = messages[:-1]
     output, history = model.chat(tokenizer, prompt, history=history, temperature=0.1)
     return output
+
+
