@@ -1,11 +1,14 @@
 from contextlib import nullcontext
+from typing import Dict, Any
 
 import requests
 import torch
 from peft import PeftModel
 from pydantic import BaseModel, Field
 from tenacity import wait_random_exponential, retry, stop_after_attempt
-from transformers import AutoTokenizer, AutoModelForCausalLM
+from transformers import AutoTokenizer, AutoModelForCausalLM, AutoConfig
+
+from llmtuner.model.utils import QuantizationMethod
 
 model_path = "/mnt/d/PycharmProjects/models/chatglm3-6b/"
 adapater_path = "../../checkpoints/stepback_rephrase_query_generation_exp2"
@@ -48,6 +51,15 @@ def load_models(model_path, peft_path=None):
     # 加载模型
     tokenizer = AutoTokenizer.from_pretrained(model_path, trust_remote_code=True)  # , trust_remote_code=True
     # model = AutoModel.from_pretrained(MODEL_PATH, device_map="auto", trust_remote_code=True).eval()#, trust_remote_code=True
+    # 加载config
+    config = AutoConfig.from_pretrained(model_path)
+    if getattr(config, "quantization_config", None):
+        quantization_config: Dict[str, Any] = getattr(config, "quantization_config", None)
+        quant_method = quantization_config.get("quant_method", "")
+
+        if quant_method == QuantizationMethod.GPTQ:
+            quantization_config["use_exllama"] = False
+
     model = AutoModelForCausalLM.from_pretrained(
         model_path, trust_remote_code=True
     )
