@@ -48,8 +48,11 @@ def extract_and_correct_list(text):
 def run_test_for_multi_query_generation(data_path,
                                         post_fix,
                                         template_file,
+                                        model_path,
+                                        peft_path,
                                         model_invoke=get_qwen_response):
-    multiquery_agent = BaseAgent(template_file=template_file, model_invoke=model_invoke)
+
+    multiquery_agent = BaseAgent(template_file=template_file, model_invoke=model_invoke, model_path=model_path, peft_path=peft_path)
     df = pd.read_excel(data_path).to_dict("records")
     for i, line in tqdm(enumerate(df)):
         question = line["输入"]
@@ -71,16 +74,30 @@ def run_test_for_multi_query_generation(data_path,
 
 if __name__ == '__main__':
     # qwen的rephrase
-    # mle训练
-    run_test_for_multi_query_generation(data_path="评估集0306.xlsx", post_fix="qwen_stepback_query_generation_mle",
-                                        template_file="./template/rephrase_0424.json")
+    # # vanilla
+    model_path = "/mnt/d/PycharmProjects/models/Qwen1.5-14B-Chat-GPTQ-Int4/"
+    # peft_path = None
+    # run_test_for_multi_query_generation(data_path="评估集0306.xlsx", post_fix="qwen_rephrase_query_generation_vanilla",
+    #                                     template_file="./template/rephrase.json", model_path=model_path, peft_path=peft_path)
+    # # mle训练
+    # peft_path = "../../checkpoints/0423_rephrase_query_qwen_exp1"
+    # run_test_for_multi_query_generation(data_path="评估集0306.xlsx", post_fix="qwen_rephrase_query_generation_mle",
+    #                                     template_file="./template/rephrase_0424.json")
     # emo训练
-    run_test_for_multi_query_generation(data_path="评估集0306.xlsx", post_fix="qwen_stepback_query_generation_emo",
-                                        template_file="./template/rephrase_0424.json")
+    # peft_path = "../../checkpoints/0423_rephrase_query_qwen_exp2"
+    # run_test_for_multi_query_generation(data_path="评估集0306.xlsx", post_fix="qwen_rephrase_query_generation_emo",
+    #                                     template_file="./template/rephrase_0424.json", model_path=model_path, peft_path=peft_path)
+
     # qwen的stepback
-    # mle训练
-    run_test_for_multi_query_generation(data_path="评估集0306.xlsx", post_fix="qwen_stepback_query_generation_mle",
-                                        template_file="./template/stepback_0424.json")
+    # vanilla
+    # peft_path = None
+    # run_test_for_multi_query_generation(data_path="评估集0306.xlsx", post_fix="qwen_stepback_query_generation_vanilla",
+    #                                     template_file="./template/stepback.json", model_path=model_path, peft_path=peft_path)
+    # # mle训练
+    # peft_path = "../../checkpoints/0423_stepback_query_qwen_exp1"
+    # run_test_for_multi_query_generation(data_path="评估集0306.xlsx", post_fix="qwen_stepback_query_generation_mle",
+    #                                     template_file="./template/stepback_0424.json", model_path=model_path, peft_path=peft_path)
     # emo训练
+    peft_path = "../../checkpoints/0423_stepback_query_qwen_exp2"
     run_test_for_multi_query_generation(data_path="评估集0306.xlsx", post_fix="qwen_stepback_query_generation_emo",
-                                        template_file="./template/stepback_0424.json")
+                                        template_file="./template/stepback_0424.json", model_path=model_path, peft_path=peft_path)

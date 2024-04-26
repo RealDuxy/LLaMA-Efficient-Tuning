@@ -15,11 +15,14 @@ from typing import List
 
 from tqdm import tqdm
 
+from evaluation.multi_query.local_model_infer import load_models
+
 
 class BaseAgent:
-    def __init__(self, template_file: str, model_invoke):
+    def __init__(self, template_file: str, model_invoke, model_path ,peft_path):
         self.templates = json.load(open(template_file, "r", encoding="utf-8"))
         self.model_invoke = model_invoke
+        self.model, self.tokenizer = load_models(model_path,peft_path)
 
     def assemble_messages(self, **kwargs):
         chat_templates = deepcopy(self.templates)
@@ -41,7 +44,7 @@ class BaseAgent:
 
     def invoke(self, **kwargs):
         messages = self.assemble_messages(**kwargs)
-        response = self.model_invoke(messages)
+        response = self.model_invoke(messages, self.model, self.tokenizer)
         return response
 
     def para_invoke(self, input_kwargs, max_workers=4):

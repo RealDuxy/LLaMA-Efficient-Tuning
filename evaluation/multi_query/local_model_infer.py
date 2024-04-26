@@ -1,3 +1,4 @@
+import os
 from contextlib import nullcontext
 from typing import Dict, Any
 
@@ -10,8 +11,9 @@ from transformers import AutoTokenizer, AutoModelForCausalLM, AutoConfig
 
 from llmtuner.model.utils import QuantizationMethod
 
-model_path = "/mnt/d/PycharmProjects/models/chatglm3-6b/"
-adapater_path = "../../checkpoints/stepback_rephrase_query_generation_exp2"
+# model_path = "/mnt/d/PycharmProjects/models/Qwen1.5-14B-Chat-GPTQ-Int4/"
+# # peft_path = "../../checkpoints/0423_rephrase_query_qwen_exp1"
+# peft_path = None
 
 
 def load_models(model_path, peft_path=None):
@@ -50,9 +52,11 @@ def load_models(model_path, peft_path=None):
 
     # 加载模型
     tokenizer = AutoTokenizer.from_pretrained(model_path, trust_remote_code=True)  # , trust_remote_code=True
+    # 加載config
     # model = AutoModel.from_pretrained(MODEL_PATH, device_map="auto", trust_remote_code=True).eval()#, trust_remote_code=True
     # 加载config
     config = AutoConfig.from_pretrained(model_path, trust_remote_code=True)
+
     if getattr(config, "quantization_config", None):
         quantization_config: Dict[str, Any] = getattr(config, "quantization_config", None)
         quant_method = quantization_config.get("quant_method", "")
@@ -61,7 +65,10 @@ def load_models(model_path, peft_path=None):
             quantization_config["use_exllama"] = False
 
     model = AutoModelForCausalLM.from_pretrained(
-        model_path, trust_remote_code=True
+        config=config,
+        pretrained_model_name_or_path=model_path,
+        trust_remote_code=True,
+        device_map="auto"
     )
 
     # model = prepare_model_for_half_training(model,
@@ -73,20 +80,18 @@ def load_models(model_path, peft_path=None):
     #                                                           ])
     # model.is_parallelizable = True
     # model.model_parallel = True
-    # model.config.use_cache = True
+    model.config.use_cache = True
     if peft_path:
         print(f"加载adapter: {peft_path}")
-        model = PeftModel.from_pretrained(model, peft_path)
-    model = model.cuda(0)
+        model = PeftModel.from_pretrained(model, peft_path, device_map="auto")
+    # model = model.cuda(0)
     return model, tokenizer
 
 
 # model, tokenizer = load_models(model_path, adapter_path)
-model, tokenizer = load_models(model_path)
-
 
 @retry(wait=wait_random_exponential(multiplier=1, max=40), stop=stop_after_attempt(10))
-def get_chatglm_response(messages):
+def get_chatglm_response(messages, model, tokenizer):
     prompt = messages[-1]["content"]
     history = messages[:-1]
     output, history = model.chat(tokenizer, prompt, history=history, temperature=0.1)
@@ -94,8 +99,8 @@ def get_chatglm_response(messages):
 
 
 @retry(wait=wait_random_exponential(multiplier=1, max=40), stop=stop_after_attempt(10))
-def get_qwen_response(messages):
-    device="cuda"
+def get_qwen_response(messages, model, tokenizer):
+    device="cuda:0"
     text = tokenizer.apply_chat_template(
         messages,
         tokenize=False,
