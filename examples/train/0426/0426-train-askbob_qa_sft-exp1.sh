@@ -32,8 +32,8 @@ CUDA_VISIBLE_DEVICES=0 python  ../src/train_bash.py \
     --overwrite_output_dir \
     --cutoff_len 3000  \
     --fp16 \
-    --save_steps 88 \
-    --eval_steps 88 \
+    --save_steps 44 \
+    --eval_steps 44 \
     --evaluation_strategy steps \
     --load_best_model_at_end \
     --model_name_or_path /mnt/e/UbuntuFiles/models_saved/Qwen1.5-14B-Chat-GPTQ-Int4
