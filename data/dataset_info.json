@@ -141,6 +141,21 @@
       "tools": "tools"
     }
   },
+  "mllm_demo": {
+    "file_name": "mllm_demo.json",
+    "file_sha1": "b6709b23657d5c42a701f1c5574f3a6edaa40a20",
+    "formatting": "sharegpt",
+    "columns": {
+      "messages": "messages",
+      "images": "images"
+    },
+    "tags": {
+      "role_tag": "role",
+      "content_tag": "content",
+      "user_tag": "user",
+      "assistant_tag": "assistant"
+    }
+  },
   "example": {
     "script_url": "example_dataset",
     "columns": {
@@ -281,6 +296,7 @@
   "ultrachat_200k": {
     "hf_hub_url": "HuggingFaceH4/ultrachat_200k",
     "ms_hub_url": "AI-ModelScope/ultrachat_200k",
+    "formatting": "sharegpt",
     "columns": {
       "messages": "messages"
     },
@@ -289,8 +305,7 @@
       "content_tag": "content",
       "user_tag": "user",
       "assistant_tag": "assistant"
-    },
-    "formatting": "sharegpt"
+    }
   },
   "agent_instruct": {
     "hf_hub_url": "THUDM/AgentInstruct",
@@ -300,6 +315,7 @@
   "lmsys_chat": {
     "hf_hub_url": "lmsys/lmsys-chat-1m",
     "ms_hub_url": "AI-ModelScope/lmsys-chat-1m",
+    "formatting": "sharegpt",
     "columns": {
       "messages": "conversation"
     },
@@ -308,8 +324,7 @@
       "content_tag": "content",
       "user_tag": "human",
       "assistant_tag": "assistant"
-    },
-    "formatting": "sharegpt"
+    }
   },
   "evol_instruct": {
     "hf_hub_url": "WizardLM/WizardLM_evol_instruct_V2_196k",
@@ -436,7 +451,7 @@
       "history": "history"
     }
   },
-  "orca_dpo_de" : {
+  "orca_dpo_de": {
     "hf_hub_url": "mayflowergmbh/intel_orca_dpo_pairs_de",
     "ranking": true
   },
