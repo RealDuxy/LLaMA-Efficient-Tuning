@@ -2,8 +2,8 @@
 
 # This is multi-task learning with mixed training data in one-step training.
 
-#MODEL_PATH=/mnt/e/UbuntuFiles/models_saved/Qwen1.5-14B-Chat-GPTQ-Int4
-MODEL_PATH=/mnt/d/PycharmProjects/models/Qwen1.5-14B-Chat-GPTQ-Int4
+MODEL_PATH=/mnt/e/UbuntuFiles/models_saved/Qwen1.5-14B-Chat-GPTQ-Int4
+#MODEL_PATH=/mnt/d/PycharmProjects/models/Qwen1.5-14B-Chat-GPTQ-Int4
 
 
 
@@ -34,7 +34,7 @@ CUDA_VISIBLE_DEVICES=0 python  ../src/train_bash.py \
     --num_train_epochs 3.0 \
     --plot_loss \
     --overwrite_output_dir \
-    --cutoff_len 1200  \
+    --cutoff_len 1300  \
     --fp16 \
     --save_steps 70 \
     --eval_steps 70 \

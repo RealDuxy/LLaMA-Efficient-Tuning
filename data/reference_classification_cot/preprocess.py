@@ -9,7 +9,7 @@ import pandas as pd
 from tqdm import tqdm
 from transformers import AutoTokenizer
 
-from data.references_classify_cot.util import describe
+from util import describe
 
 # # 20230101
 # template = """```
@@ -121,7 +121,8 @@ def preprocess_jsonl_data_and_convert_to_dataset(file_name: [List[str], str], de
 
         messages = [
             {"role": "system", "content": "You are a helpful assistant."},
-            {"role": "user", "content": tokenized_prompt}
+            {"role": "user", "content": tokenized_prompt},
+            {"role": "assistant", "content": output}
         ]
         text = tokenizer.apply_chat_template(
             messages,
