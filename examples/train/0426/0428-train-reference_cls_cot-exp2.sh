@@ -23,9 +23,9 @@ CUDA_VISIBLE_DEVICES=1 python  ../src/train_bash.py \
     --val_size 0.1 \
     --output_dir ../checkpoints/qwen/0428_reference_classification_cot_qwen14b_gptq_int4_exp2 \
     --preprocessing_num_workers 64 \
-    --per_device_train_batch_size 4 \
+    --per_device_train_batch_size 2 \
     --per_device_eval_batch_size 8 \
-    --gradient_accumulation_steps 16 \
+    --gradient_accumulation_steps 32 \
     --lr_scheduler_type cosine \
     --lora_rank 16 \
     --lora_alpha 32 \
