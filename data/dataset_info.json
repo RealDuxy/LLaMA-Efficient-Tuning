@@ -72,8 +72,8 @@
       "history": "history"
     }
   },
-  "references_classify_cot": {
-    "script_url": "references_classify_cot",
+  "reference_classification_cot": {
+    "script_url": "reference_classification_cot",
     "columns": {
       "system": "system",
       "prompt": "instruction",

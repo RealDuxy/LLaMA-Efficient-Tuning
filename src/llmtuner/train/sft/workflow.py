@@ -10,7 +10,7 @@ from ...extras.misc import get_logits_processor
 from ...extras.ploting import plot_loss
 from ...model import load_model, load_tokenizer
 from ..utils import create_modelcard_and_push
-from .metric import ComputeMetrics
+from .metric import ComputeMetrics, ComputeCLSMetrics
 from .trainer import CustomSeq2SeqTrainer
 
 
@@ -58,7 +58,7 @@ def run_sft(
         tokenizer=tokenizer,
         data_collator=data_collator,
         callbacks=callbacks,
-        compute_metrics=ComputeMetrics(tokenizer) if training_args.predict_with_generate else None,
+        compute_metrics=ComputeCLSMetrics(tokenizer) if training_args.predict_with_generate else None,
         **split_dataset(dataset, data_args, training_args),
     )
 

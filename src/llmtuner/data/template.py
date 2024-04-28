@@ -802,6 +802,7 @@ _register_template(
 )
 
 
+
 _register_template(
     name="solar",
     format_user=StringFormatter(slots=["### User:\n{{content}}\n\n### Assistant:\n"]),
