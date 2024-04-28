@@ -1,13 +1,11 @@
-import copy
-from typing import TYPE_CHECKING, Any, Dict, Optional, TypedDict
+from typing import Optional, TypedDict
 import copy
 from typing import TYPE_CHECKING, Any, Dict
 
 from transformers import AutoConfig, AutoModelForCausalLM, AutoModelForVision2Seq, AutoProcessor, AutoTokenizer
 from trl import AutoModelForCausalLMWithValueHead
 
-from ..qwen2 import EMOQwen2ForCausalLM
-from ..extras.constants import MOD_SUPPORTED_MODELS
+from qwen2 import EMOQwen2ForCausalLM
 from ..extras.logging import get_logger
 from ..extras.misc import count_parameters, try_download_model_from_ms
 from .adapter import init_adapter
