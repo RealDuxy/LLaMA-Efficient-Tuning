@@ -1,2 +1,4 @@
 # Auto detect text files and perform LF normalization
 * text=auto
+data/references_classify_cot/train_references_classify_cot_0415.json filter=lfs diff=lfs merge=lfs -text
+data/references_classify_cot/eval_references_classify_cot_0415.json filter=lfs diff=lfs merge=lfs -text
