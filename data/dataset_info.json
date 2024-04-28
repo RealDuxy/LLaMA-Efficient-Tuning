@@ -72,6 +72,16 @@
       "history": "history"
     }
   },
+  "references_classify_cot": {
+    "script_url": "references_classify_cot",
+    "columns": {
+      "system": "system",
+      "prompt": "instruction",
+      "query": "input",
+      "response": "output",
+      "history": "history"
+    }
+  },
   "askbob_qa_comparison": {
     "file_name": "askbob_0321_4k_comparison.json",
     "columns": {

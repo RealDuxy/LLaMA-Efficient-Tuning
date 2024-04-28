@@ -83,9 +83,12 @@ def split_dataset(
                 train_set = dataset.skip(int(data_args.val_size))
                 return {"train_dataset": train_set, "eval_dataset": val_set}
             else:
-                val_size = int(data_args.val_size) if data_args.val_size > 1 else data_args.val_size
-                dataset = dataset.train_test_split(test_size=val_size, seed=training_args.seed)
-                return {"train_dataset": dataset["train"], "eval_dataset": dataset["test"]}
+                if "test" in dataset:
+                    return {"train_dataset": dataset["train"], "eval_dataset": dataset["test"]}
+                else:
+                    val_size = int(data_args.val_size) if data_args.val_size > 1 else data_args.val_size
+                    dataset = dataset.train_test_split(test_size=val_size, seed=training_args.seed)
+                    return {"train_dataset": dataset["train"], "eval_dataset": dataset["test"]}
         else:
             if data_args.streaming:
                 dataset = dataset.shuffle(buffer_size=data_args.buffer_size, seed=training_args.seed)

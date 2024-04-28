@@ -1,10 +1,13 @@
+import re
 from dataclasses import dataclass
-from typing import TYPE_CHECKING, Dict, Sequence, Tuple, Union
+from typing import TYPE_CHECKING, Dict, Sequence, Tuple, Union, List
 
 import numpy as np
 
 from ...extras.constants import IGNORE_INDEX
 from ...extras.packages import is_jieba_available, is_nltk_available, is_rouge_available
+
+from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score
 
 
 if TYPE_CHECKING:
@@ -58,3 +61,52 @@ class ComputeMetrics:
             score_dict["bleu-4"].append(round(bleu_score * 100, 4))
 
         return {k: float(np.mean(v)) for k, v in score_dict.items()}
+
+class ComputeCLSMetrics:
+    r"""
+    Wraps the tokenizer into metric functions, used in Seq2SeqPeftTrainer.
+    """
+
+    tokenizer: "PreTrainedTokenizer"
+
+    def extract_type(self, content_type_answer):
+        for t in ["A", "B", "C", "D", "E", "X"]:
+            content_type_answer = content_type_answer.replace(f"类型{t}", t)
+        match = re.search(r'##\s*answer\s*[:：]\s*([^\n ]+)', content_type_answer, re.IGNORECASE)
+        if match:
+            answer = match.group(1)
+        else:
+            answer = "X"
+
+        if answer not in ["A", "B", "C", "D", "E"]:
+            answer = "X"
+        return answer
+
+    def __call__(self, eval_preds: Sequence[Union[np.ndarray, Tuple[np.ndarray]]]) -> Dict[str, float]:
+        r"""
+        Uses the model predictions to compute metrics.
+        """
+        preds, labels = eval_preds
+        # score_dict = {"accuracy": [], "precision": [], "recall": [], "micro_f1": []}
+
+        preds = np.where(preds != IGNORE_INDEX, preds, self.tokenizer.pad_token_id)
+        labels = np.where(labels != IGNORE_INDEX, labels, self.tokenizer.pad_token_id)
+
+        decoded_preds = self.tokenizer.batch_decode(preds, skip_special_tokens=True)
+        decoded_labels = self.tokenizer.batch_decode(labels, skip_special_tokens=True)
+
+        hypothesis_types = [self.extract_type(pred) for pred in decoded_preds]
+        reference_types = [self.extract_type(label) for label in decoded_labels]
+
+        accuracy = accuracy_score(reference_types, hypothesis_types)
+
+        # 计算精确率、召回率和F1得分（micro）
+        precision_micro = precision_score(reference_types, hypothesis_types, average='micro')
+        recall_micro = recall_score(reference_types, hypothesis_types, average='micro')
+        f1_micro = f1_score(reference_types, hypothesis_types, average='micro')
+
+        return {"accuracy": accuracy, "precision": precision_micro, "recall": recall_micro, "micro_f1": f1_micro}
+
+
+
+
