@@ -3,9 +3,12 @@ import random
 import re
 from typing import List
 
+import numpy as np
 import pandas as pd
 from tqdm import tqdm
 from transformers import AutoTokenizer
+
+from data.references_classify_cot.util import describe
 
 # # 20230101
 # template = """```
@@ -26,6 +29,8 @@ generate_answer_prompt = "保险参考资料：\n```\n{context}\n```\n问题：{
 
 system = "you are a helpful insurance assistant."
 
+# 加载Qwen的Tokenizer
+tokenizer = AutoTokenizer.from_pretrained("Qwen/Qwen1.5-14B-Chat")
 
 def correct_json_str(json_str):
     "修正可能错误的json string"
@@ -68,11 +73,25 @@ def preprocess_jsonl_data_and_convert_to_dataset(file_name: [List[str], str], de
     else:
         raise ValueError("file_name must be a string or a list of strings")
 
-    random.shuffle(data_list)
+    # 计算data_list的采样权重，item["type"] = D or E 的 权重比 A,B,C 大2倍
+    weight = []
+    for item in data_list:
+        if item["type"] in ["D", "E"]:
+            weight.append(2)
+        else:
+            weight.append(1)
+    weight = np.array(weight)
+    weight = weight / weight.sum()
+
+    # 从data_list中采样5k
+    data_list = np.random.choice(data_list, 5000, p=weight, replace=False)
+
     train_nums = int(len(data_list) * (1 - dev_ratio))
 
     print(f"Load train: {train_nums} data from {file_name}")
     print(f"Load dev: {len(data_list) - train_nums} data from {file_name}")
+
+    token_lengths = []
 
     for i, data in tqdm(enumerate(data_list)):
         question = data["question"]
@@ -81,6 +100,20 @@ def preprocess_jsonl_data_and_convert_to_dataset(file_name: [List[str], str], de
         type = data["type"]
         # prompt = generate_answer_prompt.format(**{"question": question, "context": context})
         prompt = generate_answer_prompt.replace("{context}", context).replace("{question}", question)
+
+        messages = [
+            {"role": "system", "content": "You are a helpful assistant."},
+            {"role": "user", "content": prompt}
+        ]
+        text = tokenizer.apply_chat_template(
+            messages,
+            tokenize=False,
+            add_generation_prompt=True
+        )
+        model_inputs = tokenizer([text], return_tensors="pt").input_ids[0]
+
+        token_lengths.append(len(model_inputs))
+
         if i <= train_nums:
             train_datas.append({
                 "system": system,
@@ -98,6 +131,7 @@ def preprocess_jsonl_data_and_convert_to_dataset(file_name: [List[str], str], de
                 'history': []
             })
 
+    print(describe(token_lengths))
     return train_datas, dev_datas
 
 
@@ -107,8 +141,8 @@ if __name__ == '__main__':
     print("done")
     print(f"train datasets: {len(train_datas)}")
     print(f"eval datasets: {len(dev_datas)}")
-    json.dump(train_datas, open("train_references_classify_cot_0415.json", "w"), ensure_ascii=False, indent=4)
-    json.dump(dev_datas, open("eval_references_classify_cot_0415.json", "w"), ensure_ascii=False, indent=4)
+    # json.dump(train_datas, open("train_references_classify_cot_0415.json", "w"), ensure_ascii=False, indent=4)
+    # json.dump(dev_datas, open("eval_references_classify_cot_0415.json", "w"), ensure_ascii=False, indent=4)
     # json.dump(dev_datas, open("dev_askbob_0222_ft.json", "w"), ensure_ascii=False, indent=4)
 
     # train_datas, dev_datas = preprocess_askbob_data("rag_dataset_0201.json", replace_slash=False, shuffle_context=False)
