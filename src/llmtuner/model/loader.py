@@ -129,7 +129,6 @@ def load_model(
             cost_embedding = copy.deepcopy(model.lm_head.weight.data)
             model.register_buffer("cost_embedding", cost_embedding)
             logger.info(f'cost embedding registered, shape: {model.cost_embedding.shape}')
-            model = load_mod_pretrained_model(**init_kwargs)
         elif model_args.visual_inputs:
             model = AutoModelForVision2Seq.from_pretrained(**init_kwargs)
         else:
