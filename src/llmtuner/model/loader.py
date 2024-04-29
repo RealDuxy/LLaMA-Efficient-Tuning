@@ -1,13 +1,11 @@
-import copy
-from typing import TYPE_CHECKING, Any, Dict, Optional, TypedDict
+from typing import Optional, TypedDict
 import copy
 from typing import TYPE_CHECKING, Any, Dict
 
 from transformers import AutoConfig, AutoModelForCausalLM, AutoModelForVision2Seq, AutoProcessor, AutoTokenizer
 from trl import AutoModelForCausalLMWithValueHead
 
-from ..qwen2 import EMOQwen2ForCausalLM
-from ..extras.constants import MOD_SUPPORTED_MODELS
+from qwen2 import EMOQwen2ForCausalLM
 from ..extras.logging import get_logger
 from ..extras.misc import count_parameters, try_download_model_from_ms
 from .adapter import init_adapter
@@ -131,7 +129,6 @@ def load_model(
             cost_embedding = copy.deepcopy(model.lm_head.weight.data)
             model.register_buffer("cost_embedding", cost_embedding)
             logger.info(f'cost embedding registered, shape: {model.cost_embedding.shape}')
-            model = load_mod_pretrained_model(**init_kwargs)
         elif model_args.visual_inputs:
             model = AutoModelForVision2Seq.from_pretrained(**init_kwargs)
         else:
