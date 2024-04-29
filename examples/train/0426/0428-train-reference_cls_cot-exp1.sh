@@ -22,9 +22,9 @@ CUDA_VISIBLE_DEVICES=0 python  ../src/train_bash.py \
     --val_size 0.1 \
     --output_dir ../checkpoints/qwen/0428_reference_classification_cot_qwen14b_gptq_int4_exp1 \
     --preprocessing_num_workers 64 \
-    --per_device_train_batch_size 4 \
+    --per_device_train_batch_size 2 \
     --per_device_eval_batch_size 8 \
-    --gradient_accumulation_steps 16 \
+    --gradient_accumulation_steps 4 \
     --lr_scheduler_type cosine \
     --lora_rank 16 \
     --lora_alpha 32 \
@@ -36,8 +36,8 @@ CUDA_VISIBLE_DEVICES=0 python  ../src/train_bash.py \
     --overwrite_output_dir \
     --cutoff_len 1300  \
     --fp16 \
-    --save_steps 30 \
-    --eval_steps 30 \
+    --save_steps 60 \
+    --eval_steps 60 \
     --evaluation_strategy steps \
     --load_best_model_at_end \
     --model_name_or_path $MODEL_PATH \
