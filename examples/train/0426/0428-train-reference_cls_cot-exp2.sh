@@ -37,8 +37,8 @@ CUDA_VISIBLE_DEVICES=1 python  ../src/train_bash.py \
     --overwrite_output_dir \
     --cutoff_len 1300  \
     --fp16 \
-    --save_steps 60 \
-    --eval_steps 60 \
+    --save_steps 253 \
+    --eval_steps 253 \
     --evaluation_strategy steps \
     --load_best_model_at_end \
     --model_name_or_path $MODEL_PATH \
