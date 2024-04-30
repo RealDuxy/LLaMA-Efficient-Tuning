@@ -98,6 +98,13 @@ class ComputeCLSMetrics:
         decoded_preds = self.tokenizer.batch_decode(preds, skip_special_tokens=True)
         decoded_labels = self.tokenizer.batch_decode(labels, skip_special_tokens=True)
 
+        print(f"="*30)
+        print(f"prediction:")
+        print(decoded_preds[0])
+        print(f"labels:")
+        print(decoded_labels[0])
+        print(f"=" * 30)
+
         hypothesis_types = [self.extract_type(pred) for pred in decoded_preds]
         reference_types = [self.extract_type(label) for label in decoded_labels]
 
