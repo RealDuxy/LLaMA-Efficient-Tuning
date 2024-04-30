@@ -20,6 +20,6 @@ CUDA_VISIBLE_DEVICES=1 python  ../src/train_bash.py \
     --overwrite_cache \
     --cutoff_len 1300  \
     --preprocessing_num_workers 32 \
-    --per_device_eval_batch_size 1 \
+    --per_device_eval_batch_size 2 \
     --model_name_or_path $MODEL_PATH \
     --predict_with_generate
