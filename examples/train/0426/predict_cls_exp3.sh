@@ -1,7 +1,7 @@
 #!/bin/bash
 
-#MODEL_PATH=/mnt/e/UbuntuFiles/models_saved/Qwen1.5-14B-Chat-GPTQ-Int4
-MODEL_PATH=/mnt/d/PycharmProjects/models/Qwen1.5-14B-Chat-GPTQ-Int4
+MODEL_PATH=/mnt/e/UbuntuFiles/models_saved/Qwen1.5-14B-Chat-GPTQ-Int4
+#MODEL_PATH=/mnt/d/PycharmProjects/models/Qwen1.5-14B-Chat-GPTQ-Int4
 
 # exp1 qwen14b
 # single gpus single  experiment
