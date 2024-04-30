@@ -6,7 +6,7 @@ MODEL_PATH=/mnt/e/UbuntuFiles/models_saved/Qwen1.5-14B-Chat-GPTQ-Int4
 # exp1 qwen14b
 # single gpus single  experiment
 # askbob max_source_length does not have to be 3000, it's just for test.
-CUDA_VISIBLE_DEVICES=2 python  ../src/train_bash.py \
+CUDA_VISIBLE_DEVICES=3 python  ../src/train_bash.py \
     --stage sft \
     --do_predict \
     --template qwen \
