@@ -10,8 +10,8 @@ _LICENSE = ""
 _URL = "./"
 
 _URLS = {
-    "train": _URL + "train_references_classify_cot_0415.json",
-    "test": _URL + "eval_references_classify_cot_0415.json",
+    "test": _URL + "train_references_classify_cot_0415.json",
+    "train": _URL + "eval_references_classify_cot_0415.json",
 }
 
 class NormalQADataset(datasets.GeneratorBasedBuilder):

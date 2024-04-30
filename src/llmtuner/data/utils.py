@@ -91,4 +91,5 @@ def split_dataset(
                 dataset = dataset.shuffle(buffer_size=data_args.buffer_size, seed=training_args.seed)
             return {"train_dataset": dataset}
     else:  # do_eval or do_predict
+        logger.info(f"current dataset: {dataset}")
         return {"eval_dataset": dataset}
