@@ -1,7 +1,7 @@
 #!/bin/bash
 
-MODEL_PATH=/mnt/e/UbuntuFiles/models_saved/Qwen1.5-14B-Chat-GPTQ-Int4
-#MODEL_PATH=/mnt/d/PycharmProjects/models/Qwen1.5-14B-Chat-GPTQ-Int4
+#MODEL_PATH=/mnt/e/UbuntuFiles/models_saved/Qwen1.5-14B-Chat-GPTQ-Int4
+MODEL_PATH=/mnt/d/PycharmProjects/models/Qwen1.5-14B-Chat-GPTQ-Int4
 
 # exp1 qwen14b
 # single gpus single  experiment
@@ -21,6 +21,6 @@ CUDA_VISIBLE_DEVICES=0 python  ../src/train_bash.py \
     --cutoff_len 1300  \
     --max_samples 20 \
     --preprocessing_num_workers 32 \
-    --per_device_eval_batch_size 3 \
+    --per_device_eval_batch_size 1 \
     --model_name_or_path $MODEL_PATH \
     --predict_with_generate
