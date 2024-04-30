@@ -9,7 +9,6 @@ from ...extras.packages import is_jieba_available, is_nltk_available, is_rouge_a
 
 from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score
 
-
 if TYPE_CHECKING:
     from transformers.tokenization_utils import PreTrainedTokenizer
 
@@ -22,6 +21,7 @@ if is_nltk_available():
 from rouge_chinese import Rouge
 
 print(is_rouge_available(), is_jieba_available(), is_nltk_available())
+
 
 @dataclass
 class ComputeMetrics:
@@ -63,6 +63,8 @@ class ComputeMetrics:
 
         return {k: float(np.mean(v)) for k, v in score_dict.items()}
 
+
+@dataclass
 class ComputeCLSMetrics:
     r"""
     Wraps the tokenizer into metric functions, used in Seq2SeqPeftTrainer.
@@ -107,7 +109,3 @@ class ComputeCLSMetrics:
         f1_micro = f1_score(reference_types, hypothesis_types, average='micro')
 
         return {"accuracy": accuracy, "precision": precision_micro, "recall": recall_micro, "micro_f1": f1_micro}
-
-
-
-
