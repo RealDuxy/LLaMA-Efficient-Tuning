@@ -15,11 +15,10 @@ CUDA_VISIBLE_DEVICES=0 python  ../src/train_bash.py \
     --finetuning_type lora \
     --output_dir ../checkpoints/qwen/0428_reference_classification_cot_qwen14b_gptq_int4_exp1 \
     --adapter_name_or_path ../checkpoints/qwen/0428_reference_classification_cot_qwen14b_gptq_int4_exp1 \
-    --logging_steps 10 \
+    --logging_steps 5 \
     --overwrite_output_dir \
     --overwrite_cache \
     --cutoff_len 1300  \
-    --max_samples 20 \
     --preprocessing_num_workers 32 \
     --per_device_eval_batch_size 2 \
     --model_name_or_path $MODEL_PATH \

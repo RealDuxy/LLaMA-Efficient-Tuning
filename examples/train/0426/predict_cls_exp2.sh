@@ -15,7 +15,7 @@ CUDA_VISIBLE_DEVICES=1 python  ../src/train_bash.py \
     --finetuning_type lora \
     --output_dir ../checkpoints/qwen/0428_reference_classification_cot_qwen14b_gptq_int4_exp2 \
     --adapter_name_or_path ../checkpoints/qwen/0428_reference_classification_cot_qwen14b_gptq_int4_exp2 \
-    --logging_steps 10 \
+    --logging_steps 5 \
     --overwrite_output_dir \
     --overwrite_cache \
     --cutoff_len 1300  \
