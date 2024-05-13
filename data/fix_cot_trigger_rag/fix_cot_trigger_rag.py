@@ -51,7 +51,7 @@ class FixCoTDataset(datasets.GeneratorBasedBuilder):
 
     def _generate_examples(self, filepath: str) -> Dict[int, Dict[str, Any]]:
         example_dataset = json.load(open(filepath, "r", encoding="utf-8"))
-        prompt_templates = json.load(open("template.json", "r", encoding="utf-8"))
+        prompt_templates = json.load(open("./template.json", "r", encoding="utf-8"))
         system = prompt_templates["history"][0]["content"]
         prompt = prompt_templates["prompt"]
         for key, example in enumerate(example_dataset):
