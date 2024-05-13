@@ -82,6 +82,36 @@
       "history": "history"
     }
   },
+  "instruction_only_rag": {
+    "script_url": "instruction_only_rag",
+    "columns": {
+      "system": "system",
+      "prompt": "instruction",
+      "query": "input",
+      "response": "output",
+      "history": "history"
+    }
+  },
+  "fix_cot_trigger_rag": {
+    "script_url": "fix_cot_trigger_rag",
+    "columns": {
+      "system": "system",
+      "prompt": "instruction",
+      "query": "input",
+      "response": "output",
+      "history": "history"
+    }
+  },
+  "dynamic_cot_trigger_rag": {
+    "script_url": "dynamic_cot_trigger_rag",
+    "columns": {
+      "system": "system",
+      "prompt": "instruction",
+      "query": "input",
+      "response": "output",
+      "history": "history"
+    }
+  },
   "askbob_qa_comparison": {
     "file_name": "askbob_0321_4k_comparison.json",
     "columns": {
