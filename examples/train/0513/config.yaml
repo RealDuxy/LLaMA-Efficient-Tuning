@@ -12,8 +12,7 @@ lora_target: k_proj,o_proj,q_proj,v_proj,down_proj,gate_proj,up_proj
 ddp_timeout: 180000000
 
 # dataset
-dataset: instruction_only_rag,fix_cot_trigger_rag,dynamic_cot_trigger_rag
-template: qwen
+dataset: dynamic_cot_trigger_rag,instruction_only_rag,fix_cot_trigger_rag
 cutoff_len: 3200
 max_samples: 100
 #val_size: 0.1
