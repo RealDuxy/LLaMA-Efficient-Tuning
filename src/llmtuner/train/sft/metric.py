@@ -7,7 +7,7 @@ import numpy as np
 from ...extras.constants import IGNORE_INDEX
 from ...extras.packages import is_jieba_available, is_nltk_available, is_rouge_available
 
-from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score
+# from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score
 
 if TYPE_CHECKING:
     from transformers.tokenization_utils import PreTrainedTokenizer
