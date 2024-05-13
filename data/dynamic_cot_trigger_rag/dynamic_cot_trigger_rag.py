@@ -9,8 +9,8 @@ _LICENSE = ""
 _URL = "./"
 
 _URLS = {
-    "test": _URL + "train_dynamic_cot_trigger.json",
-    "train": _URL + "eval_dynamic_cot_trigger.json",
+    "train": _URL + "train_dynamic_cot_trigger.json",
+    "test": _URL + "eval_dynamic_cot_trigger.json",
 }
 
 

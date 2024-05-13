@@ -9,8 +9,8 @@ _LICENSE = ""
 _URL = "./"
 
 _URLS = {
-    "test": _URL + "train_instruction_only.json",
-    "train": _URL + "eval_instruction_only.json",
+    "train": _URL + "train_instruction_only.json",
+    "test": _URL + "eval_instruction_only.json",
 }
 
 
