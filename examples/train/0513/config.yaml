@@ -17,13 +17,13 @@ ddp_timeout: 180000000
 dataset: dynamic_cot_trigger_rag,instruction_only_rag,fix_cot_trigger_rag
 template: qwen
 cutoff_len: 3200
-max_samples: 100
+max_samples: 200
 #val_size: 0.1
 overwrite_cache: true
 preprocessing_num_workers: 16
 
 # output
-output_dir: ../checkpoints/qwen/0513_qwen_rag_exp1
+output_dir: checkpoints/qwen/0513_qwen_rag_exp1
 logging_steps: 10
 save_steps: 500
 plot_loss: true
