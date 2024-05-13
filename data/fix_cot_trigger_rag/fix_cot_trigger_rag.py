@@ -14,7 +14,7 @@ _URLS = {
     "train": _URL + "train_fix_cot_trigger.json",
     "test": _URL + "eval_fix_cot_trigger.json",
 }
-template = json.load(open("./template.json", "r", encoding="utf-8"))
+template = json.load(open("data/fix_cot_trigger_rag/template.json", "r", encoding="utf-8"))
 
 
 class FixCoTDataset(datasets.GeneratorBasedBuilder):

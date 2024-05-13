@@ -14,7 +14,7 @@ _URLS = {
     "train": _URL + "train_instruction_only.json",
     "test": _URL + "eval_instruction_only.json",
 }
-template = json.load(open("./template.json", "r", encoding="utf-8"))
+template = json.load(open("data/instruction_only_rag/template.json", "r", encoding="utf-8"))
 
 class InstructionOnlyDataset(datasets.GeneratorBasedBuilder):
     VERSION = datasets.Version("0.0.0")
