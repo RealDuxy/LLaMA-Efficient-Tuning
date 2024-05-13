@@ -8,10 +8,10 @@ do_train: true
 finetuning_type: lora
 lora_rank: 16
 lora_alpha: 32
-lora_target: k_proj,o_proj,q_proj,v_proj,down_proj,gate_proj,up_proj
+lora_target: q_proj,v_proj,k_proj,o_proj,down_proj,up_proj,gate_proj
 print_param_status: true
-# ddp
-ddp_timeout: 180000000
+## ddp
+#ddp_timeout: 180000000
 
 # dataset
 dataset: dynamic_cot_trigger_rag,instruction_only_rag,fix_cot_trigger_rag
