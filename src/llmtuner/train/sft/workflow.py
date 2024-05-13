@@ -58,7 +58,7 @@ def run_sft(
         tokenizer=tokenizer,
         data_collator=data_collator,
         callbacks=callbacks,
-        compute_metrics=ComputeCLSMetrics(tokenizer) if training_args.predict_with_generate else None,
+        compute_metrics=ComputeMetrics(tokenizer) if training_args.predict_with_generate else None,
         **split_dataset(dataset, data_args, training_args),
     )
 
