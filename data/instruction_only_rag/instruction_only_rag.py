@@ -1,4 +1,6 @@
 import json
+from copy import deepcopy
+
 import datasets
 from typing import Any, Dict, List
 
@@ -12,7 +14,7 @@ _URLS = {
     "train": _URL + "train_instruction_only.json",
     "test": _URL + "eval_instruction_only.json",
 }
-
+template = json.load(open("./template.json", "r", encoding="utf-8"))
 
 class InstructionOnlyDataset(datasets.GeneratorBasedBuilder):
     VERSION = datasets.Version("0.0.0")
@@ -51,7 +53,7 @@ class InstructionOnlyDataset(datasets.GeneratorBasedBuilder):
 
     def _generate_examples(self, filepath: str) -> Dict[int, Dict[str, Any]]:
         example_dataset = json.load(open(filepath, "r", encoding="utf-8"))
-        prompt_templates = json.load(open("./template.json", "r", encoding="utf-8"))
+        prompt_templates = deepcopy(template)
         system = prompt_templates["history"][0]["content"]
         prompt = prompt_templates["prompt"]
         for key, example in enumerate(example_dataset):
