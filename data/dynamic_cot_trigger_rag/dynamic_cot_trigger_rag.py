@@ -8,14 +8,9 @@ _DESCRIPTION = "RAG dataset with dynamic CoT trigger"
 _CITATION = ""
 _HOMEPAGE = ""
 _LICENSE = ""
-_URL = "./"
+_URL = "train_dynamic_cot_trigger.json"
 
-_URLS = {
-    "test": _URL + "train_dynamic_cot_trigger.json",
-    "train": _URL + "eval_dynamic_cot_trigger.json",
-}
 template = json.load(open("data/dynamic_cot_trigger_rag/template.json", "r", encoding="utf-8"))
-
 
 class DynamicCoTDataset(datasets.GeneratorBasedBuilder):
     VERSION = datasets.Version("0.0.0")
@@ -35,22 +30,10 @@ class DynamicCoTDataset(datasets.GeneratorBasedBuilder):
             citation=_CITATION
         )
 
-    def _split_generators(self, dl_manager: datasets.DownloadManager):
-        file_path = dl_manager.download(_URLS)
-        return [
-            datasets.SplitGenerator(
-                name=datasets.Split.TRAIN,
-                gen_kwargs={
-                    "filepath": file_path["train"]
-                }
-            ),
-            datasets.SplitGenerator(
-                name=datasets.Split.TEST,
-                gen_kwargs={
-                    "filepath": file_path["test"]
-                }
-            )
-        ]
+    def _split_generators(self, dl_manager: datasets.DownloadManager) -> List[datasets.SplitGenerator]:
+        file_path = dl_manager.download(_URL)
+        return [datasets.SplitGenerator(name=datasets.Split.TRAIN, gen_kwargs={"filepath": file_path})]
+
 
     def _generate_examples(self, filepath: str) -> Dict[int, Dict[str, Any]]:
         example_dataset = json.load(open(filepath, "r", encoding="utf-8"))

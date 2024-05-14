@@ -8,12 +8,8 @@ _DESCRIPTION = "RAG dataset"
 _CITATION = ""
 _HOMEPAGE = ""
 _LICENSE = ""
-_URL = "./"
+_URL = "train_instruction_only.json"
 
-_URLS = {
-    "test": _URL + "train_instruction_only.json",
-    "train": _URL + "eval_instruction_only.json",
-}
 template = json.load(open("data/instruction_only_rag/template.json", "r", encoding="utf-8"))
 
 class InstructionOnlyDataset(datasets.GeneratorBasedBuilder):
@@ -34,22 +30,9 @@ class InstructionOnlyDataset(datasets.GeneratorBasedBuilder):
             citation=_CITATION
         )
 
-    def _split_generators(self, dl_manager: datasets.DownloadManager):
-        file_path = dl_manager.download(_URLS)
-        return [
-            datasets.SplitGenerator(
-                name=datasets.Split.TRAIN,
-                gen_kwargs={
-                    "filepath": file_path["train"]
-                }
-            ),
-            datasets.SplitGenerator(
-                name=datasets.Split.TEST,
-                gen_kwargs={
-                    "filepath": file_path["test"]
-                }
-            )
-        ]
+    def _split_generators(self, dl_manager: datasets.DownloadManager) -> List[datasets.SplitGenerator]:
+        file_path = dl_manager.download(_URL)
+        return [datasets.SplitGenerator(name=datasets.Split.TRAIN, gen_kwargs={"filepath": file_path})]
 
     def _generate_examples(self, filepath: str) -> Dict[int, Dict[str, Any]]:
         example_dataset = json.load(open(filepath, "r", encoding="utf-8"))
