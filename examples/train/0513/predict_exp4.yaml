@@ -1,0 +1,25 @@
+# model
+model_name_or_path: /mnt/e/UbuntuFiles/models_saved/Qwen1.5-14B-Chat-GPTQ-Int4
+adapter_name_or_path: /mnt/e/dxy/LLaMA-Efficient-Tuning/checkpoints/qwen/0513_qwen_rag_exp4
+#finetuning_type: lora
+
+# method
+stage: sft
+do_predict: true
+finetuning_type: lora
+
+# dataset
+dataset: instruction_only_rag,fix_cot_trigger_rag,dynamic_cot_trigger_rag
+template: qwen
+cutoff_len: 3200
+#max_samples: 50
+overwrite_cache: true
+preprocessing_num_workers: 16
+
+# output
+output_dir: /mnt/e/dxy/LLaMA-Efficient-Tuning/checkpoints/qwen/0513_qwen_rag_exp4
+overwrite_output_dir: true
+
+# eval
+per_device_eval_batch_size: 1
+predict_with_generate: true
