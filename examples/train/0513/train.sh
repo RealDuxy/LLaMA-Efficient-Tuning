@@ -1,10 +1,16 @@
-# 并行执行 task1 和 task2
-CUDA_VISIBLE_DEVICES=0 python src/train.py examples/train/0513/exp1.yaml > log/exp1.log 2>&1 &
-sleep 10
-CUDA_VISIBLE_DEVICES=1 python src/train.py examples/train/0513/exp2.yaml > log/exp2.log 2>&1 &
-sleep 10
-# 在后台执行串行任务的脚本
-(
-  CUDA_VISIBLE_DEVICES=2 python src/train.py examples/train/0513/exp3.yaml > log/exp3.log 2>&1
-  CUDA_VISIBLE_DEVICES=2 python src/train.py examples/train/0513/exp4.yaml > log/exp4.log 2>&1
-) &
+## 并行执行 task1 和 task2
+#USE_MODELSCOPE_HUB=1 CUDA_VISIBLE_DEVICES=0 python src/train.py examples/train/0513/exp1.yaml > log/exp1.log 2>&1 &
+#sleep 10
+#USE_MODELSCOPE_HUB=1 CUDA_VISIBLE_DEVICES=1 python src/train.py examples/train/0513/exp2.yaml > log/exp2.log 2>&1 &
+#sleep 10
+## 在后台执行串行任务的脚本
+#(
+#  USE_MODELSCOPE_HUB=1CUDA_VISIBLE_DEVICES=2 python src/train.py examples/train/0513/exp3.yaml > log/exp3.log 2>&1
+#  USE_MODELSCOPE_HUB=1CUDA_VISIBLE_DEVICES=2 python src/train.py examples/train/0513/exp4.yaml > log/exp4.log 2>&1
+#) &
+
+
+USE_MODELSCOPE_HUB=1 CUDA_VISIBLE_DEVICES=0 python src/train.py examples/train/0513/exp1.yaml > log/exp1.log 2>&1
+USE_MODELSCOPE_HUB=1 CUDA_VISIBLE_DEVICES=1 python src/train.py examples/train/0513/exp2.yaml > log/exp2.log 2>&1
+USE_MODELSCOPE_HUB=1CUDA_VISIBLE_DEVICES=2 python src/train.py examples/train/0513/exp3.yaml > log/exp3.log 2>&1
+USE_MODELSCOPE_HUB=1CUDA_VISIBLE_DEVICES=2 python src/train.py examples/train/0513/exp4.yaml > log/exp4.log 2>&1
