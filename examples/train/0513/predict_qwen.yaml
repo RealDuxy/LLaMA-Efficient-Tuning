@@ -1,5 +1,5 @@
 # model
-model_name_or_path: /mnt/e/UbuntuFiles/models_saved/Qwen1.5-14B-Chat-int4
+model_name_or_path: /mnt/e/UbuntuFiles/models_saved/Qwen1.5-14B-Chat-int4/
 #adapter_name_or_path: /mnt/e/dxy/LLaMA-Efficient-Tuning/checkpoints/qwen/0513_qwen_rag_exp1
 #finetuning_type: lora
 
@@ -9,6 +9,7 @@ do_predict: true
 #finetuning_type: lora
 
 # dataset
+dataset_dir: ../data
 dataset: instruction_only_rag,fix_cot_trigger_rag,dynamic_cot_trigger_rag
 template: qwen
 cutoff_len: 3200
