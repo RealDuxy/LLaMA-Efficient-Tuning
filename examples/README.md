@@ -83,7 +83,7 @@ CUDA_VISIBLE_DEVICES=0 llamafactory-cli train examples/lora_single_gpu/llama3_lo
 #### Supervised Fine-Tuning with 4/8-bit Bitsandbytes Quantization (Recommended)
 
 ```bash
-CUDA_VISIBLE_DEVICES=0 llamafactory-cli train examples/qlora_single_gpu/llama3_lora_sft_bitsandbytes.yaml
+CUDA_VISIBLE_DEVICES=0 llamafactory-cli train examples/qlora_single_gpu/exp1.yaml
 ```
 
 #### Supervised Fine-Tuning with 4/8-bit GPTQ Quantization
