@@ -21,5 +21,5 @@ output_dir: /mnt/e/dxy/LLaMA-Efficient-Tuning/checkpoints/qwen_original
 overwrite_output_dir: true
 
 # eval
-per_device_eval_batch_size: 1
+per_device_eval_batch_size: 2
 predict_with_generate: true
