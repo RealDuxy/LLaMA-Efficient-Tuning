@@ -1,5 +1,6 @@
 # model
-model_name_or_path: /mnt/e/UbuntuFiles/models_saved/Qwen1.5-14B-Chat-GPTQ-Int4
+#model_name_or_path: /mnt/e/UbuntuFiles/models_saved/Qwen1.5-14B-Chat-GPTQ-Int4
+model_name_or_path: /mnt/d/PycharmProjects/models/Qwen1.5-14B-Chat-GPTQ-Int4
 #adapter_name_or_path: /mnt/e/dxy/LLaMA-Efficient-Tuning/checkpoints/qwen/0513_qwen_rag_exp1
 #finetuning_type: lora
 
@@ -17,7 +18,7 @@ overwrite_cache: true
 preprocessing_num_workers: 16
 
 # output
-output_dir: /mnt/e/dxy/LLaMA-Efficient-Tuning/checkpoints/qwen/qwen_vanilla
+output_dir: checkpoints/qwen/vanilla_qwen
 overwrite_output_dir: true
 
 # eval
