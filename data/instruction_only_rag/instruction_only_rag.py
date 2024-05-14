@@ -11,8 +11,8 @@ _LICENSE = ""
 _URL = "./"
 
 _URLS = {
-    "train": _URL + "train_instruction_only.json",
-    "test": _URL + "eval_instruction_only.json",
+    "test": _URL + "train_instruction_only.json",
+    "train": _URL + "eval_instruction_only.json",
 }
 template = json.load(open("data/instruction_only_rag/template.json", "r", encoding="utf-8"))
 

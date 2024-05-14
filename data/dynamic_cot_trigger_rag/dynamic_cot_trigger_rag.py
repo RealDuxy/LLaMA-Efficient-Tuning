@@ -11,8 +11,8 @@ _LICENSE = ""
 _URL = "./"
 
 _URLS = {
-    "train": _URL + "train_dynamic_cot_trigger.json",
-    "test": _URL + "eval_dynamic_cot_trigger.json",
+    "test": _URL + "train_dynamic_cot_trigger.json",
+    "train": _URL + "eval_dynamic_cot_trigger.json",
 }
 template = json.load(open("data/dynamic_cot_trigger_rag/template.json", "r", encoding="utf-8"))
 
