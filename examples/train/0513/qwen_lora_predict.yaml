@@ -1,5 +1,5 @@
 # model
-model_name_or_path: /mnt/e/UbuntuFiles/models_saved/Qwen1.5-7B-Chat-GPTQ-Int8
+model_name_or_path: /mnt/e/UbuntuFiles/models_saved/Qwen1.5-7B-Chat
 #adapter_name_or_path:
 #finetuning_type: lora
 
