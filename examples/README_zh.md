@@ -83,7 +83,7 @@ CUDA_VISIBLE_DEVICES=0 llamafactory-cli train examples/lora_single_gpu/llama3_lo
 #### 基于 4/8 比特 Bitsandbytes 量化进行指令监督微调（推荐）
 
 ```bash
-CUDA_VISIBLE_DEVICES=0 llamafactory-cli train examples/qlora_single_gpu/llama3_lora_sft_bitsandbytes.yaml
+CUDA_VISIBLE_DEVICES=0 llamafactory-cli train examples/qlora_single_gpu/exp1.yaml
 ```
 
 #### 基于 4/8 比特 GPTQ 量化进行指令监督微调
