@@ -63,10 +63,11 @@ class FixCoTDataset(datasets.GeneratorBasedBuilder):
                 question += "？"
             requirement = example["requirement"].replace("\n", "")
             output = example["output"]
+            context = example["contexts"]
             is_positive = example["is_positive"]
             new_example = {
                 "system": system,
-                "instruction": prompt.replace("{question}", question).replace("{requirement}", requirement),
+                "instruction": prompt.replace("{question}", question).replace("{requirement}", requirement).replace("{context}", context),
                 "input": "",
                 "output": output,
                 "history": []
