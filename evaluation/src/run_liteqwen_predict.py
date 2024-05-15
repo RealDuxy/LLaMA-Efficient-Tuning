@@ -72,3 +72,35 @@ if __name__ == '__main__':
         max_samples=8,
         model_invoke=get_qwen_response
     )
+    run_rag_evaluation(
+        data_dir="dataset/",
+        output_dir="output",
+        template_file="template/template.json",
+        model_name="rag1",
+        max_samples=8,
+        model_invoke=get_qwen_response
+    )
+    run_rag_evaluation(
+        data_dir="dataset/",
+        output_dir="output",
+        template_file="template/template.json",
+        model_name="rag2",
+        max_samples=8,
+        model_invoke=get_qwen_response
+    )
+    run_rag_evaluation(
+        data_dir="dataset/",
+        output_dir="output",
+        template_file="template/template.json",
+        model_name="rag3",
+        max_samples=8,
+        model_invoke=get_qwen_response
+    )
+    run_rag_evaluation(
+        data_dir="dataset/",
+        output_dir="output",
+        template_file="template/template.json",
+        model_name="rag4",
+        max_samples=8,
+        model_invoke=get_qwen_response
+    )
