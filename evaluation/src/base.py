@@ -86,7 +86,6 @@ class BaseLiteLLMAgent:
     def __init__(self, template_file: str, model_invoke):
         self.templates = json.load(open(template_file, "r", encoding="utf-8"))
         self.model_invoke = model_invoke
-        self.executer = ThreadPoolExecutor(max_workers=4)
 
     def assemble_messages(self, **kwargs):
         gen_kwargs_list = ["temperature", "skip_lora", "adapter_name", "top_k", "record_id", "seed", "prefix_token_ids"]
@@ -120,9 +119,9 @@ class BaseLiteLLMAgent:
             for k,v in kwargs.items():
                 print(f"{k}: {len(v)}")
             return None
-
-        for i, result in enumerate(self.executer.map(lambda x: self.invoke(**x), input_kwargs)):
-            results.append(result)
+        with ThreadPoolExecutor(max_workers=4) as executer:
+            for i, result in enumerate(executer.map(lambda x: self.invoke(**x), input_kwargs)):
+                results.append(result)
         return results
 
 

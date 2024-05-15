@@ -25,7 +25,7 @@ from utils import get_qwen_response, batch_dataset_iterator
 def run_rag_evaluation(data_dir, output_dir,
                        template_file,
                        model_name="names",
-                       max_samples=4,
+                       max_samples=None,
                        model_invoke=get_qwen_response):
 
     rag_agent = BaseLiteLLMAgent(template_file=template_file, model_invoke=model_invoke)
@@ -67,7 +67,7 @@ if __name__ == '__main__':
         output_dir="output",
         template_file="template/template.json",
         model_name="original",
-        max_samples=8,
+        max_samples=None,
         model_invoke=get_qwen_response
     )
     run_rag_evaluation(
@@ -75,7 +75,7 @@ if __name__ == '__main__':
         output_dir="output",
         template_file="template/template.json",
         model_name="default",
-        max_samples=8,
+        max_samples=None,
         model_invoke=get_qwen_response
     )
     run_rag_evaluation(
@@ -83,7 +83,7 @@ if __name__ == '__main__':
         output_dir="output",
         template_file="template/template.json",
         model_name="rag2",
-        max_samples=8,
+        max_samples=None,
         model_invoke=get_qwen_response
     )
     run_rag_evaluation(
@@ -91,7 +91,7 @@ if __name__ == '__main__':
         output_dir="output",
         template_file="template/template.json",
         model_name="rag3",
-        max_samples=8,
+        max_samples=None,
         model_invoke=get_qwen_response
     )
     run_rag_evaluation(
@@ -99,6 +99,6 @@ if __name__ == '__main__':
         output_dir="output",
         template_file="template/template.json",
         model_name="rag4",
-        max_samples=8,
+        max_samples=None,
         model_invoke=get_qwen_response
     )
