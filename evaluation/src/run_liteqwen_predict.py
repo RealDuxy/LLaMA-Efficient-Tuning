@@ -76,7 +76,7 @@ if __name__ == '__main__':
         data_dir="dataset/",
         output_dir="output",
         template_file="template/template.json",
-        model_name="rag1",
+        model_name="default",
         max_samples=8,
         model_invoke=get_qwen_response
     )
