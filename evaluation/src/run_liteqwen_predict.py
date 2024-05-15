@@ -18,8 +18,8 @@ import pandas as pd
 from datasets import load_dataset
 from tqdm import tqdm
 
-from evaluation.src.base import BaseLiteLLMAgent
-from evaluation.src.utils import get_qwen_response, batch_dataset_iterator
+from base import BaseLiteLLMAgent
+from utils import get_qwen_response, batch_dataset_iterator
 
 
 def run_rag_evaluation(data_dir, output_dir,
