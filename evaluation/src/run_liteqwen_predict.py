@@ -37,9 +37,7 @@ def run_rag_evaluation(data_dir, output_dir,
         model_output_dir = output_dir + f"/{model_name}/"
         os.makedirs(model_output_dir, exist_ok=True)
         output_file = os.path.join(model_output_dir, output_file)
-
-        print(f"data file: {data_file}")
-        print(f"output file: {output_file}")
+        print(f"Processing data file: {data_file}")
         results = []
         for datas in tqdm(batch_dataset_iterator(data_file, batch_size=4, max_samples=max_samples)):
             predictions = rag_agent.para_invoke(adapter_name=[model_name]*len(datas["question"]),
