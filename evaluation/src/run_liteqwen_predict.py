@@ -69,6 +69,6 @@ if __name__ == '__main__':
         output_dir="output",
         template_file="template/template.json",
         model_name="original",
-        max_samples=50,
+        max_samples=8,
         model_invoke=get_qwen_response
     )
