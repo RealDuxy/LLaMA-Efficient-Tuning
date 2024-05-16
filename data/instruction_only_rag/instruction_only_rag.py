@@ -47,11 +47,9 @@ class InstructionOnlyDataset(datasets.GeneratorBasedBuilder):
             output = example["output"]
             context = example["contexts"]
             is_positive = example["is_positive"]
-            instruction = "你好" * 10000
             new_example = {
                 "system": system,
-                "instruction": instruction,
-                # "instruction": prompt.replace("{question}", question).replace("{requirement}", requirement).replace("{context}", context),
+                "instruction": prompt.replace("{question}", question).replace("{requirement}", requirement).replace("{context}", context),
                 "input": "",
                 "output": output,
                 "history": []
