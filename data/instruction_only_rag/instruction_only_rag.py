@@ -52,7 +52,7 @@ class InstructionOnlyDataset(datasets.GeneratorBasedBuilder):
             new_example = {
                 "system": system,
                 # "instruction": instruction,
-                "instruction": prompt.replace("{question}", question).replace("{requirement}", requirement).replace("{context}", context*2),
+                "instruction": prompt.replace("{question}", question).replace("{requirement}", requirement).replace("{context}", context),
                 "input": "",
                 "output": output,
                 # "output": context,
