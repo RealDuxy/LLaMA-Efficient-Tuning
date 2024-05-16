@@ -53,7 +53,7 @@ class FixCoTDataset(datasets.GeneratorBasedBuilder):
             is_positive = example["is_positive"]
             new_example = {
                 "system": system,
-                "instruction": prompt.replace("{question}", question).replace("{requirement}", requirement).replace("{context}", context),
+                "instruction": prompt.replace("{question}", question).replace("{requirement}", requirement).replace("{context}", context*2),
                 "input": "",
                 "output": output,
                 "history": []
