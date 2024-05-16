@@ -23,21 +23,21 @@ deepspeed: examples/deepspeed/ds_z2_offload_config.json
 dataset: instruction_only_rag,fix_cot_trigger_rag,dynamic_cot_trigger_rag
 template: chatglm3
 cutoff_len: 3600
-max_samples: 200
+#max_samples: 200
 val_size: 0.01
 overwrite_cache: true
 preprocessing_num_workers: 16
 
 # output
 output_dir: checkpoints/chatglm/0515_rag_exp1
-logging_steps: 4
-save_steps: 4
+logging_steps: 5
+save_steps: 80
 plot_loss: true
 overwrite_output_dir: true
 
 # train
 per_device_train_batch_size: 1
-gradient_accumulation_steps: 2
+gradient_accumulation_steps: 8
 learning_rate: 0.00005
 num_train_epochs: 1.0
 lr_scheduler_type: cosine
@@ -47,4 +47,4 @@ fp16: true
 # eval
 per_device_eval_batch_size: 1
 evaluation_strategy: steps
-eval_steps: 400
+eval_steps: 80
