@@ -20,7 +20,7 @@ if is_nltk_available():
 
 from rouge_chinese import Rouge
 
-print(is_rouge_available(), is_jieba_available(), is_nltk_available())
+# print(is_rouge_available(), is_jieba_available(), is_nltk_available())
 
 
 @dataclass
