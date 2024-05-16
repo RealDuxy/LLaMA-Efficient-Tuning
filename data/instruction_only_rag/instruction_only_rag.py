@@ -1,4 +1,5 @@
 import json
+import random
 from copy import deepcopy
 
 import datasets
@@ -47,14 +48,14 @@ class InstructionOnlyDataset(datasets.GeneratorBasedBuilder):
             output = example["output"]
             context = example["contexts"]
             is_positive = example["is_positive"]
-            # instruction = context + "\n\n" + context + "\n\n。请复述上面的文字。"
+            instruction = context + "\n\n" + context + "\n\n" + context + "\n\n" + context[:-random.randint(1,10)] + "\n\n。请复述上面的文字。"
             new_example = {
                 "system": system,
-                # "instruction": instruction,
-                "instruction": prompt.replace("{question}", question).replace("{requirement}", requirement).replace("{context}", context),
+                "instruction": instruction,
+                # "instruction": prompt.replace("{question}", question).replace("{requirement}", requirement).replace("{context}", context),
                 "input": "",
-                "output": output,
-                # "output": context,
+                # "output": output,
+                "output": context,
                 "history": []
             }
             yield key, new_example
