@@ -18,7 +18,7 @@ deepspeed: examples/train/v100_ds_z2_offload_config.json
 # dataset
 dataset: instruction_only_rag,dynamic_cot_trigger_rag
 template: qwen
-cutoff_len: 3200
+cutoff_len: 3550
 max_samples: 3000
 val_size: 0.05
 overwrite_cache: true

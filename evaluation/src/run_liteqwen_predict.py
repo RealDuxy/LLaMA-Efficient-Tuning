@@ -60,6 +60,43 @@ def run_rag_evaluation(data_dir, output_dir,
         print(f"Results saved to {output_file}")
 
 
+def run_rag_all_negative_rejection_answer(data_dir, output_dir,
+                       template_file,
+                       model_name="names",
+                       max_samples=None,
+                       model_invoke=get_qwen_response):
+
+    rag_agent = BaseLiteLLMAgent(template_file=template_file, model_invoke=model_invoke)
+
+    for data_file in os.listdir(data_dir):
+        output_file = data_file.replace(".json", f"_output.json")
+        data_file = os.path.join(data_dir, data_file)
+        model_output_dir = output_dir + f"/{model_name}/"
+        os.makedirs(model_output_dir, exist_ok=True)
+        output_file = os.path.join(model_output_dir, output_file)
+        print(f"Processing data file: {data_file}")
+        results = []
+        for datas in tqdm(batch_dataset_iterator(data_file, batch_size=4, max_samples=max_samples)):
+            predictions = rag_agent.para_invoke(adapter_name=[model_name]*len(datas["question"]),
+                                                **{"question":datas["question"]
+                                                    ,"requirement":datas["requirement"]
+                                                    ,"context": datas["context"]})
+            datas.update({"pred": predictions})
+            for i in range(len(predictions)):
+                results.append({
+                    "question": datas["question"][i],
+                    "requirement": datas["requirement"][i],
+                    "context": datas["context"][i],
+                    "output": datas["output"][i],
+                    "pred": datas["pred"][i]
+                })
+
+        # results 保存到output_file
+        with open(output_file, "w", encoding="utf-8") as f:
+            json.dump(results, f, ensure_ascii=False, indent=4)
+        print(f"Results saved to {output_file}")
+
+
 
 if __name__ == '__main__':
     run_rag_evaluation(
