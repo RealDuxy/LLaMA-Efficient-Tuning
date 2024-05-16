@@ -23,14 +23,14 @@ dataset: instruction_only_rag
 template: qwen
 cutoff_len: 3600
 #max_samples: 200
-val_size: 0.05
+#val_size: 0.05
 overwrite_cache: true
 preprocessing_num_workers: 16
 
 # output
 output_dir: checkpoints/qwen/0515_qwen_rag_exp1
 logging_steps: 1
-save_steps: 100
+save_steps: 1
 plot_loss: true
 overwrite_output_dir: true
 
@@ -43,7 +43,7 @@ lr_scheduler_type: cosine
 warmup_steps: 0.1
 fp16: true
 
-# eval
-per_device_eval_batch_size: 1
-evaluation_strategy: steps
-eval_steps: 100
+## eval
+#per_device_eval_batch_size: 1
+#evaluation_strategy: steps
+#eval_steps: 100
