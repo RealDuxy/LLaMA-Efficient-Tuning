@@ -14,7 +14,9 @@ CUDA_VISIBLE_DEVICES=0,1,2,3 python -m torch.distributed.run \
     --standalone \
     src/train.py examples/train/0515_chatglm/exp1.yaml
 
-
+CUDA_VISIBLE_DEVICES=0,1,2,3 accelerate launch \
+    --config_file examples/accelerate/single_config.yaml \
+    src/train.py examples/train/0515_chatglm/exp1.yaml
 
 CUDA_VISIBLE_DEVICES=0,1,2,3 nohup accelerate launch \
     --config_file examples/accelerate/single_config.yaml \
