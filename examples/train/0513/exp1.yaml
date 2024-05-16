@@ -1,9 +1,9 @@
 # model
 #model_name_or_path: /mnt/e/UbuntuFiles/models_saved/Qwen1.5-7B-Chat
-model_name_or_path: /mnt/e/UbuntuFiles/models_saved/Qwen1.5-14B-Chat-GPTQ-Int4
+#model_name_or_path: /mnt/e/UbuntuFiles/models_saved/Qwen1.5-14B-Chat-GPTQ-Int4
 #model_name_or_path: /mnt/d/PycharmProjects/models/Qwen1.5-14B-Chat-GPTQ-Int4
 #model_name_or_path: qwen/Qwen-14B-Chat-Int4
-#model_name_or_path: qwen/Qwen1.5-14B-Chat-GPTQ-Int4
+model_name_or_path: qwen/Qwen1.5-14B-Chat-GPTQ-Int4
 # method
 stage: sft
 do_train: true
@@ -14,8 +14,8 @@ lora_target: q_proj,v_proj,k_proj,o_proj,down_proj,up_proj,gate_proj
 #print_param_status: true
 
 # ddp
-ddp_timeout: 180000000
-deepspeed: examples/train/v100_ds_z2_config.json
+#ddp_timeout: 180000000
+#deepspeed: examples/train/v100_ds_z2_config.json
 
 # dataset
 #dataset: instruction_only_rag
@@ -23,14 +23,14 @@ dataset: instruction_only_rag,fix_cot_trigger_rag,dynamic_cot_trigger_rag
 template: qwen
 cutoff_len: 3600
 #max_samples: 200
-#val_size: 0.05
+val_size: 0.05
 overwrite_cache: true
 preprocessing_num_workers: 16
 
 # output
 output_dir: checkpoints/qwen/0515_qwen_rag_exp1
-logging_steps: 1
-save_steps: 1
+logging_steps: 10
+save_steps: 100
 plot_loss: true
 overwrite_output_dir: true
 
@@ -43,7 +43,7 @@ lr_scheduler_type: cosine
 warmup_steps: 0.1
 fp16: true
 
-## eval
-#per_device_eval_batch_size: 1
-#evaluation_strategy: steps
-#eval_steps: 100
+# eval
+per_device_eval_batch_size: 1
+evaluation_strategy: steps
+eval_steps: 100
