@@ -20,4 +20,4 @@ CUDA_VISIBLE_DEVICES=0,1,2,3 accelerate launch \
 
 CUDA_VISIBLE_DEVICES=0,1,2,3 nohup accelerate launch \
     --config_file examples/accelerate/single_config.yaml \
-    src/train.py examples/train/0515_chatglm/exp1.yaml > log/exp1_0515.log 2>&1 &
+    src/train.py examples/train/0515_chatglm/exp1.yaml > log/chatglm_exp1_0515.log 2>&1 &
