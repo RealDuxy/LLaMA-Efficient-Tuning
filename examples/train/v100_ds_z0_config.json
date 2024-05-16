@@ -15,7 +15,10 @@
   "bf16": {
     "enabled": "auto"
   },
-    "zero_optimization": {
-        "stage": 0
-    }
+  "zero_optimization": {
+    "stage": 0,
+    "allgather_partitions": true,
+    "allgather_bucket_size": 2e8,
+    "overlap_comm": true
+  }
 }
