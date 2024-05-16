@@ -286,6 +286,7 @@ def get_train_args(args: Optional[Dict[str, Any]] = None) -> _TRAIN_CLS:
     data_args.packing = data_args.packing if data_args.packing is not None else finetuning_args.stage == "pt"
 
     # Log on each process the small summary:
+    print(f"===================={torch.cuda.device_count()}========================")
     logger.info(
         "Process rank: {}, device: {}, n_gpu: {}, distributed training: {}, compute dtype: {}".format(
             training_args.local_rank,
