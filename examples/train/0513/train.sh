@@ -18,3 +18,8 @@ CUDA_VISIBLE_DEVICES=0,1,2,3 python src/train.py examples/train/0513/exp4.yaml >
 echo "Start training exp1"
 CUDA_VISIBLE_DEVICES=0,1,2,3 accelerate run src/train.py examples/train/0513/exp1.yaml > log/exp1_0515.log 2>&1 &
 echo "training complete"
+
+
+CUDA_VISIBLE_DEVICES=0,1,2,3 accelerate launch \
+    --config_file examples/accelerate/single_config.yaml \
+    src/train.py examples/train/0513/exp1.yaml
