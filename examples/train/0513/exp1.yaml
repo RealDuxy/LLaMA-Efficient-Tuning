@@ -14,7 +14,7 @@ lora_target: q_proj,v_proj,k_proj,o_proj,down_proj,up_proj,gate_proj
 
 # ddp
 ddp_timeout: 180000000
-deepspeed: examples/train/v100_ds_z0_config.json
+deepspeed: examples/train/v100_ds_z1_config.json
 
 # dataset
 dataset: instruction_only_rag,fix_cot_trigger_rag,dynamic_cot_trigger_rag
@@ -33,8 +33,8 @@ plot_loss: true
 overwrite_output_dir: true
 
 # train
-per_device_train_batch_size: 2
-gradient_accumulation_steps: 1
+per_device_train_batch_size: 1
+gradient_accumulation_steps: 2
 learning_rate: 0.00005
 num_train_epochs: 1.0
 lr_scheduler_type: cosine
