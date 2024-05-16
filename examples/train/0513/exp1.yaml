@@ -13,14 +13,13 @@ lora_target: q_proj,v_proj,k_proj,o_proj,down_proj,up_proj,gate_proj
 #print_param_status: true
 
 # ddp
-ddp_timeout: 180000000
-deepspeed: examples/train/v100_ds_z2_config.json
-
+#ddp_timeout: 180000000
+#deepspeed: examples/train/v100_ds_z2_config.json
 
 # dataset
 dataset: instruction_only_rag,fix_cot_trigger_rag,dynamic_cot_trigger_rag
 template: qwen
-cutoff_len: 3550
+cutoff_len: 3600
 #max_samples: 200
 val_size: 0.05
 overwrite_cache: true
@@ -28,14 +27,14 @@ preprocessing_num_workers: 16
 
 # output
 output_dir: checkpoints/qwen/0515_qwen_rag_exp1
-logging_steps: 1
-save_steps: 50
+logging_steps: 10
+save_steps: 100
 plot_loss: true
 overwrite_output_dir: true
 
 # train
-per_device_train_batch_size: 2
-gradient_accumulation_steps: 1
+per_device_train_batch_size: 1
+gradient_accumulation_steps: 8
 learning_rate: 0.00005
 num_train_epochs: 1.0
 lr_scheduler_type: cosine
@@ -45,4 +44,4 @@ fp16: true
 # eval
 per_device_eval_batch_size: 1
 evaluation_strategy: steps
-eval_steps: 50
+eval_steps: 100
