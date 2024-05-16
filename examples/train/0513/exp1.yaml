@@ -18,8 +18,8 @@ ddp_timeout: 180000000
 deepspeed: examples/train/v100_ds_z2_config.json
 
 # dataset
-dataset: instruction_only_rag
-#dataset: instruction_only_rag,fix_cot_trigger_rag,dynamic_cot_trigger_rag
+# dataset: instruction_only_rag
+dataset: instruction_only_rag,fix_cot_trigger_rag,dynamic_cot_trigger_rag
 template: qwen
 cutoff_len: 3600
 #max_samples: 200
@@ -29,8 +29,8 @@ preprocessing_num_workers: 16
 
 # output
 output_dir: checkpoints/qwen/0515_qwen_rag_exp1
-logging_steps: 1
-save_steps: 1
+logging_steps: 5
+save_steps: 100
 plot_loss: true
 overwrite_output_dir: true
 
