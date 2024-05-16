@@ -1,6 +1,6 @@
 # model
-model_name_or_path: /mnt/e/UbuntuFiles/models_saved/Qwen1.5-7B-Chat
-#model_name_or_path: /mnt/e/UbuntuFiles/models_saved/Qwen1.5-14B-Chat-GPTQ-Int4
+#model_name_or_path: /mnt/e/UbuntuFiles/models_saved/Qwen1.5-7B-Chat
+model_name_or_path: /mnt/e/UbuntuFiles/models_saved/Qwen1.5-14B-Chat-GPTQ-Int4
 #model_name_or_path: /mnt/d/PycharmProjects/models/Qwen1.5-14B-Chat-GPTQ-Int4
 #model_name_or_path: qwen/Qwen-14B-Chat-Int4
 #model_name_or_path: qwen/Qwen1.5-14B-Chat-GPTQ-Int4
@@ -29,13 +29,13 @@ preprocessing_num_workers: 16
 # output
 output_dir: checkpoints/qwen/0515_qwen_rag_exp1
 logging_steps: 1
-save_steps: 100
+save_steps: 50
 plot_loss: true
 overwrite_output_dir: true
 
 # train
 per_device_train_batch_size: 2
-gradient_accumulation_steps: 1
+gradient_accumulation_steps: 8
 learning_rate: 0.00005
 num_train_epochs: 1.0
 lr_scheduler_type: cosine
@@ -45,4 +45,4 @@ fp16: true
 # eval
 per_device_eval_batch_size: 1
 evaluation_strategy: steps
-eval_steps: 100
+eval_steps: 50
