@@ -20,6 +20,6 @@ CUDA_VISIBLE_DEVICES=0,1,2,3 accelerate run src/train.py examples/train/0513/exp
 echo "training complete"
 
 
-CUDA_VISIBLE_DEVICES=0,1,2,3 accelerate launch \
+CUDA_VISIBLE_DEVICES=0,1,2,3 nohup accelerate launch \
     --config_file examples/accelerate/single_config.yaml \
-    src/train.py examples/train/0513/exp1.yaml
+    src/train.py examples/train/0513/exp1.yaml > exp1_0515.log 2>&1 &
