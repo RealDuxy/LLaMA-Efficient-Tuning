@@ -139,7 +139,7 @@ def run_rag_prediction(data_dir,
                     "output": datas["output"][j],
                     "pred": datas["pred"][j]
                 })
-            if i % 200 == 0:
+            if i % 200 == 1:
                 # results 保存到output_file
                 with open(output_file, "w", encoding="utf-8") as f:
                     json.dump(results, f, ensure_ascii=False, indent=4)
