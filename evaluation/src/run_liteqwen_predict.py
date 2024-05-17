@@ -21,8 +21,8 @@ from base import BaseLiteLLMAgent
 from utils import get_qwen_response, batch_dataset_iterator, get_chatglm_response
 
 model_adapter_name_map = {
-    "chatglm": "original",
-    "qwen": "original"
+    "chatglm": "default",
+    "qwen": "default"
 }
 
 def run_rag_evaluation(data_dir, output_dir,
