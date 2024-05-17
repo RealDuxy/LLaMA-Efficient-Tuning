@@ -158,7 +158,7 @@ if __name__ == '__main__':
         output_dir="output/train_dataset",
         template_file="template/template.json",
         model_name="chatglm",
-        max_samples=20,
+        max_samples=None,
         model_invoke=get_chatglm_response
     )
 

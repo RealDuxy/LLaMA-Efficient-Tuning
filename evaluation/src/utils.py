@@ -90,7 +90,6 @@ def get_chatglm_response(history, prompt, **kwargs) -> str:
                        "adapter_name": adapter_name,
                        "top_k": top_k,
                        "return_raw": True}}
-    return prompt
     response = requests.post(url=url, headers=headers, data=json.dumps(input_data))
     if response.status_code != 200:
         return "查询结果出错"
