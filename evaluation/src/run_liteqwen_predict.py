@@ -21,7 +21,8 @@ from base import BaseLiteLLMAgent
 from utils import get_qwen_response, batch_dataset_iterator, get_chatglm_response
 
 model_adapter_name_map = {
-    "chatglm": "default",
+    "chatglm": "original",
+    "chatglm-rag-0515": "default",
     "qwen": "default"
 }
 
@@ -155,12 +156,29 @@ def run_rag_prediction(data_dir,
 
 
 if __name__ == '__main__':
+    # chatglm前后评估
+    run_rag_prediction(
+        data_dir="dataset/",
+        output_dir="output/evaluation_dataset",
+        template_file="template/template.json",
+        model_name="chatglm",
+        max_samples=10,
+        model_invoke=get_chatglm_response
+    )
+    run_rag_prediction(
+        data_dir="dataset/",
+        output_dir="output/evaluation_dataset",
+        template_file="template/template.json",
+        model_name="chatglm-rag-0515",
+        max_samples=10,
+        model_invoke=get_chatglm_response
+    )
     # 跑训练集的预测, 用于构建comparison数据
     run_rag_prediction(
         data_dir="dataset/train_dataset",
         output_dir="output/train_dataset",
         template_file="template/template.json",
-        model_name="chatglm",
+        model_name="chatglm-rag-0515",
         max_samples=None,
         model_invoke=get_chatglm_response
     )
