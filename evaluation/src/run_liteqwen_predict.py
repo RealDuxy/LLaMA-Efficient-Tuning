@@ -143,6 +143,9 @@ def run_rag_prediction(data_dir,
                 # results 保存到output_file
                 with open(output_file, "w", encoding="utf-8") as f:
                     json.dump(results, f, ensure_ascii=False, indent=4)
+                print(f"question:{results[-1]['question']}")
+                print(f"output:{results[-1]['output']}")
+                print(f"pred:{results[-1]['pred']}")
                 print(f"temp {i} Results saved to {output_file}")
 
         # results 保存到output_file
