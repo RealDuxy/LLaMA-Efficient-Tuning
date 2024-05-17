@@ -56,6 +56,48 @@ def get_qwen_response(history, prompt, **kwargs) -> str:
         resp = response.json()
         return resp['response']
 
+@retry(wait=wait_random_exponential(multiplier=1, max=40), stop=stop_after_attempt(10))
+def get_chatglm_response(history, prompt, **kwargs) -> str:
+    """
+    获取litemqwen推理服务的回复
+    Args:
+        self ():
+        history ():
+        prompt ():
+        kwargs ():
+
+    Returns:
+
+    """
+    url = "http://localhost:8081/chat"
+    record_id = kwargs.get("record_id", random.randint(12347890, 99999999))
+    headers = {"Content-Type": "application/json", "cache-control": "no-cache"}
+    temperature = kwargs.get("temperature", 0.3)
+    adapter_name = kwargs.get('adapter_name', "")
+    top_k = kwargs.get("top_k", 50)
+    skip_lora = (adapter_name == "original" or adapter_name == "")
+    seed = kwargs.get("seed", 42)
+    prefix_token_ids = kwargs.get("prefix_token_ids", [])
+
+    input_data = {
+        "query": prompt,
+        "history": history,
+        "request_id": record_id,
+        "gen_kwargs": {"seed": seed,
+                       "prefix_token_ids": prefix_token_ids,
+                       "temperature": temperature,
+                       "skip_lora": skip_lora,
+                       "adapter_name": adapter_name,
+                       "top_k": top_k,
+                       "return_raw": True}}
+    return prompt
+    response = requests.post(url=url, headers=headers, data=json.dumps(input_data))
+    if response.status_code != 200:
+        return "查询结果出错"
+    else:
+        resp = response.json()
+        return resp['response']
+
 
 def batch_dataset_iterator(filepath, batch_size=4, max_samples=None) -> Dict[str, Any]:
     example_dataset = json.load(open(filepath, "r", encoding="utf-8"))
