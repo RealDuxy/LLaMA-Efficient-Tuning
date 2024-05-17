@@ -158,7 +158,7 @@ def run_rag_prediction(data_dir,
 if __name__ == '__main__':
     # chatglm前后评估
     run_rag_prediction(
-        data_dir="dataset/",
+        data_dir="dataset/evaluation_dataset",
         output_dir="output/evaluation_dataset",
         template_file="template/template.json",
         model_name="chatglm",
@@ -166,7 +166,7 @@ if __name__ == '__main__':
         model_invoke=get_chatglm_response
     )
     run_rag_prediction(
-        data_dir="dataset/",
+        data_dir="dataset/evaluation_dataset",
         output_dir="output/evaluation_dataset",
         template_file="template/template.json",
         model_name="chatglm-rag-0515",
