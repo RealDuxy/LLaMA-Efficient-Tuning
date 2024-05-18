@@ -16,8 +16,10 @@ _URL = [
 
 template = json.load(open("data/dynamic_cot_trigger_rag/template.json", "r", encoding="utf-8"))
 
+
 class DynamicCoTDataset(datasets.GeneratorBasedBuilder):
     VERSION = datasets.Version("0.0.0")
+
     def _info(self) -> datasets.DatasetInfo:
         features = datasets.Features({
             "system": datasets.Value("string"),
@@ -38,7 +40,6 @@ class DynamicCoTDataset(datasets.GeneratorBasedBuilder):
         file_path = dl_manager.download(_URL)
         return [datasets.SplitGenerator(name=datasets.Split.TRAIN, gen_kwargs={"filepath": file_path})]
 
-
     def _generate_examples(self, filepaths: List[str]) -> Dict[int, Dict[str, Any]]:
         prompt_templates = deepcopy(template)
         system = prompt_templates["history"][0]["content"]
@@ -56,7 +57,8 @@ class DynamicCoTDataset(datasets.GeneratorBasedBuilder):
                 context = example["contexts"]
                 new_example = {
                     "system": system,
-                    "instruction": prompt.replace("{question}", question).replace("{requirement}", requirement).replace("{context}", context),
+                    "instruction": prompt.replace("{question}", question).replace("{requirement}", requirement).replace(
+                        "{context}", context),
                     "input": "",
                     "output": output,
                     "history": []
