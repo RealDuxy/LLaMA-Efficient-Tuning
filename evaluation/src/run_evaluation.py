@@ -35,7 +35,7 @@ def compute_rouge_scores(prediction, reference):
     else:
         rouge = Rouge()
         scores = rouge.get_scores(" ".join(hypothesis), " ".join(reference))
-        result = scores[0]['rouge-1']['f']  # 使用ROUGE-1 F分数作为结果
+        result = scores[0]['rouge-l']['f']  # 使用ROUGE-1 F分数作为结果
 
     return result
 
@@ -83,7 +83,7 @@ def main(filepath, output_file):
     scores = []
     for item in tqdm(data):
         score = compute_rouge_scores(item['pred'], item['output'])
-        if score >= 0.95:
+        if score >= 0.98:
             print(f"output: \n {item['output']}")
             print(f"pred: \n {item['pred']}")
         scores.append(score)
@@ -96,6 +96,7 @@ def main(filepath, output_file):
     threshold = sorted(scores)[int(len(scores) * 0.3)]
     print(f"threshold: {threshold}")
     func = lambda x: {"question": x["question"],
+                   "requirement": x["requirement"],
                    "contexts": x["context"],
                    "output": [x["output"], x["pred"]]}
     selected_data = [func(data[i]) for i, score in enumerate(scores) if score <= threshold]
@@ -120,3 +121,15 @@ if __name__ == '__main__':
     filepath = "output/train_dataset/chatglm-rag-0515/train_fix_cot_trigger_output.json"
     output_file = "output/train_dataset/chatglm-rag-0515/train_fix_cot_trigger_comparison.json"
     main(filepath, output_file)
+
+    # filepath = "output/train_dataset/qwen-rag-0515/train_dynamic_cot_trigger_output.json"
+    # output_file = "output/train_dataset/qwen-rag-0515/train_dynamic_cot_trigger_comparison.json"
+    # main(filepath, output_file)
+    #
+    # filepath = "output/train_dataset/qwen-rag-0515/train_instruction_only_output.json"
+    # output_file = "output/train_dataset/qwen-rag-0515/train_instruction_only_comparison.json"
+    # main(filepath, output_file)
+    #
+    # filepath = "output/train_dataset/qwen-rag-0515/train_fix_cot_trigger_output.json"
+    # output_file = "output/train_dataset/qwen-rag-0515/train_fix_cot_trigger_comparison.json"
+    # main(filepath, output_file)
