@@ -122,6 +122,28 @@
     },
     "ranking": true
   },
+  "chatglm_rag_comparison": {
+    "script_url": "chatglm_rag_comparison",
+    "columns": {
+      "system": "system",
+      "prompt": "instruction",
+      "query": "input",
+      "response": "output",
+      "history": "history"
+    },
+    "ranking": true
+  },
+  "qwen_rag_comparison": {
+    "script_url": "qwen_rag_comparison",
+    "columns": {
+      "system": "system",
+      "prompt": "instruction",
+      "query": "input",
+      "response": "output",
+      "history": "history"
+    },
+    "ranking": true
+  },
   "alpaca_en": {
     "file_name": "alpaca_data_en_52k.json"
   },

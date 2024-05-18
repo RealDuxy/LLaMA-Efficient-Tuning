@@ -96,7 +96,7 @@ def main(filepath, output_file):
     threshold = sorted(scores)[int(len(scores) * 0.3)]
     print(f"threshold: {threshold}")
     func = lambda x: {"question": x["question"],
-                   "contexts": "",
+                   "contexts": x["context"],
                    "output": [x["output"], x["pred"]]}
     selected_data = [func(data[i]) for i, score in enumerate(scores) if score <= threshold]
 
