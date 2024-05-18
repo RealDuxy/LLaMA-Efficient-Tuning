@@ -36,9 +36,13 @@ class DynamicCoTDataset(datasets.GeneratorBasedBuilder):
             citation=_CITATION
         )
 
+    # def _split_generators(self, dl_manager: datasets.DownloadManager) -> List[datasets.SplitGenerator]:
+    #     file_path = dl_manager.download(_URL)
+    #     return [datasets.SplitGenerator(name=datasets.Split.TRAIN, gen_kwargs={"filepath": file_path})]
+
     def _split_generators(self, dl_manager: datasets.DownloadManager) -> List[datasets.SplitGenerator]:
-        file_path = dl_manager.download(_URL)
-        return [datasets.SplitGenerator(name=datasets.Split.TRAIN, gen_kwargs={"filepath": file_path})]
+        file_paths = dl_manager.download_and_extract(_URL)  # 确保这是一个文件列表
+        return [datasets.SplitGenerator(name=datasets.Split.TRAIN, gen_kwargs={"filepaths": file_paths})]
 
     def _generate_examples(self, filepaths: List[str]) -> Dict[int, Dict[str, Any]]:
         prompt_templates = deepcopy(template)
