@@ -15,8 +15,8 @@ lora_target: q_proj,v_proj,k_proj,o_proj,down_proj,up_proj,gate_proj
 #print_param_status: true
 
 # ddp
-#ddp_timeout: 180000000
-#deepspeed: examples/deepspeed/ds_z2_offload_config.json
+ddp_timeout: 180000000
+deepspeed: examples/deepspeed/ds_z2_offload_config.json
 
 # dataset
 #dataset: instruction_only_rag

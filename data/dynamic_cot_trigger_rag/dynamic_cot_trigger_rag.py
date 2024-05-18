@@ -48,6 +48,7 @@ class DynamicCoTDataset(datasets.GeneratorBasedBuilder):
             output = example["output"]
             context = example["contexts"]
             is_positive = example["is_positive"]
+            if not is_positive: continue
             new_example = {
                 "system": system,
                 "instruction": prompt.replace("{question}", question).replace("{requirement}", requirement).replace("{context}", context),
