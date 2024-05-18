@@ -123,7 +123,7 @@
     "ranking": true
   },
   "chatglm_rag_comparison": {
-    "script_url": "chatglm_rag_comparison",
+    "file_name": "chatglm_rag_comparison.json",
     "columns": {
       "system": "system",
       "prompt": "instruction",
@@ -134,7 +134,7 @@
     "ranking": true
   },
   "qwen_rag_comparison": {
-    "script_url": "qwen_rag_comparison",
+    "file_name": "qwen_rag_comparison.json",
     "columns": {
       "system": "system",
       "prompt": "instruction",

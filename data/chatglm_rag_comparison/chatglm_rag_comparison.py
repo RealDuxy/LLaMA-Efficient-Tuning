@@ -8,10 +8,11 @@ _DESCRIPTION = "RAG dataset with dynamic CoT trigger"
 _CITATION = ""
 _HOMEPAGE = ""
 _LICENSE = ""
+_URL_DIR = "data/chatglm_rag_comparison/"
 _URL = [
-    "train_instruction_only_comparison.json",
-    "train_fix_cot_trigger_comparison.json",
-    "train_dynamic_cot_trigger_comparison.json"
+    _URL_DIR+"train_instruction_only_comparison.json",
+    _URL_DIR+"train_fix_cot_trigger_comparison.json",
+    _URL_DIR+"train_dynamic_cot_trigger_comparison.json"
 ]
 
 template = json.load(open("data/dynamic_cot_trigger_rag/template.json", "r", encoding="utf-8"))
@@ -66,3 +67,5 @@ class DynamicCoTDataset(datasets.GeneratorBasedBuilder):
                 }
                 yield key, new_example
                 key += 1
+
+
