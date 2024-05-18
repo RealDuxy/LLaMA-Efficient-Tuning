@@ -31,7 +31,7 @@ preprocessing_num_workers: 16
 # output
 output_dir: checkpoints/qwen/0515_qwen_rag_exp1_dpo
 logging_steps: 5
-save_steps: 30
+save_steps: 100
 plot_loss: true
 overwrite_output_dir: true
 
@@ -47,4 +47,4 @@ fp16: true
 # eval
 per_device_eval_batch_size: 1
 evaluation_strategy: steps
-eval_steps: 25
+eval_steps: 30
