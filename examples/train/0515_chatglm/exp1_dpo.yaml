@@ -17,7 +17,7 @@ lora_target: all
 
 # ddp
 ddp_timeout: 180000000
-deepspeed: examples/deepspeed/ds_z3_offload_config.json
+deepspeed: examples/deepspeed/ds_z3_config.json
 
 # dataset
 #dataset: instruction_only_rag
