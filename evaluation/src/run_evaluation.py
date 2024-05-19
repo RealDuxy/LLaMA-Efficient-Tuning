@@ -182,7 +182,7 @@ def main(filepath, output_file):
 
 if __name__ == '__main__':
     # filepath = "output/train_dataset/chatglm-rag-0515/train_instruction_only_output.json"
-    output_file = "output/train_dataset/chatglm-rag-0515/debug_train_instruction_only_comparison.json"
+    # output_file = "output/train_dataset/chatglm-rag-0515/debug_train_instruction_only_comparison.json"
     # main(filepath, output_file)
 
     filepath = "output/train_dataset/chatglm-rag-0515/train_dynamic_cot_trigger_output.json"
