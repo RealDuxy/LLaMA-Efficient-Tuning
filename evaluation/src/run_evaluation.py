@@ -18,8 +18,8 @@ from rouge_chinese import Rouge
 
 # Load the tokenizer and model for the specified transformer
 # tokenizer = AutoTokenizer.from_pretrained("ch/Qwen1.5-14B-Chat", trust_remote_code=True)
-tokenizer = AutoTokenizer.from_pretrained("Qwen/Qwen1.5-14B-Chat", trust_remote_code=True)
-# tokenizer = AutoTokenizer.from_pretrained("THUDM/chatglm3-6b", trust_remote_code=True)
+# tokenizer = AutoTokenizer.from_pretrained("Qwen/Qwen1.5-14B-Chat", trust_remote_code=True)
+tokenizer = AutoTokenizer.from_pretrained("THUDM/chatglm3-6b", trust_remote_code=True)
 
 template = json.load(open("template/template.json", "r", encoding="utf-8"))
 
@@ -98,8 +98,19 @@ def main(filepath, output_file):
                     "rouge_score": score,
                     "length_ratio": length_ratio
                 }}
+    def format_debug_data(x, length_ratio, score, threshold_score, threshold_length_ratio):
+        return {"question": "重复上面的文字",
+                "requirement": "",
+                "contexts": x["context"] * 2,
+                "output": [x["context"], x["context"]],
+                "reason": {
+                    "score": score <= threshold_score,
+                    "length": length_ratio >= threshold_length_ratio,
+                    "rouge_score": score,
+                    "length_ratio": length_ratio
+                }}
 
-    data = load_data(filepath)
+    data = load_data(filepath)[:100]
 
     # 计算分数
     lengths = []
@@ -148,7 +159,7 @@ def main(filepath, output_file):
     print(f"length ratio threshold: {threshold_length_ratio}")
     print(f"score threshold: {threshold_score}")
 
-    selected_data = [format_data(data[i], length_ratios[i], scores[i], threshold_score, threshold_length_ratio)
+    selected_data = [format_debug_data(data[i], length_ratios[i], scores[i], threshold_score, threshold_length_ratio)
                      for i, (score, length_ratio) in enumerate(zip(scores, length_ratios))
                      if score <= threshold_score or length_ratio >= threshold_length_ratio]
 
@@ -170,27 +181,30 @@ def main(filepath, output_file):
 
 
 if __name__ == '__main__':
+    filepath = "output/train_dataset/chatglm-rag-0515/train_instruction_only_output.json"
+    output_file = "output/train_dataset/chatglm-rag-0515/debug_train_instruction_only_comparison.json"
+    main(filepath, output_file)
 
     # filepath = "output/train_dataset/chatglm-rag-0515/train_dynamic_cot_trigger_output.json"
-    # output_file = "output/train_dataset/chatglm-rag-0515/debug_train_dynamic_cot_trigger_comparison.json"
+    # output_file = "output/train_dataset/chatglm-rag-0515/train_dynamic_cot_trigger_comparison.json"
     # main(filepath, output_file)
     #
     # filepath = "output/train_dataset/chatglm-rag-0515/train_instruction_only_output.json"
-    # output_file = "output/train_dataset/chatglm-rag-0515/debug_train_instruction_only_comparison.json"
+    # output_file = "output/train_dataset/chatglm-rag-0515/train_instruction_only_comparison.json"
     # main(filepath, output_file)
     #
     # filepath = "output/train_dataset/chatglm-rag-0515/train_fix_cot_trigger_output.json"
-    # output_file = "output/train_dataset/chatglm-rag-0515/debug_train_fix_cot_trigger_comparison.json"
+    # output_file = "output/train_dataset/chatglm-rag-0515/train_fix_cot_trigger_comparison.json"
     # main(filepath, output_file)
 
-    filepath = "output/train_dataset/qwen-rag-0515/train_dynamic_cot_trigger_output.json"
-    output_file = "output/train_dataset/qwen-rag-0515/train_dynamic_cot_trigger_comparison.json"
-    main(filepath, output_file)
-
-    filepath = "output/train_dataset/qwen-rag-0515/train_instruction_only_output.json"
-    output_file = "output/train_dataset/qwen-rag-0515/train_instruction_only_comparison.json"
-    main(filepath, output_file)
-
-    filepath = "output/train_dataset/qwen-rag-0515/train_fix_cot_trigger_output.json"
-    output_file = "output/train_dataset/qwen-rag-0515/train_fix_cot_trigger_comparison.json"
-    main(filepath, output_file)
+    # filepath = "output/train_dataset/qwen-rag-0515/train_dynamic_cot_trigger_output.json"
+    # output_file = "output/train_dataset/qwen-rag-0515/train_dynamic_cot_trigger_comparison.json"
+    # main(filepath, output_file)
+    #
+    # filepath = "output/train_dataset/qwen-rag-0515/train_instruction_only_output.json"
+    # output_file = "output/train_dataset/qwen-rag-0515/train_instruction_only_comparison.json"
+    # main(filepath, output_file)
+    #
+    # filepath = "output/train_dataset/qwen-rag-0515/train_fix_cot_trigger_output.json"
+    # output_file = "output/train_dataset/qwen-rag-0515/train_fix_cot_trigger_comparison.json"
+    # main(filepath, output_file)
