@@ -17,6 +17,7 @@ lora_target: q_proj,v_proj,k_proj,o_proj,down_proj,up_proj,gate_proj
 # ddp
 ddp_timeout: 180000000
 deepspeed: examples/deepspeed/ds_z2_offload_config.json #Zero-3不支持QLoRA
+report_to: wandb
 
 # dataset
 #dataset: instruction_only_rag
@@ -24,7 +25,7 @@ deepspeed: examples/deepspeed/ds_z2_offload_config.json #Zero-3不支持QLoRA
 dataset: qwen_rag_comparison
 template: qwen
 cutoff_len: 3600 # 只有80GB可以跑
-#max_samples: 200
+max_samples: 200
 #val_size: 0.01
 overwrite_cache: true
 preprocessing_num_workers: 16
@@ -32,14 +33,14 @@ preprocessing_num_workers: 16
 # output
 output_dir: checkpoints/qwen/0515_qwen_rag_exp1_dpo
 logging_steps: 5
-save_steps: 100
+save_steps: 400
 plot_loss: true
 overwrite_output_dir: true
 
 # train
 per_device_train_batch_size: 1
-gradient_accumulation_steps: 8
-learning_rate: 0.00002
+gradient_accumulation_steps: 2
+learning_rate: 0.000005
 num_train_epochs: 1.0
 lr_scheduler_type: cosine
 warmup_steps: 0.1
