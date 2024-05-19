@@ -20,25 +20,28 @@
 #echo "training complete"
 
 
-CUDA_VISIBLE_DEVICES=0,1,2,3 nohup accelerate launch \
-    --config_file examples/accelerate/single_config.yaml \
-    src/train.py examples/train/0513/exp1.yaml > log/qwen_exp1_0515.log 2>&1 &
-
-CUDA_VISIBLE_DEVICES=0,1,2,3 nohup accelerate launch \
-    --config_file examples/accelerate/single_config.yaml \
-    src/train.py examples/train/0513/exp1_dpo.yaml > log/dpo_qwen_exp1_0515.log 2>&1 &
+#CUDA_VISIBLE_DEVICES=0,1,2,3 nohup accelerate launch \
+#    --config_file examples/accelerate/single_config.yaml \
+#    src/train.py examples/train/0513/exp1.yaml > log/qwen_exp1_0515.log 2>&1 &
+#
+#CUDA_VISIBLE_DEVICES=0,1,2,3 nohup accelerate launch \
+#    --config_file examples/accelerate/single_config.yaml \
+#    src/train.py examples/train/0513/exp1_dpo.yaml > log/dpo_qwen_exp1_0515.log 2>&1 &
 
 USE_MODELSCOPE_HUB=1 CUDA_VISIBLE_DEVICES=0 nohup python \
     src/train.py examples/train/0513/exp1_dpo.yaml > log/dpo_qwen_exp1_0515.log 2>&1 &
+sleep 25200
+USE_MODELSCOPE_HUB=1 CUDA_VISIBLE_DEVICES=0 nohup python \
+    src/train.py examples/train/0513/exp2_dpo.yaml > log/dpo_qwen_exp2_0515.log 2>&1 &
 
-USE_MODELSCOPE_HUB=1 CUDA_VISIBLE_DEVICES=0 nohup accelerate launch \
-    src/train.py examples/train/0513/exp1_dpo.yaml > log/dpo_qwen_exp1_0515.log 2>&1 &
-
-USE_MODELSCOPE_HUB=1 CUDA_VISIBLE_DEVICES=0 nohup accelerate launch \
-src/train.py examples/train/0513/exp2_dpo.yaml > log/dpo_qwen_exp2_0515.log 2>&1 &
-
-USE_MODELSCOPE_HUB=1 CUDA_VISIBLE_DEVICES=0 nohup accelerate launch \
-    --config_file examples/accelerate/single_config.yaml \
-    src/train.py examples/train/0513/exp1_dpo.yaml > log/dpo_qwen_exp1_0515.log 2>&1 &
+#USE_MODELSCOPE_HUB=1 CUDA_VISIBLE_DEVICES=0 nohup accelerate launch \
+#    src/train.py examples/train/0513/exp1_dpo.yaml > log/dpo_qwen_exp1_0515.log 2>&1 &
+#
+#USE_MODELSCOPE_HUB=1 CUDA_VISIBLE_DEVICES=0 nohup accelerate launch \
+#src/train.py examples/train/0513/exp2_dpo.yaml > log/dpo_qwen_exp2_0515.log 2>&1 &
+#
+#USE_MODELSCOPE_HUB=1 CUDA_VISIBLE_DEVICES=0 nohup accelerate launch \
+#    --config_file examples/accelerate/single_config.yaml \
+#    src/train.py examples/train/0513/exp1_dpo.yaml > log/dpo_qwen_exp1_0515.log 2>&1 &
 
 

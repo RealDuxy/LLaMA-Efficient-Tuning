@@ -88,6 +88,8 @@ def describe(data, percentiles=[25, 50, 75, 90, 93, 96, 97, 98, 98.5, 99, 99.3, 
 # 主程序
 def main(filepath, output_file):
     def format_data(x, length_ratio, score, threshold_score, threshold_length_ratio):
+        if length_ratio >= 0.7:
+            print()
         return {"question": x["question"],
                 "requirement": x["requirement"],
                 "contexts": x["context"],
@@ -138,9 +140,9 @@ def main(filepath, output_file):
         # score = 0.5
         # print
         # if score1 >= 3000
-        # if length >= 0.8:
-        #     print(f"output: \n {item['output']}")
-        #     print(f"pred: \n {item['pred']}")
+        if length_ratio >= 0.7:
+            print(f"output: \n {item['output']}")
+            print(f"pred: \n {item['pred']}")
         length_ratios.append(length_ratio)
         lengths.append(len_pred)
         scores.append(score)
@@ -182,7 +184,7 @@ def main(filepath, output_file):
 
 if __name__ == '__main__':
     # filepath = "output/train_dataset/chatglm-rag-0515/train_instruction_only_output.json"
-    output_file = "output/train_dataset/chatglm-rag-0515/debug_train_instruction_only_comparison.json"
+    # output_file = "output/train_dataset/chatglm-rag-0515/debug_train_instruction_only_comparison.json"
     # main(filepath, output_file)
 
     filepath = "output/train_dataset/chatglm-rag-0515/train_dynamic_cot_trigger_output.json"
