@@ -24,7 +24,7 @@ dataset: qwen_rag_comparison
 template: qwen
 cutoff_len: 3000 # L20-48GB 极限只能这么长了
 #max_samples: 200
-val_size: 0.01
+#val_size: 0.01
 overwrite_cache: true
 preprocessing_num_workers: 16
 
@@ -45,6 +45,6 @@ warmup_steps: 0.1
 fp16: true
 
 # eval
-per_device_eval_batch_size: 1
-evaluation_strategy: steps
-eval_steps: 30
+#per_device_eval_batch_size: 1
+#evaluation_strategy: steps
+#eval_steps: 30
