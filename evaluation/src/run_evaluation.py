@@ -9,6 +9,7 @@
 
 
 import json
+from typing import List
 
 import jieba
 from tqdm import tqdm
@@ -16,7 +17,11 @@ from transformers import AutoTokenizer
 from rouge_chinese import Rouge
 
 # Load the tokenizer and model for the specified transformer
-tokenizer = AutoTokenizer.from_pretrained("Qwen/Qwen1.5-14B-Chat", trust_remote_code=True)
+# tokenizer = AutoTokenizer.from_pretrained("ch/Qwen1.5-14B-Chat", trust_remote_code=True)
+# tokenizer = AutoTokenizer.from_pretrained("Qwen/Qwen1.5-14B-Chat", trust_remote_code=True)
+tokenizer = AutoTokenizer.from_pretrained("THUDM/chatglm3-6b", trust_remote_code=True)
+
+template = json.load(open("template/template.json", "r", encoding="utf-8"))
 
 # Function to compute ROUGE scores
 import json
@@ -24,6 +29,11 @@ import jieba
 from rouge import Rouge
 import math
 
+def token_len(texts: List[str]):
+   if not texts:
+       return [0]
+   tokenized_texts = tokenizer(texts)
+   return [len(x) for x in tokenized_texts.input_ids]
 
 # 计算两个文本之间的ROUGE分数
 def compute_rouge_scores(prediction, reference):
@@ -48,7 +58,7 @@ def load_data(filepath):
 
 
 # 描述分数的分布
-def describe(data, percentiles=[25, 50, 75, 90]):
+def describe(data, percentiles=[25, 50, 75, 90, 93, 96, 97, 98, 98.5, 99, 99.3, 99.6, 99.9]):
     count = len(data)
     mean = sum(data) / count
     variance = sum((x - mean) ** 2 for x in data) / count
@@ -77,49 +87,100 @@ def describe(data, percentiles=[25, 50, 75, 90]):
 
 # 主程序
 def main(filepath, output_file):
+    def format_data(x, length_ratio, score, threshold_score, threshold_length_ratio):
+        return {"question": x["question"],
+                "requirement": x["requirement"],
+                "contexts": x["context"],
+                "output": [x["output"], x["pred"]],
+                "reason": {
+                    "score": score <= threshold_score,
+                    "length": length_ratio >= threshold_length_ratio,
+                    "rouge_score": score,
+                    "length_ratio": length_ratio
+                }}
+
     data = load_data(filepath)
 
     # 计算分数
+    lengths = []
     scores = []
+    length_ratios = []
     for item in tqdm(data):
+        len_pred = token_len([
+            item["pred"]
+            + template["prompt"].replace("{context}", item["context"])
+                      .replace("{question}", item["question"])
+                      .replace("{requirement}", item["requirement"])
+                       + str(template["history"][0])])[0]
+
+        len_output = token_len([
+            item["output"]
+            + template["prompt"].replace("{context}", item["context"])
+                      .replace("{question}", item["question"])
+                      .replace("{requirement}", item["requirement"])
+                       + str(template["history"][0])])[0]
+
+        length_ratio = abs(len_pred - len_output) / len_output
         score = compute_rouge_scores(item['pred'], item['output'])
-        if score >= 0.98:
-            print(f"output: \n {item['output']}")
-            print(f"pred: \n {item['pred']}")
+
+        # length = 0.7
+        # score = 0.5
+        # print
+        # if score1 >= 3000
+        # if length >= 0.8:
+        #     print(f"output: \n {item['output']}")
+        #     print(f"pred: \n {item['pred']}")
+        length_ratios.append(length_ratio)
+        lengths.append(len_pred)
         scores.append(score)
 
     # 输出分数分布
     score_description = describe(scores)
+    length_ratio_description = describe(length_ratios)
+    length_description = describe(lengths)
+    print("长度占比分布:", length_ratio_description)
+    print("长度分布:", length_description)
     print("分数分布:", score_description)
 
     # 选取最小的30%的数据
-    threshold = sorted(scores)[int(len(scores) * 0.3)]
-    print(f"threshold: {threshold}")
-    func = lambda x: {"question": x["question"],
-                   "requirement": x["requirement"],
-                   "contexts": x["context"],
-                   "output": [x["output"], x["pred"]]}
-    selected_data = [func(data[i]) for i, score in enumerate(scores) if score <= threshold]
+    threshold_score = sorted(scores)[int(len(scores) * 0.3)]
+    threshold_length_ratio = sorted(length_ratios)[int(len(length_ratios) * 0.98)]
+    print(f"length ratio threshold: {threshold_length_ratio}")
+    print(f"score threshold: {threshold_score}")
+
+    selected_data = [format_data(data[i], length_ratios[i], scores[i], threshold_score, threshold_length_ratio)
+                     for i, (score, length_ratio) in enumerate(zip(scores, length_ratios))
+                     if score <= threshold_score or length_ratio >= threshold_length_ratio]
 
     # 保存选中的数据
     with open(output_file, 'w', encoding='utf-8') as file:
         json.dump(selected_data, file, ensure_ascii=False, indent=4)
 
-    print(f"已保存最小30%分数的数据，共{len(selected_data)}条。")
+    des_file = output_file.replace("comparison", "cnt")
+    with open(des_file, 'w', encoding='utf-8') as file:
+        json.dump({
+            "长度占比分布": length_ratio_description,
+            "长度分布": length_description,
+            "分数分布": score_description
+        }, file, ensure_ascii=False, indent=4)
+
+
+    print(f"已保存最小{len(selected_data)*100/len(scores)}%分数的数据，共{len(selected_data)}条。")
 
 
 
 if __name__ == '__main__':
+
     filepath = "output/train_dataset/chatglm-rag-0515/train_dynamic_cot_trigger_output.json"
-    output_file = "output/train_dataset/chatglm-rag-0515/train_dynamic_cot_trigger_comparison.json"
+    output_file = "output/train_dataset/chatglm-rag-0515/debug_train_dynamic_cot_trigger_comparison.json"
     main(filepath, output_file)
 
     filepath = "output/train_dataset/chatglm-rag-0515/train_instruction_only_output.json"
-    output_file = "output/train_dataset/chatglm-rag-0515/train_instruction_only_comparison.json"
+    output_file = "output/train_dataset/chatglm-rag-0515/debug_train_instruction_only_comparison.json"
     main(filepath, output_file)
 
     filepath = "output/train_dataset/chatglm-rag-0515/train_fix_cot_trigger_output.json"
-    output_file = "output/train_dataset/chatglm-rag-0515/train_fix_cot_trigger_comparison.json"
+    output_file = "output/train_dataset/chatglm-rag-0515/debug_train_fix_cot_trigger_comparison.json"
     main(filepath, output_file)
 
     # filepath = "output/train_dataset/qwen-rag-0515/train_dynamic_cot_trigger_output.json"
