@@ -24,7 +24,11 @@ CUDA_VISIBLE_DEVICES=0,1,2,3 nohup accelerate launch \
 
 USE_MODELSCOPE_HUB=1 CUDA_VISIBLE_DEVICES=0,1,2,3 nohup accelerate launch \
     --config_file examples/accelerate/single_config.yaml \
-    src/train.py examples/train/0515_chatglm/exp1_dpo.yaml > log/dpo_chatglm_exp1_0519_small_lr.log 2>&1 &
+    src/train.py examples/train/0515_chatglm/exp1_dpo.yaml > log/dpo_chatglm_exp1_0519.log 2>&1 &
+
+USE_MODELSCOPE_HUB=1 CUDA_VISIBLE_DEVICES=0,1,2,3 nohup accelerate launch \
+    --config_file examples/accelerate/single_config.yaml \
+    src/train.py examples/train/0515_chatglm/exp2_dpo.yaml > log/dpo_chatglm_exp2_0519.log 2>&1 &
 
 
 
