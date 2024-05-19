@@ -202,7 +202,7 @@ class ChatGLM3MultiScalingRotaryEmbedding(nn.Module):
             ...
         elif self.scaling_type == "DynamicNTK":
             if seq_len > self.max_seq_length:
-                scaled_base = self.base * (
+                scaled_base = self.base ** (
                         (self.scaling_factor * seq_len / self.max_seq_length) - (self.scaling_factor - 1)
                 ) ** (self.n_elem / (self.e_elem - 2))
                 theta = 1.0 / (scaled_base ** (torch.arange(0, n_elem, 2, dtype=torch.float, device=device) / n_elem))

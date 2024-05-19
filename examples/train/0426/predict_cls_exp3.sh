@@ -19,6 +19,7 @@ CUDA_VISIBLE_DEVICES=2 python  ../src/train_bash.py \
     --overwrite_output_dir \
     --overwrite_cache \
     --cutoff_len 1300  \
+    --max_samples 30 \
     --preprocessing_num_workers 32 \
     --per_device_eval_batch_size 1 \
     --model_name_or_path $MODEL_PATH \
