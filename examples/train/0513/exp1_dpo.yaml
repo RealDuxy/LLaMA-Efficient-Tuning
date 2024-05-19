@@ -20,8 +20,8 @@ deepspeed: examples/deepspeed/ds_z2_offload_config.json #Zero-3不支持QLoRA
 
 # dataset
 #dataset: instruction_only_rag
-#dataset: debug_rag_comparison
-dataset: qwen_rag_comparison
+dataset: debug_rag_comparison
+#dataset: qwen_rag_comparison
 template: qwen
 cutoff_len: 3600 # 只有80GB可以跑
 #max_samples: 200
