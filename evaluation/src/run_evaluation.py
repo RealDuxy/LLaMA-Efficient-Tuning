@@ -110,7 +110,7 @@ def main(filepath, output_file):
                     "length_ratio": length_ratio
                 }}
 
-    data = load_data(filepath)[:100]
+    data = load_data(filepath)
 
     # 计算分数
     lengths = []
@@ -159,7 +159,7 @@ def main(filepath, output_file):
     print(f"length ratio threshold: {threshold_length_ratio}")
     print(f"score threshold: {threshold_score}")
 
-    selected_data = [format_debug_data(data[i], length_ratios[i], scores[i], threshold_score, threshold_length_ratio)
+    selected_data = [format_data(data[i], length_ratios[i], scores[i], threshold_score, threshold_length_ratio)
                      for i, (score, length_ratio) in enumerate(zip(scores, length_ratios))
                      if score <= threshold_score or length_ratio >= threshold_length_ratio]
 
@@ -181,21 +181,21 @@ def main(filepath, output_file):
 
 
 if __name__ == '__main__':
-    filepath = "output/train_dataset/chatglm-rag-0515/train_instruction_only_output.json"
-    output_file = "output/train_dataset/chatglm-rag-0515/debug_train_instruction_only_comparison.json"
+    # filepath = "output/train_dataset/chatglm-rag-0515/train_instruction_only_output.json"
+    # output_file = "output/train_dataset/chatglm-rag-0515/debug_train_instruction_only_comparison.json"
+    # main(filepath, output_file)
+
+    filepath = "output/train_dataset/chatglm-rag-0515/train_dynamic_cot_trigger_output.json"
+    output_file = "output/train_dataset/chatglm-rag-0515/train_dynamic_cot_trigger_comparison.json"
     main(filepath, output_file)
 
-    # filepath = "output/train_dataset/chatglm-rag-0515/train_dynamic_cot_trigger_output.json"
-    # output_file = "output/train_dataset/chatglm-rag-0515/train_dynamic_cot_trigger_comparison.json"
-    # main(filepath, output_file)
-    #
-    # filepath = "output/train_dataset/chatglm-rag-0515/train_instruction_only_output.json"
-    # output_file = "output/train_dataset/chatglm-rag-0515/train_instruction_only_comparison.json"
-    # main(filepath, output_file)
-    #
-    # filepath = "output/train_dataset/chatglm-rag-0515/train_fix_cot_trigger_output.json"
-    # output_file = "output/train_dataset/chatglm-rag-0515/train_fix_cot_trigger_comparison.json"
-    # main(filepath, output_file)
+    filepath = "output/train_dataset/chatglm-rag-0515/train_instruction_only_output.json"
+    output_file = "output/train_dataset/chatglm-rag-0515/train_instruction_only_comparison.json"
+    main(filepath, output_file)
+
+    filepath = "output/train_dataset/chatglm-rag-0515/train_fix_cot_trigger_output.json"
+    output_file = "output/train_dataset/chatglm-rag-0515/train_fix_cot_trigger_comparison.json"
+    main(filepath, output_file)
 
     # filepath = "output/train_dataset/qwen-rag-0515/train_dynamic_cot_trigger_output.json"
     # output_file = "output/train_dataset/qwen-rag-0515/train_dynamic_cot_trigger_comparison.json"
