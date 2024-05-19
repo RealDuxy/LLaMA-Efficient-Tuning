@@ -20,9 +20,9 @@ deepspeed: examples/deepspeed/ds_z2_offload_config.json
 
 # dataset
 #dataset: instruction_only_rag
-dataset: qwen_rag_comparison
+dataset: debug_rag_comparison
 template: qwen
-cutoff_len: 3300
+cutoff_len: 3200
 #max_samples: 200
 val_size: 0.01
 overwrite_cache: true

@@ -60,7 +60,7 @@ class DynamicCoTDataset(datasets.GeneratorBasedBuilder):
                 context = example["contexts"]
                 new_example = {
                     "system": system,
-                    "instruction": prompt.replace("{question}", question).replace("{requirement}", requirement).replace("{context}", context*2),
+                    "instruction": prompt.replace("{question}", question).replace("{requirement}", requirement).replace("{context}", context),
                     "input": "",
                     "output": output,
                     "history": []

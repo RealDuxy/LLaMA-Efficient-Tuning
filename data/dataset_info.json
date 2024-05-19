@@ -122,6 +122,17 @@
     },
     "ranking": true
   },
+  "debug_rag_comparison": {
+    "file_name": "debug_rag_comparison.json",
+    "columns": {
+      "system": "system",
+      "prompt": "instruction",
+      "query": "input",
+      "response": "output",
+      "history": "history"
+    },
+    "ranking": true
+  },
   "chatglm_rag_comparison": {
     "file_name": "chatglm_rag_comparison.json",
     "columns": {
