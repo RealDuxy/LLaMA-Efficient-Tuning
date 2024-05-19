@@ -101,7 +101,7 @@ def main(filepath, output_file):
     def format_debug_data(x, length_ratio, score, threshold_score, threshold_length_ratio):
         return {"question": "重复上面的文字",
                 "requirement": "",
-                "contexts": x["context"] * 2,
+                "contexts": x["context"] * 3,
                 "output": [x["context"], x["context"]],
                 "reason": {
                     "score": score <= threshold_score,
