@@ -17,7 +17,7 @@ _URL = [
 
 template = json.load(open("data/dynamic_cot_trigger_rag/template.json", "r", encoding="utf-8"))
 
-class DynamicCoTDataset(datasets.GeneratorBasedBuilder):
+class QwenRAGComparisonDataset(datasets.GeneratorBasedBuilder):
     VERSION = datasets.Version("0.0.0")
     def _info(self) -> datasets.DatasetInfo:
         features = datasets.Features({
