@@ -9,7 +9,7 @@ _DESCRIPTION = "RAG dataset"
 _CITATION = ""
 _HOMEPAGE = ""
 _LICENSE = ""
-_URL = "train_instruction_only.json"
+_URL = "train_0524_instruction_only.json"
 
 template = json.load(open("data/instruction_only_rag/template.json", "r", encoding="utf-8"))
 

@@ -11,7 +11,7 @@ _DESCRIPTION = "RAG dataset with fix CoT trigger"
 _CITATION = ""
 _HOMEPAGE = ""
 _LICENSE = ""
-_URL = "train_fix_cot_trigger.json"
+_URL = "train_0524_fix_cot_trigger.json"
 
 class FixCoTDataset(datasets.GeneratorBasedBuilder):
     VERSION = datasets.Version("0.0.0")
