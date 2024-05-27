@@ -13,9 +13,10 @@ lora_alpha: 32
 lora_target: q_proj,v_proj,k_proj,o_proj,down_proj,up_proj,gate_proj
 #print_param_status: true
 
-# ddp
-ddp_timeout: 180000000
-deepspeed: examples/deepspeed/ds_z2_offload_config.json
+## ddp
+#ddp_timeout: 180000000
+#deepspeed: examples/deepspeed/ds_z2_offload_config.json
+report_to: wandb
 
 # dataset
 #dataset: instruction_only_rag
@@ -28,7 +29,7 @@ overwrite_cache: true
 preprocessing_num_workers: 16
 
 # output
-output_dir: checkpoints/qwen/0515_qwen_rag_exp1
+output_dir: checkpoints/qwen/0527_qwen_rag_exp1
 logging_steps: 5
 save_steps: 80
 plot_loss: true
