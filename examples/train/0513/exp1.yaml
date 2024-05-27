@@ -31,13 +31,13 @@ preprocessing_num_workers: 16
 # output
 output_dir: checkpoints/qwen/0527_qwen_rag_exp1
 logging_steps: 5
-save_steps: 80
+save_steps: 200
 plot_loss: true
 overwrite_output_dir: true
 
 # train
 per_device_train_batch_size: 1
-gradient_accumulation_steps: 8
+gradient_accumulation_steps: 16
 learning_rate: 0.00005
 num_train_epochs: 1.0
 lr_scheduler_type: cosine
@@ -47,4 +47,4 @@ fp16: true
 # eval
 per_device_eval_batch_size: 1
 evaluation_strategy: steps
-eval_steps: 80
+eval_steps: 100
