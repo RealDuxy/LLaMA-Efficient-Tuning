@@ -165,9 +165,9 @@ def run_rag_prediction(data_dir,
             json.dump(results, f, ensure_ascii=False, indent=4)
         print(f"Results saved to {output_file}")
         time_end = time.time()
-        print(f"{data_file.split('/')[-1]} time cost: {(time_end - time_start)}")
-        print(f"{data_file.split('/')[-1]} time cost per cost: {(time_end - time_start) / (4*i)}")
-        print(f"{data_file.split('/')[-1]} time cost per batch: {(time_end - time_start) / i}")
+        print(f"{model_name}-{data_file.split('/')[-1]} time cost: {(time_end - time_start)}")
+        print(f"{model_name}-{data_file.split('/')[-1]} time cost per cost: {(time_end - time_start) / (4*(i+1))}")
+        print(f"{model_name}-{data_file.split('/')[-1]} time cost per batch: {(time_end - time_start) / (i+1)}")
 
 
 if __name__ == '__main__':
@@ -219,35 +219,47 @@ if __name__ == '__main__':
         output_dir="output/train_dataset",
         template_file="template/template.json",
         model_name="qwen-rag-0527",
-        max_samples=8,
+        max_samples=None,
         model_invoke=get_qwen_response
     )
     time_end = time.time()
     print(f"total time cost: {(time_end - time_start)}")
-    # run_rag_prediction(
-    #     data_dir="dataset/train_dataset",
-    #     output_dir="output/train_dataset",
-    #     template_file="template/template.json",
-    #     model_name="qwen-rag-0527-ckpt-400",
-    #     max_samples=None,
-    #     model_invoke=get_qwen_response
-    # )
-    # run_rag_prediction(
-    #     data_dir="dataset/train_dataset",
-    #     output_dir="output/train_dataset",
-    #     template_file="template/template.json",
-    #     model_name="qwen-rag-0527-ckpt-200",
-    #     max_samples=None,
-    #     model_invoke=get_qwen_response
-    # )
-    # run_rag_prediction(
-    #     data_dir="dataset/train_dataset",
-    #     output_dir="output/train_dataset",
-    #     template_file="template/template.json",
-    #     model_name="qwen",
-    #     max_samples=None,
-    #     model_invoke=get_qwen_response
-    # )
+
+    time_start = time.time()
+    run_rag_prediction(
+        data_dir="dataset/train_dataset",
+        output_dir="output/train_dataset",
+        template_file="template/template.json",
+        model_name="qwen-rag-0527-ckpt-200",
+        max_samples=None,
+        model_invoke=get_qwen_response
+    )
+    time_end = time.time()
+    print(f"total time cost: {(time_end - time_start)}")
+
+    time_start = time.time()
+    run_rag_prediction(
+        data_dir="dataset/train_dataset",
+        output_dir="output/train_dataset",
+        template_file="template/template.json",
+        model_name="qwen-rag-0527-ckpt-400",
+        max_samples=None,
+        model_invoke=get_qwen_response
+    )
+    time_end = time.time()
+    print(f"total time cost: {(time_end - time_start)}")
+
+    time_start = time.time()
+    run_rag_prediction(
+        data_dir="dataset/train_dataset",
+        output_dir="output/train_dataset",
+        template_file="template/template.json",
+        model_name="qwen",
+        max_samples=None,
+        model_invoke=get_qwen_response
+    )
+    time_end = time.time()
+    print(f"total time cost: {(time_end - time_start)}")
 
     # # 跑测试集的预测，用于评估
     # run_rag_evaluation(
