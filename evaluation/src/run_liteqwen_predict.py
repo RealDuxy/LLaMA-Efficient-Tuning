@@ -121,7 +121,9 @@ def run_rag_prediction(data_dir,
 
     rag_agent = BaseLiteLLMAgent(template_file=template_file, model_invoke=model_invoke)
 
+
     for data_file in os.listdir(data_dir):
+        time_start = time.time()
         # 过滤文件
         if "train_0524" not in data_file: continue
 
@@ -162,6 +164,10 @@ def run_rag_prediction(data_dir,
         with open(output_file, "w", encoding="utf-8") as f:
             json.dump(results, f, ensure_ascii=False, indent=4)
         print(f"Results saved to {output_file}")
+        time_end = time.time()
+        print(f"{data_file.split('/')[-1]} time cost: {(time_end - time_start)}")
+        print(f"{data_file.split('/')[-1]} time cost per cost: {(time_end - time_start) / 40}")
+        print(f"{data_file.split('/')[-1]} time cost per batch: {(time_end - time_start) / 10}")
 
 
 if __name__ == '__main__':
@@ -213,7 +219,7 @@ if __name__ == '__main__':
         output_dir="output/train_dataset",
         template_file="template/template.json",
         model_name="qwen-rag-0527",
-        max_samples=None,
+        max_samples=40,
         model_invoke=get_qwen_response
     )
     time_cut = time.time()
@@ -225,7 +231,7 @@ if __name__ == '__main__':
         output_dir="output/train_dataset",
         template_file="template/template.json",
         model_name="qwen-rag-0527",
-        max_samples=None,
+        max_samples=40,
         model_invoke=get_qwen_response,
         sorted_by_output=False
     )
