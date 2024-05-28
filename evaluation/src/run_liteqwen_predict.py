@@ -213,26 +213,26 @@ if __name__ == '__main__':
         output_dir="output/train_dataset",
         template_file="template/template.json",
         model_name="qwen-rag-0527",
-        max_samples=40,
+        max_samples=None,
         model_invoke=get_qwen_response
     )
     time_cut = time.time()
     print(f"total time cost: {(time_cut - time_start)}")
-    print(f"total time cost per cost: {(time_cut - time_start) / 40}")
-    print(f"total time cost per batch: {(time_cut - time_start) / 10}")
+    print(f"total time cost per cost: {(time_cut - time_start) / 120}")
+    print(f"total time cost per batch: {(time_cut - time_start) / 30}")
     run_rag_prediction(
         data_dir="dataset/train_dataset",
         output_dir="output/train_dataset",
         template_file="template/template.json",
         model_name="qwen-rag-0527",
-        max_samples=40,
+        max_samples=None,
         model_invoke=get_qwen_response,
         sorted_by_output=False
     )
     time_end = time.time()
     print(f"total time cost: {(time_end - time_cut)}")
-    print(f"total time cost per cost: {(time_end - time_cut) / 40}")
-    print(f"total time cost per batch: {(time_end - time_cut) / 10}")
+    print(f"total time cost per cost: {(time_end - time_cut) / 120}")
+    print(f"total time cost per batch: {(time_end - time_cut) / 30}")
     # run_rag_prediction(
     #     data_dir="dataset/train_dataset",
     #     output_dir="output/train_dataset",
