@@ -98,7 +98,7 @@ def get_chatglm_response(history, prompt, **kwargs) -> str:
         return resp['response']
 
 
-def batch_dataset_iterator(filepath, batch_size=4, max_samples=None, sorted_by_output=True) -> Dict[str, Any]:
+def batch_dataset_iterator(filepath, batch_size=4, max_samples=None, sorted_by_output=False) -> Dict[str, Any]:
     example_dataset = json.load(open(filepath, "r", encoding="utf-8"))
     if max_samples:
         example_dataset = example_dataset[:max_samples]

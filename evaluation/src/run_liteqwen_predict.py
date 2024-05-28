@@ -109,7 +109,7 @@ def run_rag_prediction(data_dir,
                        model_name="names",
                        max_samples=None,
                        model_invoke=get_qwen_response,
-                       sorted_by_output=True):
+                       sorted_by_output=False):
 
     def shuffle_context(context_str):
         context_list = context_str.split("【标题】：")
@@ -166,8 +166,8 @@ def run_rag_prediction(data_dir,
         print(f"Results saved to {output_file}")
         time_end = time.time()
         print(f"{data_file.split('/')[-1]} time cost: {(time_end - time_start)}")
-        print(f"{data_file.split('/')[-1]} time cost per cost: {(time_end - time_start) / 40}")
-        print(f"{data_file.split('/')[-1]} time cost per batch: {(time_end - time_start) / 10}")
+        print(f"{data_file.split('/')[-1]} time cost per cost: {(time_end - time_start) / (4*i)}")
+        print(f"{data_file.split('/')[-1]} time cost per batch: {(time_end - time_start) / i}")
 
 
 if __name__ == '__main__':
@@ -219,26 +219,11 @@ if __name__ == '__main__':
         output_dir="output/train_dataset",
         template_file="template/template.json",
         model_name="qwen-rag-0527",
-        max_samples=40,
+        max_samples=8,
         model_invoke=get_qwen_response
     )
-    time_cut = time.time()
-    print(f"total time cost: {(time_cut - time_start)}")
-    print(f"total time cost per cost: {(time_cut - time_start) / 120}")
-    print(f"total time cost per batch: {(time_cut - time_start) / 30}")
-    run_rag_prediction(
-        data_dir="dataset/train_dataset",
-        output_dir="output/train_dataset",
-        template_file="template/template.json",
-        model_name="qwen-rag-0527",
-        max_samples=40,
-        model_invoke=get_qwen_response,
-        sorted_by_output=False
-    )
     time_end = time.time()
-    print(f"total time cost: {(time_end - time_cut)}")
-    print(f"total time cost per cost: {(time_end - time_cut) / 120}")
-    print(f"total time cost per batch: {(time_end - time_cut) / 30}")
+    print(f"total time cost: {(time_end - time_start)}")
     # run_rag_prediction(
     #     data_dir="dataset/train_dataset",
     #     output_dir="output/train_dataset",
