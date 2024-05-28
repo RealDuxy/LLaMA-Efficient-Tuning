@@ -25,7 +25,9 @@ model_adapter_name_map = {
     "chatglm-rag-0515": "default",
     "chatglm-rag-0515-dpo": "align",
     "qwen": "",
-    "qwen-rag-0515": "default"
+    "qwen-rag-0527": "default",
+    "qwen-rag-0527-ckpt-200": "rag1",
+    "qwen-rag-0527-ckpt-400": "rag2"
 }
 
 def run_rag_evaluation(data_dir, output_dir,
@@ -208,6 +210,30 @@ if __name__ == '__main__':
         output_dir="output/train_dataset",
         template_file="template/template.json",
         model_name="qwen-rag-0527",
+        max_samples=None,
+        model_invoke=get_qwen_response
+    )
+    run_rag_prediction(
+        data_dir="dataset/train_dataset",
+        output_dir="output/train_dataset",
+        template_file="template/template.json",
+        model_name="qwen-rag-0527-ckpt-400",
+        max_samples=None,
+        model_invoke=get_qwen_response
+    )
+    run_rag_prediction(
+        data_dir="dataset/train_dataset",
+        output_dir="output/train_dataset",
+        template_file="template/template.json",
+        model_name="qwen-rag-0527-ckpt-200",
+        max_samples=None,
+        model_invoke=get_qwen_response
+    )
+    run_rag_prediction(
+        data_dir="dataset/train_dataset",
+        output_dir="output/train_dataset",
+        template_file="template/template.json",
+        model_name="qwen",
         max_samples=None,
         model_invoke=get_qwen_response
     )
