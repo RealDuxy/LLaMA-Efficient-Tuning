@@ -103,6 +103,9 @@ def batch_dataset_iterator(filepath, batch_size=4, max_samples=None) -> Dict[str
     if max_samples:
         example_dataset = example_dataset[:max_samples]
 
+    # sort by length to accelerate the batch inference
+    # inference time cost mainly depends on output length
+    example_dataset = sorted(example_dataset, key=lambda x: len(x["output"]))
     batched_example_dataset = [example_dataset[i:i + batch_size] for i in range(0, len(example_dataset), batch_size)]
     for key, batched_samples in enumerate(batched_example_dataset):
         questions = [x["question"] for x in batched_samples]
