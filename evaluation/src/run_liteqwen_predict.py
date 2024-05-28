@@ -11,6 +11,7 @@ import json
 import os.path
 import re
 import sys
+import time
 from random import shuffle
 
 import pandas as pd
@@ -107,7 +108,8 @@ def run_rag_prediction(data_dir,
                        template_file,
                        model_name="names",
                        max_samples=None,
-                       model_invoke=get_qwen_response):
+                       model_invoke=get_qwen_response,
+                       sorted_by_output=True):
 
     def shuffle_context(context_str):
         context_list = context_str.split("【标题】：")
@@ -131,7 +133,7 @@ def run_rag_prediction(data_dir,
         print(f"Processing data file: {data_file}")
         results = []
         for i, datas in tqdm(
-                enumerate(batch_dataset_iterator(data_file, batch_size=4, max_samples=max_samples)),
+                enumerate(batch_dataset_iterator(data_file, batch_size=4, max_samples=max_samples,sorted_by_output=sorted_by_output)),
                 desc=f"processing {data_file.split('/')[-1]}"):
             # shuffled_contexts = [shuffle_context(x) for x in datas["context"]]
             predictions = rag_agent.para_invoke(adapter_name=[model_adapter_name_map[model_name]] * len(datas["question"]),
@@ -205,38 +207,56 @@ if __name__ == '__main__':
     #     max_samples=None,
     #     model_invoke=get_chatglm_response
     # )
+    time_start = time.time()
     run_rag_prediction(
         data_dir="dataset/train_dataset",
         output_dir="output/train_dataset",
         template_file="template/template.json",
         model_name="qwen-rag-0527",
-        max_samples=None,
+        max_samples=40,
         model_invoke=get_qwen_response
     )
+    time_cut = time.time()
+    print(f"total time cost: {(time_cut - time_start)}")
+    print(f"total time cost per cost: {(time_cut - time_start) / 40}")
+    print(f"total time cost per batch: {(time_cut - time_start) / 10}")
     run_rag_prediction(
         data_dir="dataset/train_dataset",
         output_dir="output/train_dataset",
         template_file="template/template.json",
-        model_name="qwen-rag-0527-ckpt-400",
-        max_samples=None,
-        model_invoke=get_qwen_response
+        model_name="qwen-rag-0527",
+        max_samples=40,
+        model_invoke=get_qwen_response,
+        sorted_by_output=False
     )
-    run_rag_prediction(
-        data_dir="dataset/train_dataset",
-        output_dir="output/train_dataset",
-        template_file="template/template.json",
-        model_name="qwen-rag-0527-ckpt-200",
-        max_samples=None,
-        model_invoke=get_qwen_response
-    )
-    run_rag_prediction(
-        data_dir="dataset/train_dataset",
-        output_dir="output/train_dataset",
-        template_file="template/template.json",
-        model_name="qwen",
-        max_samples=None,
-        model_invoke=get_qwen_response
-    )
+    time_end = time.time()
+    print(f"total time cost: {(time_end - time_cut)}")
+    print(f"total time cost per cost: {(time_end - time_cut) / 40}")
+    print(f"total time cost per batch: {(time_end - time_cut) / 10}")
+    # run_rag_prediction(
+    #     data_dir="dataset/train_dataset",
+    #     output_dir="output/train_dataset",
+    #     template_file="template/template.json",
+    #     model_name="qwen-rag-0527-ckpt-400",
+    #     max_samples=None,
+    #     model_invoke=get_qwen_response
+    # )
+    # run_rag_prediction(
+    #     data_dir="dataset/train_dataset",
+    #     output_dir="output/train_dataset",
+    #     template_file="template/template.json",
+    #     model_name="qwen-rag-0527-ckpt-200",
+    #     max_samples=None,
+    #     model_invoke=get_qwen_response
+    # )
+    # run_rag_prediction(
+    #     data_dir="dataset/train_dataset",
+    #     output_dir="output/train_dataset",
+    #     template_file="template/template.json",
+    #     model_name="qwen",
+    #     max_samples=None,
+    #     model_invoke=get_qwen_response
+    # )
 
     # # 跑测试集的预测，用于评估
     # run_rag_evaluation(
