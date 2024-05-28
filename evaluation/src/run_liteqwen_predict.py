@@ -118,6 +118,9 @@ def run_rag_prediction(data_dir,
     rag_agent = BaseLiteLLMAgent(template_file=template_file, model_invoke=model_invoke)
 
     for data_file in os.listdir(data_dir):
+        # 过滤文件
+        if "train_0524" not in data_file: continue
+
         output_file = data_file.replace(".json", f"_output.json")
         data_file = os.path.join(data_dir, data_file)
         model_output_dir = output_dir + f"/{model_name}/"
@@ -159,30 +162,30 @@ def run_rag_prediction(data_dir,
 
 if __name__ == '__main__':
     # chatglm前后评估
-    run_rag_prediction(
-        data_dir="dataset/evaluation_dataset",
-        output_dir="output/evaluation_dataset",
-        template_file="template/template.json",
-        model_name="chatglm",
-        max_samples=None,
-        model_invoke=get_chatglm_response
-    )
-    run_rag_prediction(
-        data_dir="dataset/evaluation_dataset",
-        output_dir="output/evaluation_dataset",
-        template_file="template/template.json",
-        model_name="chatglm-rag-0515",
-        max_samples=None,
-        model_invoke=get_chatglm_response
-    )
-    run_rag_prediction(
-        data_dir="dataset/evaluation_dataset",
-        output_dir="output/evaluation_dataset",
-        template_file="template/template.json",
-        model_name="chatglm-rag-0515-dpo",
-        max_samples=None,
-        model_invoke=get_chatglm_response
-    )
+    # run_rag_prediction(
+    #     data_dir="dataset/evaluation_dataset",
+    #     output_dir="output/evaluation_dataset",
+    #     template_file="template/template.json",
+    #     model_name="chatglm",
+    #     max_samples=None,
+    #     model_invoke=get_chatglm_response
+    # )
+    # run_rag_prediction(
+    #     data_dir="dataset/evaluation_dataset",
+    #     output_dir="output/evaluation_dataset",
+    #     template_file="template/template.json",
+    #     model_name="chatglm-rag-0515",
+    #     max_samples=None,
+    #     model_invoke=get_chatglm_response
+    # )
+    # run_rag_prediction(
+    #     data_dir="dataset/evaluation_dataset",
+    #     output_dir="output/evaluation_dataset",
+    #     template_file="template/template.json",
+    #     model_name="chatglm-rag-0515-dpo",
+    #     max_samples=None,
+    #     model_invoke=get_chatglm_response
+    # )
     # run_rag_prediction(
     #     data_dir="dataset/evaluation_dataset",
     #     output_dir="output/evaluation_dataset",
@@ -200,53 +203,53 @@ if __name__ == '__main__':
     #     max_samples=None,
     #     model_invoke=get_chatglm_response
     # )
-    # run_rag_prediction(
-    #     data_dir="dataset/train_dataset",
-    #     output_dir="output/train_dataset",
+    run_rag_prediction(
+        data_dir="dataset/train_dataset",
+        output_dir="output/train_dataset",
+        template_file="template/template.json",
+        model_name="qwen-rag-0527",
+        max_samples=None,
+        model_invoke=get_qwen_response
+    )
+
+    # # 跑测试集的预测，用于评估
+    # run_rag_evaluation(
+    #     data_dir="dataset/",
+    #     output_dir="output",
     #     template_file="template/template.json",
-    #     model_name="qwen-rag-0515",
+    #     model_name="original",
+    #     max_samples=None,
+    #     model_invoke=get_chatglm_response
+    # )
+    # run_rag_evaluation(
+    #     data_dir="dataset/",
+    #     output_dir="output",
+    #     template_file="template/template.json",
+    #     model_name="default",
     #     max_samples=None,
     #     model_invoke=get_qwen_response
     # )
-
-    # 跑测试集的预测，用于评估
-    run_rag_evaluation(
-        data_dir="dataset/",
-        output_dir="output",
-        template_file="template/template.json",
-        model_name="original",
-        max_samples=None,
-        model_invoke=get_chatglm_response
-    )
-    run_rag_evaluation(
-        data_dir="dataset/",
-        output_dir="output",
-        template_file="template/template.json",
-        model_name="default",
-        max_samples=None,
-        model_invoke=get_qwen_response
-    )
-    run_rag_evaluation(
-        data_dir="dataset/",
-        output_dir="output",
-        template_file="template/template.json",
-        model_name="rag2",
-        max_samples=None,
-        model_invoke=get_qwen_response
-    )
-    run_rag_evaluation(
-        data_dir="dataset/",
-        output_dir="output",
-        template_file="template/template.json",
-        model_name="rag3",
-        max_samples=None,
-        model_invoke=get_qwen_response
-    )
-    run_rag_evaluation(
-        data_dir="dataset/",
-        output_dir="output",
-        template_file="template/template.json",
-        model_name="rag4",
-        max_samples=None,
-        model_invoke=get_qwen_response
-    )
+    # run_rag_evaluation(
+    #     data_dir="dataset/",
+    #     output_dir="output",
+    #     template_file="template/template.json",
+    #     model_name="rag2",
+    #     max_samples=None,
+    #     model_invoke=get_qwen_response
+    # )
+    # run_rag_evaluation(
+    #     data_dir="dataset/",
+    #     output_dir="output",
+    #     template_file="template/template.json",
+    #     model_name="rag3",
+    #     max_samples=None,
+    #     model_invoke=get_qwen_response
+    # )
+    # run_rag_evaluation(
+    #     data_dir="dataset/",
+    #     output_dir="output",
+    #     template_file="template/template.json",
+    #     model_name="rag4",
+    #     max_samples=None,
+    #     model_invoke=get_qwen_response
+    # )
