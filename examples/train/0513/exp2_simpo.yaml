@@ -16,6 +16,8 @@ lora_target: q_proj,v_proj,k_proj,o_proj,down_proj,up_proj,gate_proj
 pref_beta: 0.1
 simpo_gamma: 5
 pref_loss: simpo  # [sigmoid (dpo), orpo, simpo]
+flash_attn: fa2
+use_unsloth: true
 
 # ddp
 #ddp_timeout: 180000000
