@@ -13,7 +13,7 @@ lora_alpha: 16
 lora_target: q_proj,v_proj,k_proj,o_proj,down_proj,up_proj,gate_proj
 #print_param_status: true
 flash_attn: fa2
-use_unsloth: true
+#use_unsloth: true
 
 
 ## ddp
