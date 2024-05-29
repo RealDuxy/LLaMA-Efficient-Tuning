@@ -18,8 +18,8 @@ from transformers import AutoTokenizer
 from rouge_chinese import Rouge
 
 # Load the tokenizer and model for the specified transformer
-# tokenizer = AutoTokenizer.from_pretrained("ch/Qwen1.5-14B-Chat", trust_remote_code=True)
-tokenizer = AutoTokenizer.from_pretrained("Qwen/Qwen1.5-14B-Chat", trust_remote_code=True)
+tokenizer = AutoTokenizer.from_pretrained("/mnt/d/PycharmProjects/models/Qwen1.5-14B-Chat-GPTQ-Int4", trust_remote_code=True)
+# tokenizer = AutoTokenizer.from_pretrained("Qwen/Qwen1.5-14B-Chat", trust_remote_code=True)
 # tokenizer = AutoTokenizer.from_pretrained("THUDM/chatglm3-6b", trust_remote_code=True)
 
 template = json.load(open("template/template.json", "r", encoding="utf-8"))
@@ -27,7 +27,6 @@ template = json.load(open("template/template.json", "r", encoding="utf-8"))
 # Function to compute ROUGE scores
 import json
 import jieba
-from rouge import Rouge
 import math
 
 def token_len(texts: List[str]):
@@ -51,8 +50,8 @@ def compute_rouge_scores(predictions, references):
     time_1 = time.time()
     # hypothesises = [" ".join(jieba.lcut(prediction)) for prediction in predictions]
     # references = [" ".join(jieba.lcut(reference)) for reference in references]
-    hypothesises = [" ".join(prediction) for prediction in tokenize_text(predictions)]
-    references = [" ".join(reference) for reference in tokenize_text(references)]
+    hypothesises = [" ".join(prediction) if predictions else "x" for prediction in tokenize_text(predictions)]
+    references = [" ".join(reference) if references else "x" for reference in tokenize_text(references)]
     time_2 = time.time()
     # if len(" ".join(hypothesis).split()) == 0 or len(" ".join(reference).split()) == 0:
     #     result = 0.0
@@ -179,9 +178,11 @@ def main(filepath, output_file):
     # 输出分数分布
     score_description = describe(scores)
     length_ratio_description = describe(length_ratios)
-    length_description = describe(length_pred_list)
+    length_pred_description = describe(length_pred_list)
+    length_label_description = describe(length_label_list)
     print("长度占比分布:", length_ratio_description)
-    print("长度分布:", length_description)
+    print("预测长度分布:", length_pred_description)
+    print("目标长度分布:", length_label_description)
     print("分数分布:", score_description)
 
     # 选取最小的30%的数据
@@ -202,7 +203,8 @@ def main(filepath, output_file):
     with open(des_file, 'w', encoding='utf-8') as file:
         json.dump({
             "长度占比分布": length_ratio_description,
-            "长度分布": length_description,
+            "预测长度分布": length_pred_description,
+            "目标长度分布": length_label_description,
             "分数分布": score_description
         }, file, ensure_ascii=False, indent=4)
 

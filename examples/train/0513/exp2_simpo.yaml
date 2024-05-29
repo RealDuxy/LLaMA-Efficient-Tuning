@@ -29,7 +29,7 @@ dataset: qwen_rag_dpo
 template: qwen
 cutoff_len: 3600 # 只有80GB可以跑
 #max_samples: 200
-val_size: 0.01
+#val_size: 0.01
 overwrite_cache: true
 preprocessing_num_workers: 16
 
@@ -49,7 +49,7 @@ lr_scheduler_type: cosine
 warmup_steps: 0.1
 fp16: true
 
-# eval
-per_device_eval_batch_size: 1
-evaluation_strategy: steps
-eval_steps: 30
+## eval
+#per_device_eval_batch_size: 1
+#evaluation_strategy: steps
+#eval_steps: 30
