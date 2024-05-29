@@ -25,7 +25,7 @@ report_to: wandb
 # dataset
 #dataset: instruction_only_rag
 #dataset: debug_rag_comparison
-dataset: qwen_rag_comparison
+dataset: qwen_rag_dpo
 template: qwen
 cutoff_len: 3600 # 只有80GB可以跑
 #max_samples: 200
