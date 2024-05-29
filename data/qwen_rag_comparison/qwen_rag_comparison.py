@@ -10,9 +10,9 @@ _HOMEPAGE = ""
 _LICENSE = ""
 _URL_DIR = "data/qwen_rag_comparison/"
 _URL = [
-    _URL_DIR+"train_instruction_only_comparison.json",
-    _URL_DIR+"train_fix_cot_trigger_comparison.json",
-    _URL_DIR+"train_dynamic_cot_trigger_comparison.json"
+    _URL_DIR+"train_0524_instruction_only_comparison.json",
+    _URL_DIR+"train_0524_fix_cot_trigger_comparison.json",
+    _URL_DIR+"train_0524_dynamic_cot_trigger_comparison.json"
 ]
 
 template = json.load(open("data/dynamic_cot_trigger_rag/template.json", "r", encoding="utf-8"))

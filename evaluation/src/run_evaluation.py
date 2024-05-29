@@ -9,6 +9,7 @@
 
 
 import json
+import time
 from typing import List
 
 import jieba
@@ -18,8 +19,8 @@ from rouge_chinese import Rouge
 
 # Load the tokenizer and model for the specified transformer
 # tokenizer = AutoTokenizer.from_pretrained("ch/Qwen1.5-14B-Chat", trust_remote_code=True)
-# tokenizer = AutoTokenizer.from_pretrained("Qwen/Qwen1.5-14B-Chat", trust_remote_code=True)
-tokenizer = AutoTokenizer.from_pretrained("THUDM/chatglm3-6b", trust_remote_code=True)
+tokenizer = AutoTokenizer.from_pretrained("Qwen/Qwen1.5-14B-Chat", trust_remote_code=True)
+# tokenizer = AutoTokenizer.from_pretrained("THUDM/chatglm3-6b", trust_remote_code=True)
 
 template = json.load(open("template/template.json", "r", encoding="utf-8"))
 
@@ -35,18 +36,38 @@ def token_len(texts: List[str]):
    tokenized_texts = tokenizer(texts)
    return [len(x) for x in tokenized_texts.input_ids]
 
+def tokenize_text(texts: List[str]):
+    tokenized_ids = tokenizer(texts).input_ids
+    # response = tokenizer.batch_decode(tokenized_ids, skip_special_tokens=True, clean_up_tokenization_spaces=False)
+    result = []
+    for ids in tokenized_ids:
+        tmp = [str(id) for id in ids]
+        result.append(tmp)
+    return result
+
 # 计算两个文本之间的ROUGE分数
-def compute_rouge_scores(prediction, reference):
-    hypothesis = list(jieba.cut(prediction))
-    reference = list(jieba.cut(reference))
+def compute_rouge_scores(predictions, references):
 
-    if len(" ".join(hypothesis).split()) == 0 or len(" ".join(reference).split()) == 0:
-        result = 0.0
-    else:
-        rouge = Rouge()
-        scores = rouge.get_scores(" ".join(hypothesis), " ".join(reference))
-        result = scores[0]['rouge-l']['f']  # 使用ROUGE-1 F分数作为结果
+    time_1 = time.time()
+    # hypothesises = [" ".join(jieba.lcut(prediction)) for prediction in predictions]
+    # references = [" ".join(jieba.lcut(reference)) for reference in references]
+    hypothesises = [" ".join(prediction) for prediction in tokenize_text(predictions)]
+    references = [" ".join(reference) for reference in tokenize_text(references)]
+    time_2 = time.time()
+    # if len(" ".join(hypothesis).split()) == 0 or len(" ".join(reference).split()) == 0:
+    #     result = 0.0
+    # else:
+    #     rouge = Rouge()
+    #     scores = rouge.get_scores(" ".join(hypothesis), " ".join(reference))
+    #     result = scores[0]['rouge-l']['f']  # 使用ROUGE-1 F分数作为结果
 
+    rouge = Rouge()
+    scores = rouge.get_scores(hypothesises, references)
+    result = [x['rouge-l']['f'] for x in scores]
+    time_3 = time.time()
+    # 耗时打印
+    print(f"time cost for tokenize: {time_2-time_1}")
+    print(f"time cost for compute rouge: {time_3-time_2}")
     return result
 
 
@@ -88,8 +109,7 @@ def describe(data, percentiles=[25, 50, 75, 90, 93, 96, 97, 98, 98.5, 99, 99.3, 
 # 主程序
 def main(filepath, output_file):
     def format_data(x, length_ratio, score, threshold_score, threshold_length_ratio):
-        if length_ratio >= 0.7:
-            print()
+
         return {"question": x["question"],
                 "requirement": x["requirement"],
                 "contexts": x["context"],
@@ -115,49 +135,58 @@ def main(filepath, output_file):
     data = load_data(filepath)
 
     # 计算分数
-    lengths = []
-    scores = []
-    length_ratios = []
-    for item in tqdm(data):
-        len_pred = token_len([
-            item["pred"]
-            + template["prompt"].replace("{context}", item["context"])
-                      .replace("{question}", item["question"])
-                      .replace("{requirement}", item["requirement"])
-                       + str(template["history"][0])])[0]
+    length_pred_list = token_len([item["pred"] for item in tqdm(data, desc="tokenizing predictions")])
+    length_label_list = token_len([item["output"] for item in tqdm(data, desc="tokenizing labels")])
+    length_ratios = [(len_output - len_pred) / len_output for len_pred, len_output in zip(length_pred_list, length_label_list)]
+    scores = compute_rouge_scores([item['pred'] for item in data],
+                                   [item['output'] for item in data])
+    # for item in tqdm(data):
+    #     pred = item["pred"]
+    #     output = item["output"]
+    #     length_both = token_len([pred, output])
+    #     len_pred = length_both[0]
+    #     len_output = length_both[1]
 
-        len_output = token_len([
-            item["output"]
-            + template["prompt"].replace("{context}", item["context"])
-                      .replace("{question}", item["question"])
-                      .replace("{requirement}", item["requirement"])
-                       + str(template["history"][0])])[0]
+    ## 输出分数
+    #     len_pred = token_len([
+    #         item["pred"]
+    #         + template["prompt"].replace("{context}", item["context"])
+    #                   .replace("{question}", item["question"])
+    #                   .replace("{requirement}", item["requirement"])
+    #                    + str(template["history"][0])])[0]
+    #
+    #     len_output = token_len([
+    #         item["output"]
+    #         + template["prompt"].replace("{context}", item["context"])
+    #                   .replace("{question}", item["question"])
+    #                   .replace("{requirement}", item["requirement"])
+    #                    + str(template["history"][0])])[0]
 
-        length_ratio = abs(len_pred - len_output) / len_output
-        score = compute_rouge_scores(item['pred'], item['output'])
+        # length_ratio = abs(len_pred - len_output) / len_output
+        # score = compute_rouge_scores(item['pred'], item['output'])
 
         # length = 0.7
         # score = 0.5
         # print
         # if score1 >= 3000
-        if length_ratio >= 0.7:
-            print(f"output: \n {item['output']}")
-            print(f"pred: \n {item['pred']}")
-        length_ratios.append(length_ratio)
-        lengths.append(len_pred)
-        scores.append(score)
+        # if length_ratio >= 0.5:
+        #     print(f"output: \n {item['output']}")
+        #     print(f"pred: \n {item['pred']}")
+        # length_ratios.append(length_ratio)
+        # lengths.append(len_pred)
+        # scores.append(score)
 
     # 输出分数分布
     score_description = describe(scores)
     length_ratio_description = describe(length_ratios)
-    length_description = describe(lengths)
+    length_description = describe(length_pred_list)
     print("长度占比分布:", length_ratio_description)
     print("长度分布:", length_description)
     print("分数分布:", score_description)
 
     # 选取最小的30%的数据
-    threshold_score = sorted(scores)[int(len(scores) * 0.3)]
-    threshold_length_ratio = sorted(length_ratios)[int(len(length_ratios) * 0.98)]
+    threshold_score = sorted(scores)[int(len(scores) * 0.1)]
+    threshold_length_ratio = sorted(length_ratios)[int(len(length_ratios) * 0.9)]
     print(f"length ratio threshold: {threshold_length_ratio}")
     print(f"score threshold: {threshold_score}")
 
@@ -187,16 +216,16 @@ if __name__ == '__main__':
     # output_file = "output/train_dataset/chatglm-rag-0515/debug_train_instruction_only_comparison.json"
     # main(filepath, output_file)
 
-    filepath = "output/train_dataset/chatglm-rag-0515/train_dynamic_cot_trigger_output.json"
-    output_file = "output/train_dataset/chatglm-rag-0515/train_dynamic_cot_trigger_comparison.json"
+    filepath = "output/train_dataset/qwen-rag-0527/train_0524_dynamic_cot_trigger_output.json"
+    output_file = "output/train_dataset/qwen-rag-0527/train_0524_dynamic_cot_trigger_comparison.json"
     main(filepath, output_file)
 
-    filepath = "output/train_dataset/chatglm-rag-0515/train_instruction_only_output.json"
-    output_file = "output/train_dataset/chatglm-rag-0515/train_instruction_only_comparison.json"
+    filepath = "output/train_dataset/qwen-rag-0527/train_0524_instruction_only_output.json"
+    output_file = "output/train_dataset/qwen-rag-0527/train_0524_instruction_only_comparison.json"
     main(filepath, output_file)
 
-    filepath = "output/train_dataset/chatglm-rag-0515/train_fix_cot_trigger_output.json"
-    output_file = "output/train_dataset/chatglm-rag-0515/train_fix_cot_trigger_comparison.json"
+    filepath = "output/train_dataset/qwen-rag-0527/train_0524_fix_cot_trigger_output.json"
+    output_file = "output/train_dataset/qwen-rag-0527/train_0524_fix_cot_trigger_comparison.json"
     main(filepath, output_file)
 
     # filepath = "output/train_dataset/qwen-rag-0515/train_dynamic_cot_trigger_output.json"
