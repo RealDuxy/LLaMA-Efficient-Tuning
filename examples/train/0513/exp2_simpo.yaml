@@ -9,8 +9,8 @@ model_name_or_path: /root/autodl-tmp/Qwen1.5-14B-Chat-GPTQ-Int4
 stage: dpo
 do_train: true
 finetuning_type: lora
-lora_rank: 16
-lora_alpha: 32
+lora_rank: 8
+lora_alpha: 16
 lora_target: q_proj,v_proj,k_proj,o_proj,down_proj,up_proj,gate_proj
 #print_param_status: true
 pref_beta: 0.1
