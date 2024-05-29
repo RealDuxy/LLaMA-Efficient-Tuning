@@ -323,6 +323,10 @@ class FinetuningArguments(FreezeArguments, LoraArguments, RLHFArguments, GaloreA
         default=False,
         metadata={"help": "Whether or not to save the training loss curves."},
     )
+    training_mode: Literal["mle", "emo"] = field(
+        default="mle",
+        metadata={"help": "Which stage will be performed in training."},
+    )
 
     def __post_init__(self):
         def split_arg(arg):
