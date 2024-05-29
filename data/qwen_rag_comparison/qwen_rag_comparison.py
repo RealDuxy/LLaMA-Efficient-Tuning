@@ -60,7 +60,7 @@ class QwenRAGComparisonDataset(datasets.GeneratorBasedBuilder):
                 context = example["contexts"]
                 new_example = {
                     "system": system,
-                    "prompt": prompt.replace("{question}", question).replace("{requirement}", requirement).replace("{context}", context),
+                    "question": prompt.replace("{question}", question).replace("{requirement}", requirement).replace("{context}", context),
                     "chosen": output[0],
                     "rejected": output[1]
                 }
