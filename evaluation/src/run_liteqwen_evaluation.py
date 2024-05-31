@@ -199,7 +199,8 @@ def run_rag_comparison(data_dir,
                                                     **{"question": datas["question"]
                                                         , "requirement": datas["requirement"]
                                                         , "context": datas["context"]})
-
+                print(f"========{model_name}_prediction finished============")
+                print(f"{predictions[0]}")
                 datas.update({f"{model_name}_prediction": predictions})
 
             for j in range(len(predictions)):
@@ -239,7 +240,7 @@ if __name__ == '__main__':
         output_dir="output/evaluation_dataset",
         template_file="template/template.json",
         model_names=["qwen","qwen-rag-0527-exp2","qwen-rag-0529-simpo-exp2","qwen-rag-0529-simpo-exp3"],
-        max_samples=None,
+        max_samples=4,
         model_invoke=get_qwen_response
     )
     time_end = time.time()
