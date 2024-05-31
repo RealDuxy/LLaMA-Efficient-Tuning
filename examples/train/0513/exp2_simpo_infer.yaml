@@ -22,7 +22,7 @@ predict_with_generate: true
 dataset: dynamic_cot_trigger_rag
 template: qwen
 cutoff_len: 3600 # 只有80GB可以跑
-max_samples: 5
+max_samples: 2
 overwrite_cache: true
 preprocessing_num_workers: 16
 
