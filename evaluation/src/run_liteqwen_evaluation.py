@@ -326,7 +326,11 @@ def test_single_agent(model_name="qwen-rag-0529-simpo-exp2"):
     question = "客户不喜欢我给设计的产品组合中的附加险，该怎么应对？"
     template_file = "template/template.json"
     model_invoke = get_qwen_response
+    debug_agent = BaseLiteLLMAgent(template_file="template/template_debug.json", model_invoke=get_qwen_response)
     rag_agent = BaseLiteLLMAgent(template_file=template_file, model_invoke=model_invoke)
+    predictions = debug_agent.invoke(adapter_name=model_adapter_name_map[model_name],
+                                        **{"question": question})
+    print(predictions)
     predictions = rag_agent.invoke(adapter_name=model_adapter_name_map[model_name],
                                         **{"question": question
                                             , "requirement": requirement
