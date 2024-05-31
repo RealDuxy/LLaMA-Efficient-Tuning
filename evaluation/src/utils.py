@@ -29,7 +29,7 @@ def get_qwen_response(history, prompt, **kwargs) -> str:
 
     """
     url = "http://127.0.0.1:8081/chat"
-    record_id = kwargs.get("record_id", random.randint(12347890, 99999999))
+    record_id = kwargs.get("record_id", random.randint(1, 99999999))
     headers = {"Content-Type": "application/json", "cache-control": "no-cache"}
     temperature = kwargs.get("temperature", 0.3)
     adapter_name = kwargs.get('adapter_name', "")
@@ -49,7 +49,9 @@ def get_qwen_response(history, prompt, **kwargs) -> str:
                        "adapter_name": adapter_name,
                        "top_k": top_k,
                        "return_raw": True}}
+    print(input_data)
     response = requests.post(url=url, headers=headers, data=json.dumps(input_data))
+
     if response.status_code != 200:
         return "查询结果出错"
     else:
