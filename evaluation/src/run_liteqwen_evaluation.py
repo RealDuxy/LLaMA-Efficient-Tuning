@@ -327,7 +327,7 @@ def test_single_agent(model_name="qwen-rag-0529-simpo-exp2"):
     template_file = "template/template.json"
     model_invoke = get_qwen_response
     # debug_agent = BaseLiteLLMAgent(template_file="template/template_debug.json", model_invoke=get_qwen_response)
-    rag_agent = BaseLiteLLMAgent(template_file=template_file, model_invoke=get_qwen_response)
+    rag_agent = BaseLiteLLMAgent(template_file=template_file, model_invoke=get_chatglm_response)
     # predictions = debug_agent.invoke(adapter_name=model_adapter_name_map[model_name],
     #                                     **{"question": question})
     # print(predictions)
@@ -338,7 +338,7 @@ def test_single_agent(model_name="qwen-rag-0529-simpo-exp2"):
     print(predictions)
 
 if __name__ == '__main__':
-    test_single_agent()
+    test_single_agent("default")
     # time_start = time.time()
     # run_rag_comparison(
     #     data_dir="dataset/evaluation_dataset",
