@@ -323,7 +323,7 @@ def test_single_agent(model_name="qwen-rag-0529-simpo-exp2"):
     adapter_name = model_adapter_name_map[model_name]
     requirement = "1. 请考虑客户的具体情况和个性化需求，提供定制化的解决方案。2. 在解答中，不仅要关注产品本身，还要考虑销售流程和技巧的改进。3. 尽量避免使用过于笼统或模糊的表述，而是要具体、实际。4. 在解答中，要充分展示公司的优势和服务体系。"
     context = test_case
-    question = "客户不喜欢我给设计的产品组合中的附加险，该怎么应对？"
+    question = "你好，你是谁？"
     template_file = "template/template.json"
     model_invoke = get_qwen_response
     debug_agent = BaseLiteLLMAgent(template_file="template/template_debug.json", model_invoke=get_qwen_response)
