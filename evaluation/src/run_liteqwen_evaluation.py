@@ -239,7 +239,7 @@ if __name__ == '__main__':
         output_dir="output/evaluation_dataset",
         template_file="template/template.json",
         model_names=["qwen","qwen-rag-0527-exp2","qwen-rag-0529-simpo-exp2","qwen-rag-0529-simpo-exp3"],
-        max_samples=8,
+        max_samples=None,
         model_invoke=get_qwen_response
     )
     time_end = time.time()
