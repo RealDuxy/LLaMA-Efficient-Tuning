@@ -339,7 +339,9 @@ def test_single_agent(model_name="qwen-rag-0529-simpo-exp2"):
     print(predictions)
 
 if __name__ == '__main__':
-    test_single_agent()
+    test_single_agent("qwen")
+    test_single_agent("qwen-rag-0527-exp2")
+    test_single_agent("qwen-rag-0529-simpo-exp2")
     # time_start = time.time()
     # run_rag_comparison(
     #     data_dir="dataset/evaluation_dataset",
