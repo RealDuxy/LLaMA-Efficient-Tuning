@@ -11,8 +11,8 @@ USE_MODELSCOPE_HUB=1 CUDA_VISIBLE_DEVICES=0 nohup python \
     src/train.py examples/train/0513/exp3_simpo.yaml > log/simpo_qwen_exp3_0529.log 2>&1
 
 
-#USE_MODELSCOPE_HUB=1 CUDA_VISIBLE_DEVICES=0 nohup python \
-#    src/train.py examples/train/0513/exp2_simpo_infer.yaml > log/infer_simpo_qwen_exp2_0529.log 2>&1
+USE_MODELSCOPE_HUB=1 CUDA_VISIBLE_DEVICES=0 nohup python \
+    src/train.py examples/train/0513/exp2_simpo_infer.yaml > log/infer_simpo_qwen_exp2_0529.log 2>&1 &
 
 #USE_MODELSCOPE_HUB=1 CUDA_VISIBLE_DEVICES=0 nohup accelerate launch \
 #    src/train.py examples/train/0513/exp1_dpo.yaml > log/dpo_qwen_exp1_0515.log 2>&1 &
