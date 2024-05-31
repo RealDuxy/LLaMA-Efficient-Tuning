@@ -8,7 +8,8 @@ _DESCRIPTION = "RAG dataset with dynamic CoT trigger"
 _CITATION = ""
 _HOMEPAGE = ""
 _LICENSE = ""
-_URL = "train_0524_dynamic_cot_trigger.json"
+# _URL = "train_0524_dynamic_cot_trigger.json"
+_URL = "eval_dynamic_cot_trigger.json"
 
 template = json.load(open("data/dynamic_cot_trigger_rag/template.json", "r", encoding="utf-8"))
 

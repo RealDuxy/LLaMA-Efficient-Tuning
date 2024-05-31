@@ -19,7 +19,7 @@ flash_attn: fa2
 # dataset
 #dataset: instruction_only_rag
 #dataset: debug_rag_comparison
-dataset: qwen_rag_dpo
+dataset: dynamic_cot_trigger_rag
 template: qwen
 cutoff_len: 3600 # 只有80GB可以跑
 max_samples: 5
