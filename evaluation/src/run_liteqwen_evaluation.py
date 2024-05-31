@@ -213,7 +213,7 @@ def run_rag_comparison(data_dir,
                     tmp_result.update({f"{model_name}_prediction": datas[f"{model_name}_prediction"][j]})
                 results.append(tmp_result)
 
-            if i % 20 == 1:
+            if i % 5 == 1:
                 # results 保存到output_file
                 with open(output_file, "w", encoding="utf-8") as f:
                     json.dump(results, f, ensure_ascii=False, indent=4)
