@@ -28,7 +28,7 @@ def get_qwen_response(history, prompt, **kwargs) -> str:
     Returns:
 
     """
-    url = "http://localhost:8081/chat"
+    url = "http://127.0.0.1:8081/chat"
     record_id = kwargs.get("record_id", random.randint(12347890, 99999999))
     headers = {"Content-Type": "application/json", "cache-control": "no-cache"}
     temperature = kwargs.get("temperature", 0.3)
