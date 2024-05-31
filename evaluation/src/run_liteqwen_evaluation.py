@@ -219,7 +219,8 @@ def run_rag_comparison(data_dir,
                     json.dump(results, f, ensure_ascii=False, indent=4)
                 print(f"question:{results[-1]['question']}")
                 print(f"output:{results[-1]['output']}")
-                print(f"pred:{results[-1]['pred']}")
+                for model_name in model_names:
+                    print({f"{model_name}_prediction": results[-1][f"{model_name}_prediction"]})
                 print(f"temp {i} Results saved to {output_file}")
 
         # results 保存到output_file
@@ -238,7 +239,7 @@ if __name__ == '__main__':
         output_dir="output/evaluation_dataset",
         template_file="template/template.json",
         model_names=["qwen","qwen-rag-0527-exp2","qwen-rag-0529-simpo-exp2","qwen-rag-0529-simpo-exp3"],
-        max_samples=None,
+        max_samples=8,
         model_invoke=get_qwen_response
     )
     time_end = time.time()

@@ -105,7 +105,8 @@ class BaseLiteLLMAgent:
 
     def invoke(self, **kwargs):
         history, prompt = self.assemble_messages(**kwargs)
-        response = self.model_invoke(history, prompt, **kwargs)
+        response = "test output for debug"
+        # response = self.model_invoke(history, prompt, **kwargs)
         return response
 
     def para_invoke(self, **kwargs):
