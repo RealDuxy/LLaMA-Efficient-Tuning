@@ -140,6 +140,7 @@ def main(filepath, output_file, percents):
     length_ratios = [(len_output - len_pred) / len_output for len_pred, len_output in zip(length_pred_list, length_label_list)]
     scores = compute_rouge_scores([item['pred'] for item in data],
                                    [item['output'] for item in data])
+    # scores = [i for i in range(len(data))]
     # for item in tqdm(data):
     #     pred = item["pred"]
     #     output = item["output"]
@@ -188,8 +189,8 @@ def main(filepath, output_file, percents):
 
     # 选取最小的30%的数据
     for percent in percents:
-        threshold_score = sorted(scores)[int(len(scores) * (1-percent))]
-        threshold_length_ratio = sorted(length_ratios)[int(len(length_ratios) * (1-percent))]
+        threshold_score = sorted(scores)[int(len(scores) * percent)-1]
+        threshold_length_ratio = sorted(length_ratios)[int(len(length_ratios) * (1-percent))-1]
         print(f"length ratio threshold: {threshold_length_ratio}")
         print(f"score threshold: {threshold_score}")
 
@@ -221,17 +222,19 @@ if __name__ == '__main__':
     # output_file = "output/train_dataset/chatglm-rag-0515/debug_train_instruction_only_comparison.json"
     # main(filepath, output_file)
 
+    filepath = "output/train_dataset/qwen-rag-0529-exp2/train_0524_fix_cot_trigger_output.json"
+    output_file = "output/train_dataset/qwen-rag-0529-exp2/train_0524_fix_cot_trigger_comparison.json"
+    main(filepath, output_file, percents=[1.0, 0.5, 0.25, 0.1])
+
     filepath = "output/train_dataset/qwen-rag-0529-exp2/train_0524_dynamic_cot_trigger_output.json"
     output_file = "output/train_dataset/qwen-rag-0529-exp2/train_0524_dynamic_cot_trigger_comparison.json"
-    main(filepath, output_file, percents=[1.0, 0.25, 0.1])
+    main(filepath, output_file, percents=[1.0, 0.5, 0.25, 0.1])
 
     filepath = "output/train_dataset/qwen-rag-0529-exp2/train_0524_instruction_only_output.json"
     output_file = "output/train_dataset/qwen-rag-0529-exp2/train_0524_instruction_only_comparison.json"
-    main(filepath, output_file, percents=[1.0, 0.25, 0.1])
+    main(filepath, output_file, percents=[1.0, 0.5, 0.25, 0.1])
 
-    filepath = "output/train_dataset/qwen-rag-0529-exp2/train_0524_fix_cot_trigger_output.json"
-    output_file = "output/train_dataset/qwen-rag-0529-exp2/train_0524_fix_cot_trigger_comparison.json"
-    main(filepath, output_file, percents=[1.0, 0.25, 0.1])
+
 
     # filepath = "output/train_dataset/qwen-rag-0515/train_dynamic_cot_trigger_output.json"
     # output_file = "output/train_dataset/qwen-rag-0515/train_dynamic_cot_trigger_comparison.json"

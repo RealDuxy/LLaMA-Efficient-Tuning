@@ -25,6 +25,8 @@ dataset = QwenRAGComparisonDataset()
 
 comparison_datas = [new_example
                     for key, new_example in dataset._generate_examples(filepaths=_URL)]
+
+print(len(comparison_datas))
 json.dump(comparison_datas,
           open("data/qwen_rag_comparison_100p.json", "w", encoding="utf-8"),
           ensure_ascii=False, indent=4)
