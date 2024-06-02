@@ -154,6 +154,46 @@
     },
     "ranking": true
   },
+  "qwen_rag_comparison_10p": {
+    "file_name": "qwen_rag_comparison_10p.json",
+    "columns": {
+      "prompt": "question",
+      "chosen": "chosen",
+      "rejected": "rejected",
+      "system": "system"
+    },
+    "ranking": true
+  },
+  "qwen_rag_comparison_25p": {
+    "file_name": "qwen_rag_comparison_25p.json",
+    "columns": {
+      "prompt": "question",
+      "chosen": "chosen",
+      "rejected": "rejected",
+      "system": "system"
+    },
+    "ranking": true
+  },
+  "qwen_rag_comparison_50p": {
+    "file_name": "qwen_rag_comparison_50p.json",
+    "columns": {
+      "prompt": "question",
+      "chosen": "chosen",
+      "rejected": "rejected",
+      "system": "system"
+    },
+    "ranking": true
+  },
+  "qwen_rag_comparison_100p": {
+    "file_name": "qwen_rag_comparison_100p.json",
+    "columns": {
+      "prompt": "question",
+      "chosen": "chosen",
+      "rejected": "rejected",
+      "system": "system"
+    },
+    "ranking": true
+  },
   "alpaca_en": {
     "file_name": "alpaca_data_en_52k.json"
   },
