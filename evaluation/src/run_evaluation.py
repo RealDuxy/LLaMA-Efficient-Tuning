@@ -198,20 +198,21 @@ def main(filepath, output_file, percents):
                          if score <= threshold_score or length_ratio >= threshold_length_ratio]
 
         # 保存选中的数据
-        with open(output_file.replace(".json", f"_{percent*100}p.json"), 'w', encoding='utf-8') as file:
+        with open(output_file.replace(".json", f"_{int(percent*100)}p.json"), 'w', encoding='utf-8') as file:
             json.dump(selected_data, file, ensure_ascii=False, indent=4)
+        print(f"已保存最小{len(selected_data) * 100 / len(scores)}%分数的数据，共{len(selected_data)}条。")
 
-        des_file = output_file.replace("comparison", "cnt")
-        with open(des_file, 'w', encoding='utf-8') as file:
-            json.dump({
-                "长度占比分布": length_ratio_description,
-                "预测长度分布": length_pred_description,
-                "目标长度分布": length_label_description,
-                "分数分布": score_description
-            }, file, ensure_ascii=False, indent=4)
+    des_file = output_file.replace("comparison", "cnt")
+    with open(des_file, 'w', encoding='utf-8') as file:
+        json.dump({
+            "长度占比分布": length_ratio_description,
+            "预测长度分布": length_pred_description,
+            "目标长度分布": length_label_description,
+            "分数分布": score_description
+        }, file, ensure_ascii=False, indent=4)
 
 
-        print(f"已保存最小{len(selected_data)*100/len(scores)}%分数的数据，共{len(selected_data)}条。")
+
 
 
 
