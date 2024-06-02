@@ -28,7 +28,7 @@ report_to: wandb
 #dataset: debug_rag_comparison
 dataset: qwen_rag_comparison_100p
 template: qwen
-cutoff_len: 3200 # 只有80GB可以跑
+cutoff_len: 3600 # 只有80GB可以跑
 #max_samples: 200
 val_size: 0.01
 overwrite_cache: true
