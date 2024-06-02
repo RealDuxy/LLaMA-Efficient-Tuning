@@ -1,0 +1,36 @@
+# model
+#model_name_or_path: /mnt/e/UbuntuFiles/models_saved/Qwen1.5-7B-Chat
+#model_name_or_path: /mnt/e/UbuntuFiles/models_saved/Qwen1.5-14B-Chat-GPTQ-Int4
+adapter_name_or_path: checkpoints/qwen/0529_qwen_rag_exp2_simpo/checkpoint-100
+#adapter_name_or_path: checkpoints/qwen/0527_qwen_rag_exp2
+#model_name_or_path: /mnt/d/PycharmProjects/models/Qwen1.5-14B-Chat-GPTQ-Int4
+#model_name_or_path: qwen/Qwen-14B-Chat-Int4
+model_name_or_path: /root/autodl-tmp/Qwen1.5-14B-Chat-GPTQ-Int4
+# method
+do_predict: true
+finetuning_type: lora
+flash_attn: fa2
+predict_with_generate: true
+# ddp
+#ddp_timeout: 180000000
+#deepspeed: examples/deepspeed/ds_z2_offload_config.json #Zero-3不支持QLoRA
+#report_to: wandb
+
+# dataset
+#dataset: instruction_only_rag
+#dataset: debug_rag_comparison
+dataset: dynamic_cot_trigger_rag
+template: qwen
+cutoff_len: 3600 # 只有80GB可以跑
+max_samples: 2
+overwrite_cache: true
+preprocessing_num_workers: 16
+
+# output
+output_dir: checkpoints/qwen/0529_qwen_rag_exp2_simpo
+
+# train
+fp16: true
+
+# eval
+per_device_eval_batch_size: 1
