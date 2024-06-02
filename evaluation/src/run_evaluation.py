@@ -15,10 +15,11 @@ from typing import List
 import jieba
 from tqdm import tqdm
 from transformers import AutoTokenizer
-from rouge_chinese import Rouge
+
+from evaluation.src.utils import Rouge
 
 # Load the tokenizer and model for the specified transformer
-# tokenizer = AutoTokenizer.from_pretrained("/mnt/d/PycharmProjects/models/Qwen1.5-14B-Chat-GPTQ-Int4", trust_remote_code=True)
+tokenizer = AutoTokenizer.from_pretrained("/mnt/d/PycharmProjects/models/Qwen1.5-14B-Chat-GPTQ-Int4", trust_remote_code=True)
 # tokenizer = AutoTokenizer.from_pretrained("Qwen/Qwen1.5-14B-Chat", trust_remote_code=True)
 # tokenizer = AutoTokenizer.from_pretrained("THUDM/chatglm3-6b", trust_remote_code=True)
 
@@ -106,7 +107,7 @@ def describe(data, percentiles=[25, 50, 75, 90, 93, 96, 97, 98, 98.5, 99, 99.3, 
 
 
 # 主程序
-def main(filepath, output_file):
+def main(filepath, output_file, percents):
     def format_data(x, length_ratio, score, threshold_score, threshold_length_ratio):
 
         return {"question": x["question"],
@@ -186,30 +187,31 @@ def main(filepath, output_file):
     print("分数分布:", score_description)
 
     # 选取最小的30%的数据
-    threshold_score = sorted(scores)[int(len(scores) * 0.5)]
-    threshold_length_ratio = sorted(length_ratios)[int(len(length_ratios) * 0.5)]
-    print(f"length ratio threshold: {threshold_length_ratio}")
-    print(f"score threshold: {threshold_score}")
+    for percent in percents:
+        threshold_score = sorted(scores)[int(len(scores) * (1-percent))]
+        threshold_length_ratio = sorted(length_ratios)[int(len(length_ratios) * (1-percent))]
+        print(f"length ratio threshold: {threshold_length_ratio}")
+        print(f"score threshold: {threshold_score}")
 
-    selected_data = [format_data(data[i], length_ratios[i], scores[i], threshold_score, threshold_length_ratio)
-                     for i, (score, length_ratio) in enumerate(zip(scores, length_ratios))
-                     if score <= threshold_score or length_ratio >= threshold_length_ratio]
+        selected_data = [format_data(data[i], length_ratios[i], scores[i], threshold_score, threshold_length_ratio)
+                         for i, (score, length_ratio) in enumerate(zip(scores, length_ratios))
+                         if score <= threshold_score or length_ratio >= threshold_length_ratio]
 
-    # 保存选中的数据
-    with open(output_file, 'w', encoding='utf-8') as file:
-        json.dump(selected_data, file, ensure_ascii=False, indent=4)
+        # 保存选中的数据
+        with open(output_file.replace(".json", f"_{percent*100}p.json"), 'w', encoding='utf-8') as file:
+            json.dump(selected_data, file, ensure_ascii=False, indent=4)
 
-    des_file = output_file.replace("comparison", "cnt")
-    with open(des_file, 'w', encoding='utf-8') as file:
-        json.dump({
-            "长度占比分布": length_ratio_description,
-            "预测长度分布": length_pred_description,
-            "目标长度分布": length_label_description,
-            "分数分布": score_description
-        }, file, ensure_ascii=False, indent=4)
+        des_file = output_file.replace("comparison", "cnt")
+        with open(des_file, 'w', encoding='utf-8') as file:
+            json.dump({
+                "长度占比分布": length_ratio_description,
+                "预测长度分布": length_pred_description,
+                "目标长度分布": length_label_description,
+                "分数分布": score_description
+            }, file, ensure_ascii=False, indent=4)
 
 
-    print(f"已保存最小{len(selected_data)*100/len(scores)}%分数的数据，共{len(selected_data)}条。")
+        print(f"已保存最小{len(selected_data)*100/len(scores)}%分数的数据，共{len(selected_data)}条。")
 
 
 
@@ -219,16 +221,16 @@ if __name__ == '__main__':
     # main(filepath, output_file)
 
     filepath = "output/train_dataset/qwen-rag-0529-exp2/train_0524_dynamic_cot_trigger_output.json"
-    output_file = "output/train_dataset/qwen-rag-0529-exp2/train_0524_dynamic_cot_trigger_comparison_50p.json"
-    main(filepath, output_file)
+    output_file = "output/train_dataset/qwen-rag-0529-exp2/train_0524_dynamic_cot_trigger_comparison.json"
+    main(filepath, output_file, percents=[1.0, 0.25, 0.1])
 
     filepath = "output/train_dataset/qwen-rag-0529-exp2/train_0524_instruction_only_output.json"
-    output_file = "output/train_dataset/qwen-rag-0529-exp2/train_0524_instruction_only_comparison_50p.json"
-    main(filepath, output_file)
+    output_file = "output/train_dataset/qwen-rag-0529-exp2/train_0524_instruction_only_comparison.json"
+    main(filepath, output_file, percents=[1.0, 0.25, 0.1])
 
     filepath = "output/train_dataset/qwen-rag-0529-exp2/train_0524_fix_cot_trigger_output.json"
-    output_file = "output/train_dataset/qwen-rag-0529-exp2/train_0524_fix_cot_trigger_comparison_50p.json"
-    main(filepath, output_file)
+    output_file = "output/train_dataset/qwen-rag-0529-exp2/train_0524_fix_cot_trigger_comparison.json"
+    main(filepath, output_file, percents=[1.0, 0.25, 0.1])
 
     # filepath = "output/train_dataset/qwen-rag-0515/train_dynamic_cot_trigger_output.json"
     # output_file = "output/train_dataset/qwen-rag-0515/train_dynamic_cot_trigger_comparison.json"
