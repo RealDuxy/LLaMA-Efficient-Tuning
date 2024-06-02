@@ -18,7 +18,7 @@ from transformers import AutoTokenizer
 from rouge_chinese import Rouge
 
 # Load the tokenizer and model for the specified transformer
-tokenizer = AutoTokenizer.from_pretrained("/mnt/d/PycharmProjects/models/Qwen1.5-14B-Chat-GPTQ-Int4", trust_remote_code=True)
+# tokenizer = AutoTokenizer.from_pretrained("/mnt/d/PycharmProjects/models/Qwen1.5-14B-Chat-GPTQ-Int4", trust_remote_code=True)
 # tokenizer = AutoTokenizer.from_pretrained("Qwen/Qwen1.5-14B-Chat", trust_remote_code=True)
 # tokenizer = AutoTokenizer.from_pretrained("THUDM/chatglm3-6b", trust_remote_code=True)
 
@@ -186,8 +186,8 @@ def main(filepath, output_file):
     print("分数分布:", score_description)
 
     # 选取最小的30%的数据
-    threshold_score = sorted(scores)[int(len(scores) * 0.1)]
-    threshold_length_ratio = sorted(length_ratios)[int(len(length_ratios) * 0.9)]
+    threshold_score = sorted(scores)[int(len(scores) * 0.5)]
+    threshold_length_ratio = sorted(length_ratios)[int(len(length_ratios) * 0.5)]
     print(f"length ratio threshold: {threshold_length_ratio}")
     print(f"score threshold: {threshold_score}")
 
@@ -218,16 +218,16 @@ if __name__ == '__main__':
     # output_file = "output/train_dataset/chatglm-rag-0515/debug_train_instruction_only_comparison.json"
     # main(filepath, output_file)
 
-    filepath = "output/train_dataset/qwen-rag-0527/train_0524_dynamic_cot_trigger_output.json"
-    output_file = "output/train_dataset/qwen-rag-0527/train_0524_dynamic_cot_trigger_comparison.json"
+    filepath = "output/train_dataset/qwen-rag-0529-exp2/train_0524_dynamic_cot_trigger_output.json"
+    output_file = "output/train_dataset/qwen-rag-0529-exp2/train_0524_dynamic_cot_trigger_comparison_50p.json"
     main(filepath, output_file)
 
-    filepath = "output/train_dataset/qwen-rag-0527/train_0524_instruction_only_output.json"
-    output_file = "output/train_dataset/qwen-rag-0527/train_0524_instruction_only_comparison.json"
+    filepath = "output/train_dataset/qwen-rag-0529-exp2/train_0524_instruction_only_output.json"
+    output_file = "output/train_dataset/qwen-rag-0529-exp2/train_0524_instruction_only_comparison_50p.json"
     main(filepath, output_file)
 
-    filepath = "output/train_dataset/qwen-rag-0527/train_0524_fix_cot_trigger_output.json"
-    output_file = "output/train_dataset/qwen-rag-0527/train_0524_fix_cot_trigger_comparison.json"
+    filepath = "output/train_dataset/qwen-rag-0529-exp2/train_0524_fix_cot_trigger_output.json"
+    output_file = "output/train_dataset/qwen-rag-0529-exp2/train_0524_fix_cot_trigger_comparison_50p.json"
     main(filepath, output_file)
 
     # filepath = "output/train_dataset/qwen-rag-0515/train_dynamic_cot_trigger_output.json"
