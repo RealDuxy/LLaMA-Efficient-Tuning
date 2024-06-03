@@ -1,0 +1,46 @@
+# model
+#model_name_or_path: /mnt/e/UbuntuFiles/models_saved/chatglm3
+model_name_or_path: /mnt/e/UbuntuFiles/models_saved/Qwen1.5-7B
+#model_name_or_path: /mnt/d/PycharmProjects/models/Qwen1.5-14B-Chat-GPTQ-Int4
+#model_name_or_path: qwen/Qwen-14B-Chat-Int4
+#model_name_or_path: qwen/Qwen1.5-14B-Chat-GPTQ-Int4
+# method
+stage: sft
+do_train: true
+finetuning_type: full
+
+# ddp
+ddp_timeout: 180000000
+#deepspeed: examples/train/v100_ds_z2_config.json
+deepspeed: examples/deepspeed/ds_z3_config.json
+
+# dataset
+#dataset: instruction_only_rag
+dataset: openorca-zh-20k,instruction_only_rag,fix_cot_trigger_rag,dynamic_cot_trigger_rag
+template: qwen
+cutoff_len: 3600
+max_samples: 50
+val_size: 0.01
+overwrite_cache: true
+preprocessing_num_workers: 16
+
+# output
+output_dir: checkpoints/qwen/0603_qwen-7b-rag-exp1
+logging_steps: 5
+save_steps: 80
+plot_loss: true
+overwrite_output_dir: true
+
+# train
+per_device_train_batch_size: 1
+gradient_accumulation_steps: 8
+learning_rate: 0.00005
+num_train_epochs: 3.0
+lr_scheduler_type: cosine
+warmup_steps: 0.1
+fp16: true
+
+# eval
+per_device_eval_batch_size: 1
+evaluation_strategy: steps
+eval_steps: 80
