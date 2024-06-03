@@ -27,8 +27,8 @@ model_adapter_name_map = {
     "chatglm-rag-0515-dpo": "align",
     "qwen": "",
     "qwen-rag-0527-exp2": "default",
-    "qwen-rag-0529-simpo-exp2": "rag1",
-    "qwen-rag-0529-simpo-exp3": "rag2"
+    "qwen-rag-0601-simpo-exp1": "rag1",
+    "qwen-rag-0601-dpo-exp1": "rag2"
 }
 
 test_case = """【标题】：虽然客户具备购买力，但对保险产生了疑虑，应该采取何种措施？
@@ -341,15 +341,18 @@ def test_single_agent(model_name="qwen-rag-0529-simpo-exp2"):
 if __name__ == '__main__':
     test_single_agent("qwen")
     test_single_agent("qwen-rag-0527-exp2")
-    test_single_agent("qwen-rag-0529-simpo-exp2")
-    # time_start = time.time()
-    # run_rag_comparison(
-    #     data_dir="dataset/evaluation_dataset",
-    #     output_dir="output/evaluation_dataset",
-    #     template_file="template/template.json",
-    #     model_names=["qwen","qwen-rag-0527-exp2","qwen-rag-0529-simpo-exp2","qwen-rag-0529-simpo-exp3"],
-    #     max_samples=4,
-    #     model_invoke=get_qwen_response
-    # )
-    # time_end = time.time()
-    # print(f"total time cost: {(time_end - time_start)}")
+    test_single_agent("qwen-rag-0601-simpo-exp1")
+    test_single_agent("qwen-rag-0601-dpo-exp1")
+
+
+    time_start = time.time()
+    run_rag_comparison(
+        data_dir="dataset/evaluation_dataset",
+        output_dir="output/evaluation_dataset",
+        template_file="template/template.json",
+        model_names=["qwen","qwen-rag-0527-exp2","qwen-rag-0601-simpo-exp1","qwen-rag-0601-dpo-exp1"],
+        max_samples=4,
+        model_invoke=get_qwen_response
+    )
+    time_end = time.time()
+    print(f"total time cost: {(time_end - time_start)}")
