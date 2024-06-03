@@ -338,6 +338,8 @@ def test_single_agent(model_name="qwen-rag-0529-simpo-exp2"):
                                             , "context": context})
     print(predictions)
 
+    print("=="*20 + "\n\n")
+
 if __name__ == '__main__':
     test_single_agent("qwen")
     test_single_agent("qwen-rag-0527-exp2")
