@@ -263,7 +263,6 @@ if __name__ == '__main__':
 
     test_single_agent("qwen")
     test_single_agent("qwen-rag-0527-exp2")
-    test_single_agent("qwen-rag-0601-simpo-exp1")
     test_single_agent("qwen-rag-0601-dpo-exp1")
 
 
@@ -272,7 +271,7 @@ if __name__ == '__main__':
         data_dir="dataset/evaluation_dataset",
         output_dir="output/evaluation_dataset",
         template_file="template/template.json",
-        model_names=["qwen","qwen-rag-0527-exp2","qwen-rag-0601-simpo-exp1","qwen-rag-0601-dpo-exp1"],
+        model_names=["qwen","qwen-rag-0527-exp2","qwen-rag-0601-dpo-exp1"],
         max_samples=None,
         model_invoke=get_qwen_response
     )
