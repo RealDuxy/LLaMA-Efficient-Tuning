@@ -233,6 +233,7 @@ def run_rag_comparison(data_dir,
         with open(output_file, "w", encoding="utf-8") as f:
             json.dump(results, f, ensure_ascii=False, indent=4)
         print(f"Results saved to {output_file}")
+
         time_end = time.time()
         print(f"{data_file.split('/')[-1]} time cost: {(time_end - time_start)}")
         print(f"{data_file.split('/')[-1]} time cost per cost: {(time_end - time_start) / (4*(i+1))}")

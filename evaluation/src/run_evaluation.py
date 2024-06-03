@@ -19,8 +19,8 @@ from transformers import AutoTokenizer
 from evaluation.src.utils import Rouge
 
 # Load the tokenizer and model for the specified transformer
-tokenizer = AutoTokenizer.from_pretrained("/mnt/d/PycharmProjects/models/Qwen1.5-14B-Chat-GPTQ-Int4", trust_remote_code=True)
-# tokenizer = AutoTokenizer.from_pretrained("Qwen/Qwen1.5-14B-Chat", trust_remote_code=True)
+# tokenizer = AutoTokenizer.from_pretrained("/mnt/d/PycharmProjects/models/Qwen1.5-14B-Chat-GPTQ-Int4", trust_remote_code=True)
+tokenizer = AutoTokenizer.from_pretrained("Qwen/Qwen1.5-14B-Chat", trust_remote_code=True)
 # tokenizer = AutoTokenizer.from_pretrained("THUDM/chatglm3-6b", trust_remote_code=True)
 
 template = json.load(open("template/template.json", "r", encoding="utf-8"))
@@ -222,17 +222,17 @@ if __name__ == '__main__':
     # output_file = "output/train_dataset/chatglm-rag-0515/debug_train_instruction_only_comparison.json"
     # main(filepath, output_file)
 
-    filepath = "output/train_dataset/qwen-rag-0529-exp2/train_0524_fix_cot_trigger_output.json"
-    output_file = "output/train_dataset/qwen-rag-0529-exp2/train_0524_fix_cot_trigger_comparison.json"
-    main(filepath, output_file, percents=[1.0, 0.5, 0.25, 0.1])
+    filepath = "output/train_dataset/qwen-rag-0527/train_0524_fix_cot_trigger_output.json"
+    output_file = "output/train_dataset/qwen-rag-0527/train_0524_fix_cot_trigger_comparison.json"
+    main(filepath, output_file, percents=[1.0, 0.1])
 
-    filepath = "output/train_dataset/qwen-rag-0529-exp2/train_0524_dynamic_cot_trigger_output.json"
-    output_file = "output/train_dataset/qwen-rag-0529-exp2/train_0524_dynamic_cot_trigger_comparison.json"
-    main(filepath, output_file, percents=[1.0, 0.5, 0.25, 0.1])
+    filepath = "output/train_dataset/qwen-rag-0527/train_0524_dynamic_cot_trigger_output.json"
+    output_file = "output/train_dataset/qwen-rag-0527/train_0524_dynamic_cot_trigger_comparison.json"
+    main(filepath, output_file, percents=[1.0, 0.1])
 
-    filepath = "output/train_dataset/qwen-rag-0529-exp2/train_0524_instruction_only_output.json"
-    output_file = "output/train_dataset/qwen-rag-0529-exp2/train_0524_instruction_only_comparison.json"
-    main(filepath, output_file, percents=[1.0, 0.5, 0.25, 0.1])
+    filepath = "output/train_dataset/qwen-rag-0527/train_0524_instruction_only_output.json"
+    output_file = "output/train_dataset/qwen-rag-0527/train_0524_instruction_only_comparison.json"
+    main(filepath, output_file, percents=[1.0, 0.1])
 
 
 

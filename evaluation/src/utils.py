@@ -47,7 +47,7 @@ def get_qwen_response(history, prompt, **kwargs) -> str:
         "history": history,
         "request_id": record_id,
         "gen_kwargs": {"seed": seed,
-                       "max_new_tokens": 400,
+                       # "max_new_tokens": 400,
                        "prefix_token_ids": prefix_token_ids,
                        "temperature": temperature,
                        "skip_lora": skip_lora,

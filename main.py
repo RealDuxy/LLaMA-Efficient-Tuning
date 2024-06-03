@@ -28,5 +28,5 @@ comparison_datas = [new_example
 
 print(len(comparison_datas))
 json.dump(comparison_datas,
-          open("data/qwen_rag_comparison_100p.json", "w", encoding="utf-8"),
+          open("data/qwen_rag_comparison_0527_10p.json", "w", encoding="utf-8"),
           ensure_ascii=False, indent=4)

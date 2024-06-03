@@ -194,6 +194,27 @@
     },
     "ranking": true
   },
+  "qwen_rag_comparison_0527_10p": {
+    "file_name": "qwen_rag_comparison_0527_10p.json",
+    "columns": {
+      "prompt": "question",
+      "chosen": "chosen",
+      "rejected": "rejected",
+      "system": "system"
+    },
+    "ranking": true
+  },
+  "qwen_rag_comparison_0527_100p": {
+    "file_name": "qwen_rag_comparison_0527_100p.json",
+    "columns": {
+      "prompt": "question",
+      "chosen": "chosen",
+      "rejected": "rejected",
+      "system": "system"
+    },
+    "ranking": true
+  },
+
   "alpaca_en": {
     "file_name": "alpaca_data_en_52k.json"
   },
@@ -328,6 +349,15 @@
   "openorca": {
     "hf_hub_url": "Open-Orca/OpenOrca",
     "ms_hub_url": "AI-ModelScope/OpenOrca",
+    "columns": {
+      "prompt": "question",
+      "response": "response",
+      "system": "system_prompt"
+    }
+  },
+  "openorca-zh-20k": {
+    "hf_hub_url": "wenbopan/OpenOrca-zh-20k",
+    "subset": "zh",
     "columns": {
       "prompt": "question",
       "response": "response",
