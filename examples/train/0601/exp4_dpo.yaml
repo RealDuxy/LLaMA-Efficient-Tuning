@@ -25,7 +25,7 @@ report_to: wandb
 # dataset
 #dataset: instruction_only_rag
 #dataset: debug_rag_comparison
-dataset: qwen_rag_comparison_25p
+dataset: qwen_rag_comparison_100p
 template: qwen
 cutoff_len: 3600 # 只有80GB可以跑
 #max_samples: 200
@@ -34,7 +34,7 @@ overwrite_cache: true
 preprocessing_num_workers: 16
 
 # output
-output_dir: checkpoints/qwen/0601_qwen_rag_dpo_exp2
+output_dir: checkpoints/qwen/0601_qwen_rag_dpo_exp4
 logging_steps: 5
 save_steps: 100
 plot_loss: true
