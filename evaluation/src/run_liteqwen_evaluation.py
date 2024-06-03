@@ -265,14 +265,13 @@ if __name__ == '__main__':
     test_single_agent("qwen-rag-0527-exp2")
     test_single_agent("qwen-rag-0601-dpo-exp1")
 
-
     time_start = time.time()
     run_rag_comparison(
         data_dir="dataset/evaluation_dataset",
         output_dir="output/evaluation_dataset",
         template_file="template/template.json",
         model_names=["qwen","qwen-rag-0527-exp2","qwen-rag-0601-dpo-exp1"],
-        max_samples=None,
+        max_samples=8,
         model_invoke=get_qwen_response
     )
     time_end = time.time()
