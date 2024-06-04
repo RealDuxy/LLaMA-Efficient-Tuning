@@ -26,9 +26,10 @@ model_adapter_name_map = {
     "chatglm-rag-0515": "default",
     "chatglm-rag-0515-dpo": "align",
     "qwen": "",
+    "qwen-rag-0527-exp1": "rag1",
     "qwen-rag-0527-exp2": "default",
-    "qwen-rag-0601-simpo-exp1": "rag1",
-    "qwen-rag-0601-dpo-exp1": "rag2"
+    "qwen-rag-0601-dpo-exp1": "rag3",
+    "qwen-rag-0601-dpo-exp6": "rag4"
 }
 
 test_case = {
@@ -263,16 +264,18 @@ def test_single_agent(model_name="qwen-rag-0529-simpo-exp2"):
 if __name__ == '__main__':
 
     test_single_agent("qwen")
+    test_single_agent("qwen-rag-0527-exp1")
     test_single_agent("qwen-rag-0527-exp2")
     test_single_agent("qwen-rag-0601-dpo-exp1")
+    test_single_agent("qwen-rag-0601-dpo-exp6")
 
     time_start = time.time()
     run_rag_comparison(
         data_dir="dataset/evaluation_dataset",
         output_dir="output/evaluation_dataset",
         template_file="template/template.json",
-        model_names=["qwen","qwen-rag-0527-exp2","qwen-rag-0601-dpo-exp1"],
-        max_samples=8,
+        model_names=["qwen","qwen-rag-0527-exp1","qwen-rag-0527-exp2","qwen-rag-0601-dpo-exp1","qwen-rag-0601-dpo-exp6"],
+        max_samples=None,
         model_invoke=get_qwen_response
     )
     time_end = time.time()
