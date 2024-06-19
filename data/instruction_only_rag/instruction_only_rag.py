@@ -46,7 +46,8 @@ class InstructionOnlyDataset(datasets.GeneratorBasedBuilder):
                 question += "？"
             requirement = example["requirement"].replace("\n", "")
             output = example["output"]
-            context = example["contexts"]
+            context = random.shuffle(example["contexts"])
+            context = "\n\n".join(context)
             is_positive = example["is_positive"]
             # instruction = context + "\n\n" + context + "\n\n" + context + "\n\n" + context[:-random.randint(1,10)] + "\n\n。请复述上面的文字。"
             new_example = {
