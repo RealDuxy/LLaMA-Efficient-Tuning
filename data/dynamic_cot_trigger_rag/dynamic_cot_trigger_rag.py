@@ -1,4 +1,5 @@
 import json
+import random
 from copy import deepcopy
 
 import datasets
@@ -47,7 +48,10 @@ class DynamicCoTDataset(datasets.GeneratorBasedBuilder):
                 question += "？"
             requirement = example["requirement"].replace("\n", "")
             output = example["output"]
+            output = example["output"]
             context = example["contexts"]
+            random.shuffle(context)
+            context = "\n\n".join(context)
             is_positive = example["is_positive"]
             if not is_positive: continue
             new_example = {

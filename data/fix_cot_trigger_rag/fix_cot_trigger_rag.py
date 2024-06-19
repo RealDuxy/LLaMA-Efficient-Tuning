@@ -1,6 +1,7 @@
 import json
 import os
 from copy import deepcopy
+import random
 
 import datasets
 from typing import Any, Dict, List
@@ -49,7 +50,10 @@ class FixCoTDataset(datasets.GeneratorBasedBuilder):
                 question += "？"
             requirement = example["requirement"].replace("\n", "")
             output = example["output"]
+            output = example["output"]
             context = example["contexts"]
+            random.shuffle(context)
+            context = "\n\n".join(context)
             is_positive = example["is_positive"]
             new_example = {
                 "system": system,
