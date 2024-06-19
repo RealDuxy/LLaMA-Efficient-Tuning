@@ -1,3 +1,17 @@
+# Copyright 2024 the LlamaFactory team.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
 LOCALES = {
     "lang": {
         "en": {
@@ -46,26 +60,15 @@ LOCALES = {
             "label": "微调方法",
         },
     },
-    "adapter_path": {
+    "checkpoint_path": {
         "en": {
-            "label": "Adapter path",
+            "label": "Checkpoint path",
         },
         "ru": {
-            "label": "Путь к адаптеру",
+            "label": "Путь контрольной точки",
         },
         "zh": {
-            "label": "适配器路径",
-        },
-    },
-    "refresh_btn": {
-        "en": {
-            "value": "Refresh adapters",
-        },
-        "ru": {
-            "value": "Обновить адаптеры",
-        },
-        "zh": {
-            "value": "刷新适配器",
+            "label": "检查点路径",
         },
     },
     "advanced_tab": {
@@ -727,6 +730,20 @@ LOCALES = {
         "zh": {
             "label": "使用 DoRA",
             "info": "使用权重分解的 LoRA。",
+        },
+    },
+    "use_pissa": {
+        "en": {
+            "label": "Use PiSSA",
+            "info": "Use PiSSA method.",
+        },
+        "ru": {
+            "label": "используйте PiSSA",
+            "info": "Используйте метод PiSSA.",
+        },
+        "zh": {
+            "label": "使用 PiSSA",
+            "info": "使用 PiSSA 方法。",
         },
     },
     "lora_target": {
@@ -1486,6 +1503,11 @@ ALERTS = {
         "ru": "Пожалуйста, выберите адаптер.",
         "zh": "请选择适配器。",
     },
+    "err_no_output_dir": {
+        "en": "Please provide output dir.",
+        "ru": "Пожалуйста, укажите выходную директорию.",
+        "zh": "请填写输出目录。",
+    },
     "err_no_reward_model": {
         "en": "Please select a reward model.",
         "ru": "Пожалуйста, выберите модель вознаграждения.",
@@ -1530,6 +1552,11 @@ ALERTS = {
         "en": "CUDA environment was not detected.",
         "ru": "Среда CUDA не обнаружена.",
         "zh": "未检测到 CUDA 环境。",
+    },
+    "warn_output_dir_exists": {
+        "en": "Output dir already exists, will resume training from here.",
+        "ru": "Выходной каталог уже существует, обучение будет продолжено отсюда.",
+        "zh": "输出目录已存在，将从该断点恢复训练。",
     },
     "info_aborting": {
         "en": "Aborted, wait for terminating...",

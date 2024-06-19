@@ -3,24 +3,27 @@ from dataclasses import dataclass
 from typing import TYPE_CHECKING, Dict, Sequence, Tuple, Union, List
 
 import numpy as np
+from transformers.utils import is_jieba_available, is_nltk_available
 
 from ...extras.constants import IGNORE_INDEX
-from ...extras.packages import is_jieba_available, is_nltk_available, is_rouge_available
+from ...extras.packages import is_rouge_available
 
-# from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score
+from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score
 
 if TYPE_CHECKING:
-    from transformers.tokenization_utils import PreTrainedTokenizer
+    from transformers import PreTrainedTokenizer
+
 
 if is_jieba_available():
     import jieba  # type: ignore
 
+
 if is_nltk_available():
     from nltk.translate.bleu_score import SmoothingFunction, sentence_bleu
 
-from rouge_chinese import Rouge
 
-# print(is_rouge_available(), is_jieba_available(), is_nltk_available())
+if is_rouge_available():
+    from rouge_chinese import Rouge
 
 
 @dataclass
