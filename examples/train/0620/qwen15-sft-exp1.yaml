@@ -27,9 +27,10 @@ report_to: wandb
 dataset: instruction_only_rag,dynamic_cot_trigger_rag,neo_sft
 template: qwen
 cutoff_len: 3500
-max_samples: 50000
+max_samples: 25000
 val_size: 0.01
 overwrite_cache: true
+packing: true
 preprocessing_num_workers: 16
 
 # output
