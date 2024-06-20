@@ -12,7 +12,7 @@ _LICENSE = ""
 _URL = "train_0619_dynamic_cot_trigger.json"
 # _URL = "eval_dynamic_cot_trigger.json"
 
-template = json.load(open("data/dynamic_cot_trigger_rag/template.json", "r", encoding="utf-8"))
+# template = json.load(open("data/dynamic_cot_trigger_rag/template.json", "r", encoding="utf-8"))
 
 class DynamicCoTDataset(datasets.GeneratorBasedBuilder):
     VERSION = datasets.Version("0.0.0")
@@ -39,9 +39,11 @@ class DynamicCoTDataset(datasets.GeneratorBasedBuilder):
 
     def _generate_examples(self, filepath: str) -> Dict[int, Dict[str, Any]]:
         example_dataset = json.load(open(filepath, "r", encoding="utf-8"))
-        prompt_templates = deepcopy(template)
-        system = prompt_templates["history"][0]["content"]
-        prompt = prompt_templates["prompt"]
+        # prompt_templates = deepcopy(template)
+        # system = prompt_templates["history"][0]["content"]
+        # prompt = prompt_templates["prompt"]
+        system = "你是安安，是由中国平安人寿保险有限公司开发和提供的智能保险专家。你的任务是根据检索到的资料回答用户的问题。"
+        prompt = "**检索到的资料**：\n```\n{context}\n```\n**问题**：{question}{requirement}"
         for key, example in enumerate(example_dataset):
             question = example["question"]
             if question[-1] not in ["？", "。", "！", "?", ".", "!"]:
@@ -52,7 +54,7 @@ class DynamicCoTDataset(datasets.GeneratorBasedBuilder):
             random.shuffle(context)
             context = "\n\n".join(context)
             is_positive = example["is_positive"]
-            if not is_positive: continue
+            # if not is_positive: continue
             new_example = {
                 "system": system,
                 "instruction": prompt.replace("{question}", question).replace("{requirement}", requirement).replace("{context}", context),
