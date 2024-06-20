@@ -7,4 +7,3 @@
   ],
   "prompt": "**检索到的资料**：\n```\n{context}\n```\n**问题**：{question}{requirement}"
 }
-

@@ -48,7 +48,6 @@ class DynamicCoTDataset(datasets.GeneratorBasedBuilder):
                 question += "？"
             requirement = example["requirement"].replace("\n", "")
             output = example["output"]
-            output = example["output"]
             context = example["contexts"]
             random.shuffle(context)
             context = "\n\n".join(context)
