@@ -58,6 +58,7 @@ def load_single_dataset(
         data_path = os.path.join(data_args.dataset_dir, dataset_attr.dataset_name)
         data_name = dataset_attr.subset
         data_dir = dataset_attr.folder
+        print(f"loading script: {data_path,data_name,data_dir}")
 
     elif dataset_attr.load_from == "file":
         data_files = []
