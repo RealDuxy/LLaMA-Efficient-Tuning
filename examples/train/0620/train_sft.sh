@@ -3,7 +3,7 @@
 
 #USE_MODELSCOPE_HUB=1 CUDA_VISIBLE_DEVICES=0 python src/train.py examples/train/0620/qwen15-sft-exp1.yaml
 
-# 睡眠1小时
+# 睡眠半小时
 sleep 1h
 
 USE_MODELSCOPE_HUB=1 CUDA_VISIBLE_DEVICES=0 nohup python \
