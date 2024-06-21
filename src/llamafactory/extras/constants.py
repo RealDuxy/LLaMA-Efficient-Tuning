@@ -79,6 +79,7 @@ TRAINING_STAGES = {
 STAGES_USE_PAIR_DATA = {"rm", "dpo"}
 
 SUPPORTED_CLASS_FOR_S2ATTN = {"llama"}
+SUPPORTED_CLASS_FOR_SWATTN = {"qwen"}
 
 V_HEAD_WEIGHTS_NAME = "value_head.bin"
 

@@ -22,6 +22,7 @@ from transformers import PreTrainedModel, PreTrainedTokenizerBase, is_torch_npu_
 from transformers.integrations import is_deepspeed_zero3_enabled
 from transformers.modeling_utils import is_fsdp_enabled
 
+from .model_utils.sliding_window_attention import configure_sliding_window_attention
 from ..extras.logging import get_logger
 from ..extras.misc import infer_optim_dtype
 from .model_utils.attention import configure_attn_implementation, print_attn_implementation
@@ -73,6 +74,9 @@ def patch_config(
     configure_quantization(config, tokenizer, model_args, init_kwargs)
     configure_moe(config, model_args, is_trainable)
     configure_visual_model(config)
+
+    # debug
+    configure_sliding_window_attention(config, model_args, is_trainable)
 
     if model_args.use_cache and not is_trainable:
         setattr(config, "use_cache", True)

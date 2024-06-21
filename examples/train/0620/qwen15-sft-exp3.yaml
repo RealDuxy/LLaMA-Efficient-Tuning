@@ -12,8 +12,8 @@ model_name_or_path: /root/autodl-tmp/qwen/Qwen1_5-14B-Chat-GPTQ-Int4
 stage: sft
 do_train: true
 finetuning_type: lora
-lora_rank: 16
-lora_alpha: 32
+lora_rank: 32
+lora_alpha: 64
 lora_target: q_proj,v_proj,k_proj,o_proj,down_proj,up_proj,gate_proj
 flash_attn: fa2
 #print_param_status: true
@@ -25,18 +25,17 @@ report_to: wandb
 
 # dataset
 #dataset: instruction_only_rag
-dataset: instruction_only_rag,dynamic_cot_trigger_rag,neo_sft
+dataset: instruction_only_rag,dynamic_cot_trigger_rag
 template: qwen
-cutoff_len: 3500
-max_samples: 25000
-val_size: 0.01
+cutoff_len: 4096
+val_size: 0.03
 overwrite_cache: true
 preprocessing_num_workers: 16
 
 # output
-output_dir: checkpoints/qwen/0620_qwen2_rag_sft_exp1
+output_dir: checkpoints/qwen/0620_qwen2_rag_sft_exp3
 logging_steps: 5
-save_steps: 1000
+save_steps: 80
 plot_loss: true
 overwrite_output_dir: true
 
@@ -44,7 +43,7 @@ overwrite_output_dir: true
 per_device_train_batch_size: 1
 gradient_accumulation_steps: 16
 learning_rate: 0.00005
-num_train_epochs: 3.0
+num_train_epochs: 2.0
 lr_scheduler_type: cosine
 warmup_steps: 0.1
 fp16: true
@@ -52,4 +51,4 @@ fp16: true
 # eval
 per_device_eval_batch_size: 1
 evaluation_strategy: steps
-eval_steps: 500
+eval_steps: 30
