@@ -38,10 +38,14 @@ class InstructionOnlyDataset(datasets.GeneratorBasedBuilder):
 
     def _generate_examples(self, filepath: str) -> Dict[int, Dict[str, Any]]:
         example_dataset = json.load(open(filepath, "r", encoding="utf-8"))
-        prompt_templates = deepcopy(template)
-        system = prompt_templates["history"][0]["content"]
-        prompt = prompt_templates["prompt"]
+        print(f"reading dataset: {filepath}")
+        # prompt_templates = deepcopy(template)
+        # system = prompt_templates["history"][0]["content"]
+        # prompt = prompt_templates["prompt"]
+
         for key, example in enumerate(example_dataset):
+            system = "你是安安，是由中国平安人寿保险有限公司开发和提供的智能保险专家。你的任务是根据检索到的资料回答用户的问题。"
+            prompt = "**检索到的资料**：\n```\n{context}\n```\n**问题**：{question}{requirement}"
             question = example["question"]
             if question[-1] not in ["？", "。", "！", "?", ".", "!"]:
                 question += "？"
@@ -51,14 +55,11 @@ class InstructionOnlyDataset(datasets.GeneratorBasedBuilder):
             random.shuffle(context)
             context = "\n\n".join(context)
             is_positive = example["is_positive"]
-            # instruction = context + "\n\n" + context + "\n\n" + context + "\n\n" + context[:-random.randint(1,10)] + "\n\n。请复述上面的文字。"
             new_example = {
                 "system": system,
-                # "instruction": instruction,
                 "instruction": prompt.replace("{question}", question).replace("{requirement}", requirement).replace("{context}", context),
                 "input": "",
                 "output": output,
-                # "output": context,
                 "history": []
             }
             yield key, new_example
