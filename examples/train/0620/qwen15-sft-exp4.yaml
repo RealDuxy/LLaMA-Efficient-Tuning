@@ -22,7 +22,7 @@ sliding_window_attn: true
 ## ddp
 #ddp_timeout: 180000000
 #deepspeed: examples/deepspeed/ds_z2_offload_config.json
-report_to: wandb
+#report_to: wandb
 
 # dataset
 #dataset: instruction_only_rag
