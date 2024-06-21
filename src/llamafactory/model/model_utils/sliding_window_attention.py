@@ -35,7 +35,15 @@ from transformers.models.llama.modeling_llama import (
 from transformers.utils import logging
 from transformers.utils.versions import require_version
 
-from qwen2.modeling_qwen2 import Qwen2FlashAttention2
+from transformers.models.llama.modeling_qwen2 import (
+    Cache,
+    LlamaAttention,
+    LlamaFlashAttention2,
+    LlamaSdpaAttention,
+    apply_rotary_pos_emb,
+    repeat_kv,
+)
+
 from ...extras.constants import SUPPORTED_CLASS_FOR_S2ATTN, SUPPORTED_CLASS_FOR_SWATTN
 from ...extras.logging import get_logger
 
