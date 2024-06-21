@@ -216,10 +216,10 @@ def _apply_qwen_patch() -> None:
 
 def configure_sliding_window_attention(config: "PretrainedConfig", model_args: "ModelArguments",
                                        is_trainable: bool) -> None:
-    if not is_trainable or not model_args.sliding_window_attn:
-        return
-
     logger = get_logger(__name__)
+    if not is_trainable or not model_args.sliding_window_attn:
+        logger.info("Not Using sliding window attention.")
+        return
 
     if getattr(config, "model_type", None) in SUPPORTED_CLASS_FOR_SWATTN:
         setattr(config, "sliding_window", 512)

@@ -1,13 +1,14 @@
 # model
 #model_name_or_path: /mnt/e/UbuntuFiles/models_saved/Qwen1.5-7B-Chat
 #model_name_or_path: /mnt/e/UbuntuFiles/models_saved/Qwen1.5-14B-Chat-GPTQ-Int4
-#model_name_or_path: /mnt/d/PycharmProjects/models/Qwen1.5-14B-Chat-GPTQ-Int4
+model_name_or_path: /mnt/d/PycharmProjects/models/Qwen1.5-14B-Chat-GPTQ-Int4
+#model_name_or_path: /mnt/d/PycharmProjects/model/Qwen1.5-7B-Chats
 #model_name_or_path: qwen/Qwen-14B-Chat-Int4
 #model_name_or_path: qwen/Qwen1.5-14B-Chat-GPTQ-Int4
 #model_name_or_path: /root/autodl-tmp/Qwen2-7B-Instruct
 #model_name_or_path: qwen/Qwen2-7B-Instruct
 #model_name_or_path: /root/autodl-tmp/qwen/Qwen2-7B-Instruct
-model_name_or_path: /root/autodl-tmp/qwen/Qwen1_5-14B-Chat-GPTQ-Int4
+#model_name_or_path: /root/autodl-tmp/qwen/Qwen1_5-14B-Chat-GPTQ-Int4
 # method
 stage: sft
 do_train: true
