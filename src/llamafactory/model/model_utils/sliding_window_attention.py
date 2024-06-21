@@ -203,7 +203,7 @@ def qwen2_flash_attention_2_forward(
     key_states = key_states.transpose(1, 2)
     value_states = value_states.transpose(1, 2)
 
-    print(attention_mask.shape)
+    # print(attention_mask.shape)
     attn_output = self._flash_attention_forward(
         query_states,
         key_states,
