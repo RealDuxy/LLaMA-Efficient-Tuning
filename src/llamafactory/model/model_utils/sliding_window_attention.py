@@ -68,7 +68,7 @@ if is_flash_attn_2_available():
 
 # Modified from:
 # https://github.com/huggingface/transformers/blob/v4.40.0/src/transformers/models/llama/modeling_llama.py
-def qwen_flash_attention_2_forward(
+def qwen2_flash_attention_2_forward(
         self: "Qwen2FlashAttention2",
         hidden_states: torch.Tensor,
         attention_mask: Optional[torch.Tensor] = None,
@@ -78,13 +78,6 @@ def qwen_flash_attention_2_forward(
         cache_position: Optional[torch.LongTensor] = None,
         **kwargs,
 ) -> Tuple[torch.Tensor, Optional[torch.Tensor], Optional[Tuple[torch.Tensor]]]:
-    if "padding_mask" in kwargs:
-        warnings.warn(
-            "Passing `padding_mask` is deprecated and will be removed in v4.37. Please make sure use `attention_mask` instead.`"
-        )
-
-        # overwrite attention_mask with padding_mask
-        attention_mask = kwargs.pop("padding_mask")
     bsz, q_len, _ = hidden_states.size()
 
     query_states = self.q_proj(hidden_states)
@@ -120,10 +113,10 @@ def qwen_flash_attention_2_forward(
 
     if not _flash_supports_window_size:
         logger.warning_once(
-            "The current flash attention version does not support sliding window attention, for a more memory efficient implementation"
+            "The current flash attention version does not support sliding window attention, for a more memory "
+            "efficient implementation"
             " make sure to upgrade flash-attn library."
         )
-
     if past_key_value is not None:
         # Activate slicing cache only if the config has a value `sliding_windows` attribute
         cache_has_contents = past_key_value.get_seq_length(self.layer_idx) > 0
@@ -133,12 +126,21 @@ def qwen_flash_attention_2_forward(
                 and cache_has_contents
         ):
             slicing_tokens = 1 - self.config.sliding_window
+            logger.warning_once(
+                f"will truncate past_key_value cache from total {kv_seq_len} tokens "
+                f"to last {-slicing_tokens} tokens cache"
+            )
 
             past_key = past_key_value[self.layer_idx][0]
             past_value = past_key_value[self.layer_idx][1]
-
+            logger.info(
+                f"{past_key_value[self.layer_idx][0]} shape before truncate: {past_key_value[self.layer_idx][0].shape()}"
+            )
             past_key = past_key[:, :, slicing_tokens:, :].contiguous()
             past_value = past_value[:, :, slicing_tokens:, :].contiguous()
+            logger.info(
+                f"{past_key_value[self.layer_idx][0]} shape before truncate: {past_key_value[self.layer_idx][0].shape()}"
+            )
 
             if past_key.shape[-2] != self.config.sliding_window - 1:
                 raise ValueError(
@@ -211,7 +213,7 @@ def qwen_flash_attention_2_forward(
 
 def _apply_qwen_patch() -> None:
     require_version("transformers==4.41.2", "To fix: pip install transformers==4.41.2")
-    Qwen2FlashAttention2.forward = qwen_flash_attention_2_forward
+    Qwen2FlashAttention2.forward = qwen2_flash_attention_2_forward
 
 
 def configure_sliding_window_attention(config: "PretrainedConfig", model_args: "ModelArguments",
@@ -227,7 +229,7 @@ def configure_sliding_window_attention(config: "PretrainedConfig", model_args: "
         setattr(config, "use_sliding_window", True)
         # 需要修改YARN和logn么？不知道
         # qwen可以直接打开sliding window
-        # _apply_qwen_patch()
+        _apply_qwen_patch()
         logger.info("Using sliding window attention with sliding_window=1024 and max_window_layers=35.")
     else:
         logger.warning("Current model does not support sliding window attention.")
