@@ -36,7 +36,7 @@ preprocessing_num_workers: 16
 # output
 output_dir: checkpoints/qwen/0620_qwen2_rag_sft_exp3
 logging_steps: 5
-save_steps: 80
+save_steps: 70
 plot_loss: true
 overwrite_output_dir: true
 

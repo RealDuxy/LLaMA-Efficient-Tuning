@@ -203,6 +203,7 @@ def qwen2_flash_attention_2_forward(
     key_states = key_states.transpose(1, 2)
     value_states = value_states.transpose(1, 2)
 
+    print(attention_mask.shape)
     attn_output = self._flash_attention_forward(
         query_states,
         key_states,
@@ -212,6 +213,7 @@ def qwen2_flash_attention_2_forward(
         dropout=dropout_rate,
         use_sliding_windows=use_sliding_windows,
     )
+
 
     attn_output = attn_output.reshape(bsz, q_len, self.hidden_size).contiguous()
     attn_output = self.o_proj(attn_output)
@@ -240,7 +242,7 @@ def configure_sliding_window_attention(config: "PretrainedConfig", model_args: "
         return
 
     if getattr(config, "model_type", None) in SUPPORTED_CLASS_FOR_SWATTN:
-        setattr(config, "sliding_window", 512)
+        setattr(config, "sliding_window", 2048)
         setattr(config, "max_window_layers", 35)  # 底层感受野小，上层感受野本来就大。
         setattr(config, "use_sliding_window", True)
         # 需要修改YARN和logn么？不知道
