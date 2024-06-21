@@ -113,12 +113,8 @@ def qwen2_flash_attention_2_forward(
             "kv_seq_len > self.config.sliding_window": (kv_seq_len, self.config.sliding_window),
             "self.config.use_sliding_window": self.config.use_sliding_window
     })
-    logger.warning_once({
-            "_flash_supports_window_size" : _flash_supports_window_size,
-            "{getattr(self.config, 'sliding_window', None))": getattr(self.config, "sliding_window", None) is not None,
-            "kv_seq_len > self.config.sliding_window": (kv_seq_len, self.config.sliding_window),
-            "self.config.use_sliding_window": self.config.use_sliding_window
-    })
+    print("use_sliding_windows: ", use_sliding_windows)
+    print(f"past_key_value? : {past_key_value is not None} ")
 
     if not _flash_supports_window_size:
         logger.warning_once(
@@ -129,6 +125,7 @@ def qwen2_flash_attention_2_forward(
     if past_key_value is not None:
         # Activate slicing cache only if the config has a value `sliding_windows` attribute
         cache_has_contents = past_key_value.get_seq_length(self.layer_idx) > 0
+        print(f"cache_has_contents? : {cache_has_contents} ")
         if (
                 getattr(self.config, "sliding_window", None) is not None
                 and kv_seq_len > self.config.sliding_window
