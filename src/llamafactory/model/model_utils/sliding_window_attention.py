@@ -24,25 +24,14 @@ from typing import TYPE_CHECKING, Optional, Tuple
 
 import torch
 import torch.nn as nn
-from transformers.models.llama.modeling_llama import (
+from transformers.models.qwen2.modeling_qwen2 import (
     Cache,
-    LlamaAttention,
-    LlamaFlashAttention2,
-    LlamaSdpaAttention,
+    Qwen2FlashAttention2,
     apply_rotary_pos_emb,
     repeat_kv,
 )
 from transformers.utils import logging
 from transformers.utils.versions import require_version
-
-from transformers.models.llama.modeling_qwen2 import (
-    Cache,
-    LlamaAttention,
-    LlamaFlashAttention2,
-    LlamaSdpaAttention,
-    apply_rotary_pos_emb,
-    repeat_kv,
-)
 
 from ...extras.constants import SUPPORTED_CLASS_FOR_S2ATTN, SUPPORTED_CLASS_FOR_SWATTN
 from ...extras.logging import get_logger
