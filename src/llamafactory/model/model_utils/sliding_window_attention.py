@@ -107,14 +107,14 @@ def qwen2_flash_attention_2_forward(
             and kv_seq_len > self.config.sliding_window
             and self.config.use_sliding_window
     )
-    print({
-            "_flash_supports_window_size" : _flash_supports_window_size,
-            "{getattr(self.config, 'sliding_window', None))": getattr(self.config, "sliding_window", None) is not None,
-            "kv_seq_len > self.config.sliding_window": (kv_seq_len, self.config.sliding_window),
-            "self.config.use_sliding_window": self.config.use_sliding_window
-    })
-    print("use_sliding_windows: ", use_sliding_windows)
-    print(f"past_key_value? : {past_key_value is not None} ")
+    # print({
+    #         "_flash_supports_window_size" : _flash_supports_window_size,
+    #         "{getattr(self.config, 'sliding_window', None))": getattr(self.config, "sliding_window", None) is not None,
+    #         "kv_seq_len > self.config.sliding_window": (kv_seq_len, self.config.sliding_window),
+    #         "self.config.use_sliding_window": self.config.use_sliding_window
+    # })
+    # print("use_sliding_windows: ", use_sliding_windows)
+    # print(f"past_key_value? : {past_key_value is not None} ")
 
     if not _flash_supports_window_size:
         logger.warning_once(
@@ -125,38 +125,37 @@ def qwen2_flash_attention_2_forward(
     if past_key_value is not None:
         # Activate slicing cache only if the config has a value `sliding_windows` attribute
         cache_has_contents = past_key_value.get_seq_length(self.layer_idx) > 0
-        print(f"cache_has_contents? : {cache_has_contents} ")
         if (
                 getattr(self.config, "sliding_window", None) is not None
                 and kv_seq_len > self.config.sliding_window
                 and cache_has_contents
         ):
             slicing_tokens = 1 - self.config.sliding_window
-            print(
-                f"will truncate past_key_value cache from total {kv_seq_len} tokens "
-                f"to last {-slicing_tokens} tokens cache"
-            )
-            logger.warning_once(
-                f"will truncate past_key_value cache from total {kv_seq_len} tokens "
-                f"to last {-slicing_tokens} tokens cache"
-            )
+            # print(
+            #     f"will truncate past_key_value cache from total {kv_seq_len} tokens "
+            #     f"to last {-slicing_tokens} tokens cache"
+            # )
+            # logger.warning_once(
+            #     f"will truncate past_key_value cache from total {kv_seq_len} tokens "
+            #     f"to last {-slicing_tokens} tokens cache"
+            # )
 
             past_key = past_key_value[self.layer_idx][0]
             past_value = past_key_value[self.layer_idx][1]
-            print(
-                f"{past_key_value[self.layer_idx][0]} shape before truncate: {past_key_value[self.layer_idx][0].shape()}"
-            )
-            logger.info(
-                f"{past_key_value[self.layer_idx][0]} shape before truncate: {past_key_value[self.layer_idx][0].shape()}"
-            )
+            # print(
+            #     f"{past_key_value[self.layer_idx][0]} shape before truncate: {past_key_value[self.layer_idx][0].shape()}"
+            # )
+            # logger.info(
+            #     f"{past_key_value[self.layer_idx][0]} shape before truncate: {past_key_value[self.layer_idx][0].shape()}"
+            # )
             past_key = past_key[:, :, slicing_tokens:, :].contiguous()
             past_value = past_value[:, :, slicing_tokens:, :].contiguous()
-            print(
-                f"{past_key_value[self.layer_idx][0]} shape before truncate: {past_key_value[self.layer_idx][0].shape()}"
-            )
-            logger.info(
-                f"{past_key_value[self.layer_idx][0]} shape before truncate: {past_key_value[self.layer_idx][0].shape()}"
-            )
+            # print(
+            #     f"{past_key_value[self.layer_idx][0]} shape before truncate: {past_key_value[self.layer_idx][0].shape()}"
+            # )
+            # logger.info(
+            #     f"{past_key_value[self.layer_idx][0]} shape before truncate: {past_key_value[self.layer_idx][0].shape()}"
+            # )
 
             if past_key.shape[-2] != self.config.sliding_window - 1:
                 raise ValueError(
