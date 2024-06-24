@@ -17,7 +17,7 @@ from random import shuffle
 from tqdm import tqdm
 
 from base import BaseLiteLLMAgent
-from evaluation.src.metric import ComputeRejectMetrics
+from metric import ComputeRejectMetrics
 from utils import get_qwen_response, batch_dataset_iterator, get_chatglm_response
 
 from transformers import AutoTokenizer
