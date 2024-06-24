@@ -4,6 +4,7 @@ from dataclasses import dataclass
 from typing import TYPE_CHECKING, Dict, Sequence, Tuple, Union, List
 
 import numpy as np
+from tqdm import tqdm
 from transformers.utils import is_jieba_available, is_nltk_available
 
 from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score
