@@ -9,7 +9,7 @@ finetuning_type: lora
 flash_attn: fa2
 
 ### dataset
-dataset: typical_dynamic_cot_trigger_rag,typical_instruction_only_rag
+dataset: dynamic_cot_trigger_rag
 template: qwen
 cutoff_len: 3600
 #max_samples: 5
