@@ -57,29 +57,25 @@ class DynamicCoTDataset(datasets.GeneratorBasedBuilder):
     def _generate_examples(self, filepaths: List[str]):
         key = 0
         for filepath in filepaths:
-
-            example_dataset = json.load(open(filepath, "r", encoding="utf-8"))
-            print(f"reading dataset: {filepath}")
-            for filepath in filepaths:
-                with open(filepath, "r", encoding="utf-8") as f:
-                    for row in f:
-                        example = json.loads(row)
-                        system = template["history"][0]["content"]
-                        prompt = template["prompt"]
-                        question = example["question"]
-                        if question[-1] not in ["？", "。", "！", "?", ".", "!"]:
-                            question += "？"
-                        requirement = example["requirement"].replace("\n", "")
-                        output = example["output"]
-                        context = example["contexts"]
-                        random.shuffle(context)
-                        context = "\n\n".join(context)
-                        new_example = {
-                            "system": system,
-                            "instruction": prompt.replace("{question}", question).replace("{requirement}", requirement).replace("{context}", context),
-                            "input": "",
-                            "output": output,
-                            "history": []
-                        }
-                        yield key, new_example
-                        key += 1
+            with open(filepath, "r", encoding="utf-8") as f:
+                for row in f:
+                    example = json.loads(row)
+                    system = template["history"][0]["content"]
+                    prompt = template["prompt"]
+                    question = example["question"]
+                    if question[-1] not in ["？", "。", "！", "?", ".", "!"]:
+                        question += "？"
+                    requirement = example["requirement"].replace("\n", "")
+                    output = example["output"]
+                    context = example["contexts"]
+                    random.shuffle(context)
+                    context = "\n\n".join(context)
+                    new_example = {
+                        "system": system,
+                        "instruction": prompt.replace("{question}", question).replace("{requirement}", requirement).replace("{context}", context),
+                        "input": "",
+                        "output": output,
+                        "history": []
+                    }
+                    yield key, new_example
+                    key += 1
