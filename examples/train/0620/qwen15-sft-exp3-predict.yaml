@@ -21,6 +21,11 @@ output_dir: checkpoints/qwen/0620_qwen2_rag_sft_exp1/predict
 overwrite_output_dir: true
 
 ### eval
-per_device_eval_batch_size: 2
+per_device_eval_batch_size: 1
 predict_with_generate: true
 ddp_timeout: 180000000
+
+## generation config
+#do_sample: false
+temperature: 0.1
+max_new_tokens: 3300
