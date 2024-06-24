@@ -70,6 +70,7 @@ class ComputeMetrics:
         return {k: float(np.mean(v)) for k, v in score_dict.items()}
 
 
+@dataclass
 class ComputeRejectMetrics:
     r"""
     Wraps the tokenizer into metric functions, used in Seq2SeqPeftTrainer.
