@@ -1,4 +1,5 @@
 import json
+import logging
 import random
 from copy import deepcopy
 
@@ -27,6 +28,7 @@ _URLS = {
     ],
 }
 
+logger = logging.get_logger(__name__)
 template = json.load(open("data/dynamic_cot_trigger_rag/template_0620.json", "r", encoding="utf-8"))
 
 class DynamicCoTDataset(datasets.GeneratorBasedBuilder):
@@ -68,8 +70,10 @@ class DynamicCoTDataset(datasets.GeneratorBasedBuilder):
                 requirement = example["requirement"].replace("\n", "")
                 output = example["output"]
                 context = example["contexts"]
-                random.shuffle(context)
-                context = "\n\n".join(context)
+                if isinstance(context, list):
+                    logger.warning_once("context is a list")
+                    random.shuffle(context)
+                    context = "\n\n".join(context)
                 new_example = {
                     "system": system,
                     "instruction": prompt.replace("{question}", question).replace("{requirement}", requirement).replace("{context}", context),
