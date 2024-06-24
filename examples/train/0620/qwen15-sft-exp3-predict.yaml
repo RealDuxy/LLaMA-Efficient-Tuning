@@ -28,4 +28,4 @@ ddp_timeout: 180000000
 ## generation config
 #do_sample: false
 temperature: 0.1
-max_new_tokens: 3300
+max_new_tokens: 1024
