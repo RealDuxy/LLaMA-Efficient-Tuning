@@ -2,6 +2,7 @@
 #model_name_or_path: /mnt/e/UbuntuFiles/models_saved/Qwen1.5-7B-Chat
 #model_name_or_path: /mnt/e/UbuntuFiles/models_saved/Qwen1.5-14B-Chat-GPTQ-Int4
 #model_name_or_path: /mnt/d/PycharmProjects/models/Qwen1.5-14B-Chat-GPTQ-Int4
+#model_name_or_path: /mnt/d/PycharmProjects/models/Qwen2-1.5B-Instruct
 #model_name_or_path: qwen/Qwen-14B-Chat-Int4
 #model_name_or_path: qwen/Qwen1.5-14B-Chat-GPTQ-Int4
 #model_name_or_path: /root/autodl-tmp/Qwen2-7B-Instruct
@@ -28,7 +29,7 @@ sliding_window_attn: true
 #dataset: instruction_only_rag
 dataset: instruction_only_rag,dynamic_cot_trigger_rag
 template: qwen
-cutoff_len: 4096
+cutoff_len: 3600
 val_size: 0.03
 overwrite_cache: true
 preprocessing_num_workers: 16
@@ -36,12 +37,12 @@ preprocessing_num_workers: 16
 # output
 output_dir: checkpoints/qwen/0620_qwen2_rag_sft_exp4
 logging_steps: 5
-save_steps: 80
+save_steps: 70
 plot_loss: true
 overwrite_output_dir: true
 
 # train
-per_device_train_batch_size: 1
+per_device_train_batch_size: 2
 gradient_accumulation_steps: 16
 learning_rate: 0.00005
 num_train_epochs: 2.0
@@ -52,4 +53,4 @@ fp16: true
 # eval
 per_device_eval_batch_size: 1
 evaluation_strategy: steps
-eval_steps: 30
+eval_steps: 40

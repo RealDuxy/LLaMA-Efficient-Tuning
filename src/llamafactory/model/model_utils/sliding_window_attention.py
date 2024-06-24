@@ -107,18 +107,14 @@ def qwen2_flash_attention_2_forward(
             and kv_seq_len > self.config.sliding_window
             and self.config.use_sliding_window
     )
-    print({
-            "_flash_supports_window_size" : _flash_supports_window_size,
-            "{getattr(self.config, 'sliding_window', None))": getattr(self.config, "sliding_window", None) is not None,
-            "kv_seq_len > self.config.sliding_window": (kv_seq_len, self.config.sliding_window),
-            "self.config.use_sliding_window": self.config.use_sliding_window
-    })
-    logger.warning_once({
-            "_flash_supports_window_size" : _flash_supports_window_size,
-            "{getattr(self.config, 'sliding_window', None))": getattr(self.config, "sliding_window", None) is not None,
-            "kv_seq_len > self.config.sliding_window": (kv_seq_len, self.config.sliding_window),
-            "self.config.use_sliding_window": self.config.use_sliding_window
-    })
+    # print({
+    #         "_flash_supports_window_size" : _flash_supports_window_size,
+    #         "{getattr(self.config, 'sliding_window', None))": getattr(self.config, "sliding_window", None) is not None,
+    #         "kv_seq_len > self.config.sliding_window": (kv_seq_len, self.config.sliding_window),
+    #         "self.config.use_sliding_window": self.config.use_sliding_window
+    # })
+    # print("use_sliding_windows: ", use_sliding_windows)
+    # print(f"past_key_value? : {past_key_value is not None} ")
 
     if not _flash_supports_window_size:
         logger.warning_once(
@@ -135,31 +131,31 @@ def qwen2_flash_attention_2_forward(
                 and cache_has_contents
         ):
             slicing_tokens = 1 - self.config.sliding_window
-            print(
-                f"will truncate past_key_value cache from total {kv_seq_len} tokens "
-                f"to last {-slicing_tokens} tokens cache"
-            )
-            logger.warning_once(
-                f"will truncate past_key_value cache from total {kv_seq_len} tokens "
-                f"to last {-slicing_tokens} tokens cache"
-            )
+            # print(
+            #     f"will truncate past_key_value cache from total {kv_seq_len} tokens "
+            #     f"to last {-slicing_tokens} tokens cache"
+            # )
+            # logger.warning_once(
+            #     f"will truncate past_key_value cache from total {kv_seq_len} tokens "
+            #     f"to last {-slicing_tokens} tokens cache"
+            # )
 
             past_key = past_key_value[self.layer_idx][0]
             past_value = past_key_value[self.layer_idx][1]
-            print(
-                f"{past_key_value[self.layer_idx][0]} shape before truncate: {past_key_value[self.layer_idx][0].shape()}"
-            )
-            logger.info(
-                f"{past_key_value[self.layer_idx][0]} shape before truncate: {past_key_value[self.layer_idx][0].shape()}"
-            )
+            # print(
+            #     f"{past_key_value[self.layer_idx][0]} shape before truncate: {past_key_value[self.layer_idx][0].shape()}"
+            # )
+            # logger.info(
+            #     f"{past_key_value[self.layer_idx][0]} shape before truncate: {past_key_value[self.layer_idx][0].shape()}"
+            # )
             past_key = past_key[:, :, slicing_tokens:, :].contiguous()
             past_value = past_value[:, :, slicing_tokens:, :].contiguous()
-            print(
-                f"{past_key_value[self.layer_idx][0]} shape before truncate: {past_key_value[self.layer_idx][0].shape()}"
-            )
-            logger.info(
-                f"{past_key_value[self.layer_idx][0]} shape before truncate: {past_key_value[self.layer_idx][0].shape()}"
-            )
+            # print(
+            #     f"{past_key_value[self.layer_idx][0]} shape before truncate: {past_key_value[self.layer_idx][0].shape()}"
+            # )
+            # logger.info(
+            #     f"{past_key_value[self.layer_idx][0]} shape before truncate: {past_key_value[self.layer_idx][0].shape()}"
+            # )
 
             if past_key.shape[-2] != self.config.sliding_window - 1:
                 raise ValueError(
@@ -207,6 +203,7 @@ def qwen2_flash_attention_2_forward(
     key_states = key_states.transpose(1, 2)
     value_states = value_states.transpose(1, 2)
 
+    # print(attention_mask.shape)
     attn_output = self._flash_attention_forward(
         query_states,
         key_states,
@@ -216,6 +213,7 @@ def qwen2_flash_attention_2_forward(
         dropout=dropout_rate,
         use_sliding_windows=use_sliding_windows,
     )
+
 
     attn_output = attn_output.reshape(bsz, q_len, self.hidden_size).contiguous()
     attn_output = self.o_proj(attn_output)
@@ -244,8 +242,8 @@ def configure_sliding_window_attention(config: "PretrainedConfig", model_args: "
         return
 
     if getattr(config, "model_type", None) in SUPPORTED_CLASS_FOR_SWATTN:
-        setattr(config, "sliding_window", 1024)
-        setattr(config, "max_window_layers", 35)  # 底层感受野本来就小，上层感受野本来就大。
+        setattr(config, "sliding_window", 2048)
+        setattr(config, "max_window_layers", 35)  # 底层感受野小，上层感受野本来就大。
         setattr(config, "use_sliding_window", True)
         # 需要修改YARN和logn么？不知道
         # qwen可以直接打开sliding window
