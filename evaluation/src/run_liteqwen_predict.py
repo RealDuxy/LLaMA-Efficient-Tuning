@@ -22,9 +22,8 @@ from utils import get_qwen_response, batch_dataset_iterator, get_chatglm_respons
 
 from transformers import AutoTokenizer
 
-# tokenizer = AutoTokenizer.from_pretrained("/mnt/e/UbuntuFiles/models_saved/Qwen1.5-14B-Chat-GPTQ-Int4", trust_remote_code=True)
-tokenizer = AutoTokenizer.from_pretrained("qwen/Qwen1.5-14B-Chat-GPTQ-Int4", trust_remote_code=True)
-
+tokenizer = AutoTokenizer.from_pretrained("/mnt/e/UbuntuFiles/models_saved/Qwen1.5-14B-Chat-GPTQ-Int4", trust_remote_code=True)
+# tokenizer = AutoTokenizer.from_pretrained("qwen/Qwen1.5-14B-Chat-GPTQ-Int4", trust_remote_code=True)
 
 model_adapter_name_map = {
     "chatglm": "",
@@ -35,7 +34,8 @@ model_adapter_name_map = {
     "qwen-rag-0529-exp2": "default",
     "qwen-rag-0527-ckpt-200": "rag1",
     "qwen-rag-0527-ckpt-400": "rag2",
-    "0620_qwen2_rag_sft_exp3": "rag3"
+    "0620_qwen2_rag_sft_exp3": "rag3",
+    "0620_qwen2_rag_sft_exp4": "rag4"
 }
 
 def run_rag_evaluation(data_dir, output_dir,
@@ -53,7 +53,7 @@ def run_rag_evaluation(data_dir, output_dir,
         output_file = os.path.join(model_output_dir, output_file)
         print(f"Processing data file: {data_file}")
         results = []
-        for datas in tqdm(batch_dataset_iterator(data_file, batch_size=4, max_samples=max_samples)):
+        for datas in tqdm(batch_dataset_iterator(data_file, batch_size=8, max_samples=max_samples)):
             predictions = rag_agent.para_invoke(adapter_name=[model_name] * len(datas["question"]),
                                                 **{"question": datas["question"]
                                                     , "requirement": datas["requirement"]
@@ -301,8 +301,16 @@ if __name__ == '__main__':
     run_rag_evaluation(
         data_dir="dataset/evaluation_dataset",
         output_dir="output",
-        template_file="template/template_0524.json",
+        template_file="template/template_0620.json",
         model_name="rag3",
+        max_samples=None,
+        model_invoke=get_qwen_response
+    )
+    run_rag_evaluation(
+        data_dir="dataset/evaluation_dataset",
+        output_dir="output",
+        template_file="template/template_0620.json",
+        model_name="rag4",
         max_samples=None,
         model_invoke=get_qwen_response
     )
