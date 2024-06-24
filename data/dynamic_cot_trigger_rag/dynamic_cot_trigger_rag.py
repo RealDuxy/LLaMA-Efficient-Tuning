@@ -1,10 +1,11 @@
 import json
-import logging
 import random
 from copy import deepcopy
 
 import datasets
 from typing import Any, Dict, List
+
+from transformers.utils import logging
 
 _DESCRIPTION = "RAG dataset with dynamic CoT trigger"
 _CITATION = ""
