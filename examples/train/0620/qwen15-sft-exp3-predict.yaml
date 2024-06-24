@@ -8,6 +8,7 @@ do_predict: true
 finetuning_type: lora
 flash_attn: fa2
 
+
 ### dataset
 dataset: dynamic_cot_trigger_rag
 template: qwen
@@ -17,7 +18,7 @@ overwrite_cache: true
 preprocessing_num_workers: 16
 
 ### output
-output_dir: checkpoints/qwen/0620_qwen2_rag_sft_exp1/predict
+output_dir: checkpoints/qwen/0620_qwen2_rag_sft_exp3/predict
 overwrite_output_dir: true
 
 ### eval

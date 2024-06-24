@@ -15,7 +15,7 @@ _URL = [
     _URL_DIR+"train_0524_dynamic_cot_trigger_comparison_10p.json"
 ]
 
-template = json.load(open("data/dynamic_cot_trigger_rag/template.json", "r", encoding="utf-8"))
+template = json.load(open("data/dynamic_cot_trigger_rag/template_0524.json", "r", encoding="utf-8"))
 
 class QwenRAGComparisonDataset(datasets.GeneratorBasedBuilder):
     VERSION = datasets.Version("0.0.0")

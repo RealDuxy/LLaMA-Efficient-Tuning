@@ -18,7 +18,7 @@ _URL = [
 #     _URL_DIR+"debug_train_instruction_only_comparison.json",
 # ]
 
-template = json.load(open("data/dynamic_cot_trigger_rag/template.json", "r", encoding="utf-8"))
+template = json.load(open("data/dynamic_cot_trigger_rag/template_0524.json", "r", encoding="utf-8"))
 
 class ChatGLMRAGComparisonDataset(datasets.GeneratorBasedBuilder):
     VERSION = datasets.Version("0.0.0")

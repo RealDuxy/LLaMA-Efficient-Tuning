@@ -12,7 +12,7 @@ _LICENSE = ""
 # _URL = "train_0524_instruction_only.json"
 _URL = "train_0619_instruction_only.json"
 
-template = json.load(open("data/instruction_only_rag/template.json", "r", encoding="utf-8"))
+template = json.load(open("data/instruction_only_rag/template_0524.json", "r", encoding="utf-8"))
 
 class InstructionOnlyDataset(datasets.GeneratorBasedBuilder):
     VERSION = datasets.Version("0.0.0")

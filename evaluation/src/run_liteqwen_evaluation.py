@@ -241,7 +241,7 @@ def run_rag_comparison(data_dir,
         print(f"{data_file.split('/')[-1]} time cost per batch: {(time_end - time_start) / (i+1)}")
 
 def test_single_agent(model_name="qwen-rag-0529-simpo-exp2"):
-    template_file = "template/template.json"
+    template_file = "template/template_0524.json"
 
     question = test_case["question"]
     requirement = test_case["requirement"]
@@ -273,7 +273,7 @@ if __name__ == '__main__':
     run_rag_comparison(
         data_dir="dataset/evaluation_dataset",
         output_dir="output/evaluation_dataset",
-        template_file="template/template.json",
+        template_file="template/template_0524.json",
         model_names=["qwen","qwen-rag-0527-exp1","qwen-rag-0527-exp2","qwen-rag-0601-dpo-exp1","qwen-rag-0601-dpo-exp6"],
         max_samples=None,
         model_invoke=get_qwen_response

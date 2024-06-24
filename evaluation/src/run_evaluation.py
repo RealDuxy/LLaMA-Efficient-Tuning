@@ -23,7 +23,7 @@ from evaluation.src.utils import Rouge
 tokenizer = AutoTokenizer.from_pretrained("Qwen/Qwen1.5-14B-Chat", trust_remote_code=True)
 # tokenizer = AutoTokenizer.from_pretrained("THUDM/chatglm3-6b", trust_remote_code=True)
 
-template = json.load(open("template/template.json", "r", encoding="utf-8"))
+template = json.load(open("template/template_0524.json", "r", encoding="utf-8"))
 
 # Function to compute ROUGE scores
 import json

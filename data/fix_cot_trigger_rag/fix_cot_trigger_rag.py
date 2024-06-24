@@ -41,7 +41,7 @@ class FixCoTDataset(datasets.GeneratorBasedBuilder):
     def _generate_examples(self, filepath: str) -> Dict[int, Dict[str, Any]]:
         example_dataset = json.load(open(filepath, "r", encoding="utf-8"))
         # 打印当前目录
-        template = json.load(open("data/fix_cot_trigger_rag/template.json", "r", encoding="utf-8"))
+        template = json.load(open("data/fix_cot_trigger_rag/template_0524.json", "r", encoding="utf-8"))
         prompt_templates = deepcopy(template)
         system = prompt_templates["history"][0]["content"]
         prompt = prompt_templates["prompt"]
