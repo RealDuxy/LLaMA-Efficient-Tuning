@@ -74,11 +74,11 @@ def run_rag_evaluation(data_dir, output_dir,
         print(f"Results saved to {output_file}")
 
         # results 保存到output_file
-        metric = ComputeRejectMetrics(tokenizer=tokenizer)
+        metric = ComputeRejectMetrics(tokenizer)
 
         all_preds = [x["pred"] for x in results]
         all_labels = [x["output"] for x in results]
-        metric_results = metric(all_preds, all_labels)
+        metric_results = metric(eval_preds = (all_preds, all_labels))
         save_file = output_file.replace("_output.json", "_score.json")
         with open(save_file, "w", encoding="utf-8") as f:
             json.dump(metric_results, f, ensure_ascii=False, indent=4)
