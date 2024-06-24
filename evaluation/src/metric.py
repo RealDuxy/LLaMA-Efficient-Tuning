@@ -93,6 +93,12 @@ class ComputeRejectMetrics:
 
         for pred, label in tqdm(zip(preds, labels), desc="calculating rouge and bleu scores"):
             reject_keywords = ["缺乏关于", "缺乏相关", "缺乏具体", "很抱歉", "不充分", "没有足够", "目前的资料"]
+            if not pred:
+                print(f"empty pred, current label: {label}")
+                pred = ""
+            if not label:
+                print(f"empty label, current pred: {pred}")
+                label = ""
             hypothesis = list(jieba.cut(pred))
             reference = list(jieba.cut(label))
 
@@ -102,9 +108,11 @@ class ComputeRejectMetrics:
                 rouge = Rouge()
                 scores = rouge.get_scores(" ".join(hypothesis), " ".join(reference))
                 result = scores[0]
+                result_score = {"reject_rate": {"f": 0.0}}
                 for reject_keyword in reject_keywords:
                     if reject_keyword in pred:
-                        result.update({"reject_rate": {"f": 1.0}})
+                        result_score = {"reject_rate": {"f": 1.0}}
+                result.update(result_score)
 
             for k, v in result.items():
                 score_dict[k].append(round(v["f"] * 100, 4))
