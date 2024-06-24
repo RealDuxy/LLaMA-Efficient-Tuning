@@ -5,8 +5,8 @@ from typing import TYPE_CHECKING, Dict, Sequence, Tuple, Union, List
 import numpy as np
 from transformers.utils import is_jieba_available, is_nltk_available
 
-from ...extras.constants import IGNORE_INDEX
-from ...extras.packages import is_rouge_available
+from llamafactory.extras.constants import IGNORE_INDEX
+from llamafactory.extras.packages import is_rouge_available
 
 from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score
 
