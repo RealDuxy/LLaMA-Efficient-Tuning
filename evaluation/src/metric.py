@@ -1,3 +1,4 @@
+import importlib
 import re
 from dataclasses import dataclass
 from typing import TYPE_CHECKING, Dict, Sequence, Tuple, Union, List
@@ -5,14 +6,16 @@ from typing import TYPE_CHECKING, Dict, Sequence, Tuple, Union, List
 import numpy as np
 from transformers.utils import is_jieba_available, is_nltk_available
 
-from llamafactory.extras.constants import IGNORE_INDEX
-from llamafactory.extras.packages import is_rouge_available
-
 from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score
+
+IGNORE_INDEX = -100
 
 if TYPE_CHECKING:
     from transformers import PreTrainedTokenizer
-
+def _is_package_available(name: str) -> bool:
+    return importlib.util.find_spec(name) is not None
+def is_rouge_available():
+    return _is_package_available("rouge_chinese")
 
 if is_jieba_available():
     import jieba  # type: ignore
