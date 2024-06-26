@@ -31,9 +31,9 @@ model_adapter_name_map = {
     "chatglm-rag-0515-dpo": "align",
     "qwen-0524": "",
     "qwen-0620": "",
-    "qwen-rag-0529-exp2": "default",
-    "qwen-rag-0527-ckpt-200": "rag1",
-    "qwen-rag-0527-ckpt-400": "rag2",
+    "0527_qwen2_rag_sft_exp2": "default", #更小的lora rank=8，sft——0524版本
+    "0527_qwen2_rag_sft_exp1": "rag1", # 更大的lora rank=16，sft——0524版本
+    "0527_qwen2_rag_dpo_exp2": "rag2", # sft_exp1的10p dpo版本
     "0620_qwen2_rag_sft_exp3": "rag3",
     "0620_qwen2_rag_sft_exp4": "rag4"
 }
@@ -285,33 +285,60 @@ if __name__ == '__main__':
         data_dir="dataset/evaluation_dataset",
         output_dir="output",
         template_file="template/template_0524.json",
-        model_name="qwen-0524",
+        model_name="0527_qwen2_rag_sft_exp2",
         max_samples=None,
         model_invoke=get_qwen_response
     )
-    # 跑测试集的预测，用于评估
+
     run_rag_evaluation(
         data_dir="dataset/evaluation_dataset",
         output_dir="output",
-        template_file="template/template_0620.json",
-        model_name="qwen-0620",
+        template_file="template/template_0524.json",
+        model_name="0527_qwen2_rag_sft_exp1",
         max_samples=None,
         model_invoke=get_qwen_response
     )
+
     run_rag_evaluation(
         data_dir="dataset/evaluation_dataset",
         output_dir="output",
-        template_file="template/template_0620.json",
-        model_name="rag3",
+        template_file="template/template_0524.json",
+        model_name="0527_qwen2_rag_dpo_exp2",
         max_samples=None,
         model_invoke=get_qwen_response
     )
-    run_rag_evaluation(
-        data_dir="dataset/evaluation_dataset",
-        output_dir="output",
-        template_file="template/template_0620.json",
-        model_name="rag4",
-        max_samples=None,
-        model_invoke=get_qwen_response
-    )
+
+    # run_rag_evaluation(
+    #     data_dir="dataset/evaluation_dataset",
+    #     output_dir="output",
+    #     template_file="template/template_0524.json",
+    #     model_name="qwen-0524",
+    #     max_samples=None,
+    #     model_invoke=get_qwen_response
+    # )
+    # # 跑测试集的预测，用于评估
+    # run_rag_evaluation(
+    #     data_dir="dataset/evaluation_dataset",
+    #     output_dir="output",
+    #     template_file="template/template_0620.json",
+    #     model_name="qwen-0620",
+    #     max_samples=None,
+    #     model_invoke=get_qwen_response
+    # )
+    # run_rag_evaluation(
+    #     data_dir="dataset/evaluation_dataset",
+    #     output_dir="output",
+    #     template_file="template/template_0620.json",
+    #     model_name="rag3",
+    #     max_samples=None,
+    #     model_invoke=get_qwen_response
+    # )
+    # run_rag_evaluation(
+    #     data_dir="dataset/evaluation_dataset",
+    #     output_dir="output",
+    #     template_file="template/template_0620.json",
+    #     model_name="rag4",
+    #     max_samples=None,
+    #     model_invoke=get_qwen_response
+    # )
 

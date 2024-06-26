@@ -55,7 +55,6 @@ def get_qwen_response(history, prompt, **kwargs) -> str:
                        "top_k": top_k,
                        "return_raw": True}}
 
-
     response = requests.post(url=url, headers=headers, data=json.dumps(input_data))
 
     if response.status_code != 200:
