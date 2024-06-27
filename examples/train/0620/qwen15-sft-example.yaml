@@ -1,0 +1,48 @@
+# 方便学习和调试的参数设置，适用于Qwen系列
+model_name_or_path: 本地模型地址，例如：/root/autodl-tmp/qwen/Qwen1_5-14B-Chat-GPTQ-Int4
+# method
+stage: sft
+do_train: true
+finetuning_type: lora
+lora_rank: 2
+lora_alpha: 4
+lora_target: q_proj,v_proj # 最低参数下最佳的效果
+flash_attn: fa2 # 30系列以上，A100 A800等，安培架构N卡可以开
+#print_param_status: true 打开可以看到所有参数的梯度更新开启情况
+
+## ddp 忽略
+#ddp_timeout: 180000000
+#deepspeed: examples/deepspeed/ds_z2_offload_config.json
+
+# 如果不用wandb 就不用管
+#report_to: wandb
+
+
+dataset: instruction_only_rag # 用着一个参数就好
+template: qwen
+cutoff_len: 1024 # 正常这个任务应该设置3600，但是学习调试的话没必要那么长，非常浪费显存
+max_samples: 100 # 只截取前100个样本训练，方便调试
+val_size: 0.03 # 验证集比例，也可以不要
+overwrite_cache: true
+preprocessing_num_workers: 16
+
+# output 顾名思义
+output_dir: checkpoints/qwen/0620_qwen2_rag_sft_exp4
+logging_steps: 2
+save_steps: 5
+plot_loss: true
+overwrite_output_dir: true
+
+# train
+per_device_train_batch_size: 1
+gradient_accumulation_steps: 2
+learning_rate: 0.00005
+num_train_epochs: 1.0
+lr_scheduler_type: cosine
+warmup_steps: 0.1
+fp16: true # 原则上要bf16训练，但是我们的推理只支持fp16，所以只能牺牲这个了。
+
+# eval
+per_device_eval_batch_size: 1
+evaluation_strategy: steps
+eval_steps: 5
