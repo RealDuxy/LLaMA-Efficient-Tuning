@@ -160,7 +160,8 @@ cython_debug/
 .idea/
 
 # custom .gitignore
-user.config
-saves/
 cache/
-/data/sharegpt_zh_38k/sharegpt_zh_38k.json
+config/
+saves/
+output/
+wandb/

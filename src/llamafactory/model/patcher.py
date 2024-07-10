@@ -30,6 +30,7 @@ from .model_utils.checkpointing import prepare_model_for_training
 from .model_utils.embedding import resize_embedding_layer
 from .model_utils.longlora import configure_longlora
 from .model_utils.moe import add_z3_leaf_module, configure_moe
+from .model_utils.packing import configure_packing
 from .model_utils.quantization import configure_quantization
 from .model_utils.rope import configure_rope
 from .model_utils.valuehead import prepare_valuehead_model
@@ -59,21 +60,22 @@ def patch_config(
     is_trainable: bool,
 ) -> None:
     if model_args.compute_dtype is None:  # priority: bf16 > fp16 > fp32
-        if model_args.infer_dtype == "auto":
-            model_args.compute_dtype = infer_optim_dtype(model_dtype=getattr(config, "torch_dtype", None))
-        else:
+        if model_args.infer_dtype != "auto" and not is_trainable:
             model_args.compute_dtype = getattr(torch, model_args.infer_dtype)
+        else:
+            model_args.compute_dtype = infer_optim_dtype(model_dtype=getattr(config, "torch_dtype", None))
 
     if is_torch_npu_available():
         use_jit_compile = os.environ.get("JIT_COMPILE", "0").lower() in ["true", "1"]
         torch.npu.set_compile_mode(jit_compile=use_jit_compile)
 
-    configure_attn_implementation(config, model_args)
+    configure_attn_implementation(config, model_args, is_trainable)
     configure_rope(config, model_args, is_trainable)
     configure_longlora(config, model_args, is_trainable)
     configure_quantization(config, tokenizer, model_args, init_kwargs)
     configure_moe(config, model_args, is_trainable)
     configure_visual_model(config)
+    configure_packing(config, model_args, is_trainable)
 
     # debug
     configure_sliding_window_attention(config, model_args, is_trainable)
