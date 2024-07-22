@@ -14,21 +14,28 @@ import sys
 import time
 from random import shuffle
 
-import pandas as pd
-from datasets import load_dataset
 from tqdm import tqdm
 
 from base import BaseLiteLLMAgent
+from metric import ComputeRejectMetrics
 from utils import get_qwen_response, batch_dataset_iterator, get_chatglm_response
+
+from transformers import AutoTokenizer
+
+tokenizer = AutoTokenizer.from_pretrained("/mnt/e/UbuntuFiles/models_saved/Qwen1.5-14B-Chat-GPTQ-Int4", trust_remote_code=True)
+# tokenizer = AutoTokenizer.from_pretrained("qwen/Qwen1.5-14B-Chat-GPTQ-Int4", trust_remote_code=True)
 
 model_adapter_name_map = {
     "chatglm": "",
     "chatglm-rag-0515": "default",
     "chatglm-rag-0515-dpo": "align",
-    "qwen": "",
-    "qwen-rag-0529-exp2": "default",
-    "qwen-rag-0527-ckpt-200": "rag1",
-    "qwen-rag-0527-ckpt-400": "rag2"
+    "qwen-0524": "",
+    "qwen-0620": "",
+    "0527_qwen2_rag_sft_exp2": "default", #更小的lora rank=8，sft——0524版本
+    "0527_qwen2_rag_sft_exp1": "rag1", # 更大的lora rank=16，sft——0524版本
+    "0527_qwen2_rag_dpo_exp2": "rag2", # sft_exp1的10p dpo版本
+    "0620_qwen2_rag_sft_exp3": "rag3",
+    "0620_qwen2_rag_sft_exp4": "rag4"
 }
 
 def run_rag_evaluation(data_dir, output_dir,
@@ -46,7 +53,7 @@ def run_rag_evaluation(data_dir, output_dir,
         output_file = os.path.join(model_output_dir, output_file)
         print(f"Processing data file: {data_file}")
         results = []
-        for datas in tqdm(batch_dataset_iterator(data_file, batch_size=4, max_samples=max_samples)):
+        for datas in tqdm(batch_dataset_iterator(data_file, batch_size=8, max_samples=max_samples)):
             predictions = rag_agent.para_invoke(adapter_name=[model_name] * len(datas["question"]),
                                                 **{"question": datas["question"]
                                                     , "requirement": datas["requirement"]
@@ -65,6 +72,18 @@ def run_rag_evaluation(data_dir, output_dir,
         with open(output_file, "w", encoding="utf-8") as f:
             json.dump(results, f, ensure_ascii=False, indent=4)
         print(f"Results saved to {output_file}")
+
+        # results 保存到output_file
+        metric = ComputeRejectMetrics(tokenizer)
+
+        all_preds = [x["pred"] for x in results]
+        all_labels = [x["output"] for x in results]
+        metric_results = metric(eval_preds = (all_preds, all_labels))
+        save_file = output_file.replace("_output.json", "_score.json")
+        with open(save_file, "w", encoding="utf-8") as f:
+            json.dump(metric_results, f, ensure_ascii=False, indent=4)
+        print(f"Scores saved to {output_file}")
+
 
 
 def run_rag_all_negative_rejection_answer(data_dir, output_dir,
@@ -175,7 +194,7 @@ if __name__ == '__main__':
     # run_rag_prediction(
     #     data_dir="dataset/evaluation_dataset",
     #     output_dir="output/evaluation_dataset",
-    #     template_file="template/template.json",
+    #     template_file="template/template_0524.json",
     #     model_name="chatglm",
     #     max_samples=None,
     #     model_invoke=get_chatglm_response
@@ -183,7 +202,7 @@ if __name__ == '__main__':
     # run_rag_prediction(
     #     data_dir="dataset/evaluation_dataset",
     #     output_dir="output/evaluation_dataset",
-    #     template_file="template/template.json",
+    #     template_file="template/template_0524.json",
     #     model_name="chatglm-rag-0515",
     #     max_samples=None,
     #     model_invoke=get_chatglm_response
@@ -191,7 +210,7 @@ if __name__ == '__main__':
     # run_rag_prediction(
     #     data_dir="dataset/evaluation_dataset",
     #     output_dir="output/evaluation_dataset",
-    #     template_file="template/template.json",
+    #     template_file="template/template_0524.json",
     #     model_name="chatglm-rag-0515-dpo",
     #     max_samples=None,
     #     model_invoke=get_chatglm_response
@@ -199,7 +218,7 @@ if __name__ == '__main__':
     # run_rag_prediction(
     #     data_dir="dataset/evaluation_dataset",
     #     output_dir="output/evaluation_dataset",
-    #     template_file="template/template.json",
+    #     template_file="template/template_0524.json",
     #     model_name="chatglm-rag-0515",
     #     max_samples=10,
     #     model_invoke=get_chatglm_response
@@ -208,28 +227,28 @@ if __name__ == '__main__':
     # run_rag_prediction(
     #     data_dir="dataset/train_dataset",
     #     output_dir="output/train_dataset",
-    #     template_file="template/template.json",
+    #     template_file="template/template_0524.json",
     #     model_name="chatglm-rag-0515",
     #     max_samples=None,
     #     model_invoke=get_chatglm_response
     # )
-    time_start = time.time()
-    run_rag_prediction(
-        data_dir="dataset/train_dataset",
-        output_dir="output/train_dataset",
-        template_file="template/template.json",
-        model_name="qwen-rag-0529-exp2",
-        max_samples=None,
-        model_invoke=get_qwen_response
-    )
-    time_end = time.time()
-    print(f"total time cost: {(time_end - time_start)}")
+    # time_start = time.time()
+    # run_rag_prediction(
+    #     data_dir="dataset/train_dataset",
+    #     output_dir="output/train_dataset",
+    #     template_file="template/template_0524.json",
+    #     model_name="qwen-rag-0529-exp2",
+    #     max_samples=None,
+    #     model_invoke=get_qwen_response
+    # )
+    # time_end = time.time()
+    # print(f"total time cost: {(time_end - time_start)}")
 
     # time_start = time.time()
     # run_rag_prediction(
     #     data_dir="dataset/train_dataset",
     #     output_dir="output/train_dataset",
-    #     template_file="template/template.json",
+    #     template_file="template/template_0524.json",
     #     model_name="qwen-rag-0527-ckpt-200",
     #     max_samples=None,
     #     model_invoke=get_qwen_response
@@ -241,7 +260,7 @@ if __name__ == '__main__':
     # run_rag_prediction(
     #     data_dir="dataset/train_dataset",
     #     output_dir="output/train_dataset",
-    #     template_file="template/template.json",
+    #     template_file="template/template_0524.json",
     #     model_name="qwen-rag-0527-ckpt-400",
     #     max_samples=None,
     #     model_invoke=get_qwen_response
@@ -253,7 +272,7 @@ if __name__ == '__main__':
     # run_rag_prediction(
     #     data_dir="dataset/train_dataset",
     #     output_dir="output/train_dataset",
-    #     template_file="template/template.json",
+    #     template_file="template/template_0524.json",
     #     model_name="qwen",
     #     max_samples=None,
     #     model_invoke=get_qwen_response
@@ -261,44 +280,63 @@ if __name__ == '__main__':
     # time_end = time.time()
     # print(f"total time cost: {(time_end - time_start)}")
 
+    # 跑测试集的预测，用于评估
+    run_rag_evaluation(
+        data_dir="dataset/evaluation_dataset",
+        output_dir="output",
+        template_file="template/template_0524.json",
+        model_name="0527_qwen2_rag_sft_exp2",
+        max_samples=None,
+        model_invoke=get_qwen_response
+    )
+    run_rag_evaluation(
+        data_dir="dataset/evaluation_dataset",
+        output_dir="output",
+        template_file="template/template_0524.json",
+        model_name="0527_qwen2_rag_sft_exp1",
+        max_samples=None,
+        model_invoke=get_qwen_response
+    )
+    run_rag_evaluation(
+        data_dir="dataset/evaluation_dataset",
+        output_dir="output",
+        template_file="template/template_0524.json",
+        model_name="0527_qwen2_rag_dpo_exp2",
+        max_samples=None,
+        model_invoke=get_qwen_response
+    )
+
+    # run_rag_evaluation(
+    #     data_dir="dataset/evaluation_dataset",
+    #     output_dir="output",
+    #     template_file="template/template_0524.json",
+    #     model_name="qwen-0524",
+    #     max_samples=None,
+    #     model_invoke=get_qwen_response
+    # )
     # # 跑测试集的预测，用于评估
     # run_rag_evaluation(
-    #     data_dir="dataset/",
+    #     data_dir="dataset/evaluation_dataset",
     #     output_dir="output",
-    #     template_file="template/template.json",
-    #     model_name="original",
-    #     max_samples=None,
-    #     model_invoke=get_chatglm_response
-    # )
-    # run_rag_evaluation(
-    #     data_dir="dataset/",
-    #     output_dir="output",
-    #     template_file="template/template.json",
-    #     model_name="default",
+    #     template_file="template/template_0620.json",
+    #     model_name="qwen-0620",
     #     max_samples=None,
     #     model_invoke=get_qwen_response
     # )
     # run_rag_evaluation(
-    #     data_dir="dataset/",
+    #     data_dir="dataset/evaluation_dataset",
     #     output_dir="output",
-    #     template_file="template/template.json",
-    #     model_name="rag2",
-    #     max_samples=None,
-    #     model_invoke=get_qwen_response
-    # )
-    # run_rag_evaluation(
-    #     data_dir="dataset/",
-    #     output_dir="output",
-    #     template_file="template/template.json",
+    #     template_file="template/template_0620.json",
     #     model_name="rag3",
     #     max_samples=None,
     #     model_invoke=get_qwen_response
     # )
     # run_rag_evaluation(
-    #     data_dir="dataset/",
+    #     data_dir="dataset/evaluation_dataset",
     #     output_dir="output",
-    #     template_file="template/template.json",
+    #     template_file="template/template_0620.json",
     #     model_name="rag4",
     #     max_samples=None,
     #     model_invoke=get_qwen_response
     # )
+
