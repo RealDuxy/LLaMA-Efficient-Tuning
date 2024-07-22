@@ -14,7 +14,7 @@ USE_MODELSCOPE_HUB=1 CUDA_VISIBLE_DEVICES=0 nohup python \
 
 
 USE_MODELSCOPE_HUB=1 CUDA_VISIBLE_DEVICES=0 nohup python \
-    src/train.py examples/train/0722/qwen15-sft-exp1.yaml > log/qwen15-sft-0722-exp1.log 2>&1
+    src/train.py examples/train/0722/qwen15-sft-stage1-exp1.yaml > log/qwen15-sft-0722-exp1.log 2>&1
 
 
-USE_MODELSCOPE_HUB=1 CUDA_VISIBLE_DEVICES=0 python src/train.py examples/train/0722/qwen15-sft-exp1.yaml
+USE_MODELSCOPE_HUB=1 CUDA_VISIBLE_DEVICES=0 python src/train.py examples/train/0722/qwen15-sft-stage1-exp1.yaml
