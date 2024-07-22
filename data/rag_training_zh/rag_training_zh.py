@@ -57,7 +57,7 @@ class DynamicCoTDataset(datasets.GeneratorBasedBuilder):
             datasets.SplitGenerator(name=datasets.Split.TEST, gen_kwargs={"filepaths": file_path["test"]}),
         ]
 
-    def _generate_examples(self, filepaths: List[str]):
+    def _generate_examples(self, filepaths: List[str]):w
         key = 0
         for filepath in filepaths:
             example_dataset = json.load(open(filepath, "r", encoding="utf-8"))
