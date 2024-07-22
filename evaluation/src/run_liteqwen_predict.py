@@ -289,7 +289,6 @@ if __name__ == '__main__':
         max_samples=None,
         model_invoke=get_qwen_response
     )
-
     run_rag_evaluation(
         data_dir="dataset/evaluation_dataset",
         output_dir="output",
@@ -298,7 +297,6 @@ if __name__ == '__main__':
         max_samples=None,
         model_invoke=get_qwen_response
     )
-
     run_rag_evaluation(
         data_dir="dataset/evaluation_dataset",
         output_dir="output",
