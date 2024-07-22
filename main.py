@@ -6,7 +6,7 @@
 @Email   : du.xi.yang@qq.com
 @Software: PyCharm
 """
-from data.instruction_only_rag.instruction_only_rag import InstructionOnlyDataset, _URL
+from data.rag_training_stage1_zh.rag_training_stage1_zh import RAGDataset,_URLS
 
 # import json
 #
@@ -35,7 +35,9 @@ from data.instruction_only_rag.instruction_only_rag import InstructionOnlyDatase
 #           ensure_ascii=False, indent=4)
 
 
-dataset = InstructionOnlyDataset()
-for key, new_example in dataset._generate_examples(filepath=_URL):
-    print()
+dataset = RAGDataset()
+for key, new_example in dataset._generate_examples(filepaths=_URLS["train"]):
+    if key % 10000 == 0:
+        print(key)
+print(key)
 

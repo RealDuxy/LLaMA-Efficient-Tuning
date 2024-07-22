@@ -112,6 +112,16 @@
       "history": "history"
     }
   },
+  "rag_training_stage1_zh": {
+    "script_url": "rag_training_stage1_zh",
+    "columns": {
+      "system": "system",
+      "prompt": "instruction",
+      "query": "input",
+      "response": "output",
+      "history": "history"
+    }
+  },
   "askbob_qa_comparison": {
     "file_name": "askbob_0321_4k_comparison.json",
     "columns": {
