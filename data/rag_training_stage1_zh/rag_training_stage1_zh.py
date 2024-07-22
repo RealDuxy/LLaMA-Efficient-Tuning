@@ -14,13 +14,14 @@ _CITATION = ""
 _HOMEPAGE = "{}/datasets/Duxy/Chinese_RAG_SFT_training_data".format(_HF_ENDPOINT)
 _LICENSE = "mit"
 _URL = "{}/datasets/Duxy/Chinese_RAG_SFT_training_data/resolve/main/".format(_HF_ENDPOINT)
+
 _URLS = {
     "train": [
-        _URL + "/squad-zen/train.json",
-        _URL + "/multi_doc_qa/train.json",
-        _URL + "/WebCPM/train.json",
-        _URL + "/SyntheConvQA/train.json",
-        _URL + "/afac2024/train.json",
+        _URL + "squad-zen/train.json",
+        _URL + "multi_doc_qa/train.json",
+        _URL + "WebCPM/train.json",
+        _URL + "SyntheConvQA/train.json",
+        _URL + "afac2024/train.json",
     ],
     "test": []
 }
