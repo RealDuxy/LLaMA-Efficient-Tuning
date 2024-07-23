@@ -18,10 +18,12 @@ _URL = "{}/datasets/Duxy/Chinese_RAG_SFT_training_data/resolve/main/".format(_HF
 _URLS = {
     "train": [
         _URL + "squad-zen/train.json",
-        _URL + "multi_doc_qa/train.json",
-        _URL + "WebCPM/train.json",
+        _URL + "dureader_robust/train.json",
+        _URL + "dureader2.0/search_train.json",
+        _URL + "dureader2.0/zhidao_train.json",
         _URL + "SyntheConvQA/train.json",
         _URL + "afac2024/train.json",
+        _URL + "WebCPM/train.json"
     ],
     "test": []
 }
