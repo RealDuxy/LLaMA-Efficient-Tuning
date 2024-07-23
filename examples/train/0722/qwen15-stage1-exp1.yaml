@@ -37,7 +37,7 @@ packing: true
 # output
 output_dir: checkpoints/qwen/0722_qwen15_rag_sft_exp1
 logging_steps: 5
-save_steps: 400
+save_steps: 1200
 plot_loss: true
 overwrite_output_dir: true
 
@@ -53,4 +53,4 @@ fp16: true
 # eval
 per_device_eval_batch_size: 1
 evaluation_strategy: steps
-eval_steps: 200
+eval_steps: 300
