@@ -15,7 +15,7 @@ do_train: true
 finetuning_type: lora
 lora_rank: 16
 lora_alpha: 32
-lora_target: q_proj,v_proj,k_proj,o_proj
+lora_target: q_proj,v_proj,k_proj
 flash_attn: fa2
 #print_param_status: true
 
