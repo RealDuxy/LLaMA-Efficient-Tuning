@@ -38,12 +38,12 @@ packing: false
 # output
 output_dir: checkpoints/llama3/0729-llama3-8b-lora-alpaca
 logging_steps: 5
-save_steps: 500
+save_steps: 800
 plot_loss: true
 overwrite_output_dir: true
 
 # train
-per_device_train_batch_size: 4
+per_device_train_batch_size: 2
 gradient_accumulation_steps: 16
 learning_rate: 0.0002
 num_train_epochs: 2.0
@@ -54,4 +54,4 @@ bf16: true
 # eval
 per_device_eval_batch_size: 1
 evaluation_strategy: steps
-eval_steps: 100
+eval_steps: 200
