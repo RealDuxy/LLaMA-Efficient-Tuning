@@ -122,6 +122,15 @@
       "history": "history"
     }
   },
+  "nq_bm25_top100_kilt": {
+    "script_url": "nq_bm25_top100_kilt",
+    "columns": {
+      "system": "system",
+      "prompt": "instruction",
+      "query": "input",
+      "response": "output"
+    }
+  },
   "context_rank_training_stage1_zh": {
     "script_url": "context_rank_training_stage1_zh",
     "columns": {
