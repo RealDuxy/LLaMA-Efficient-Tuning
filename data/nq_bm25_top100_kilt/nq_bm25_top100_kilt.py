@@ -23,9 +23,9 @@ _URLS = {
     "dev": [
         _URL + "dev-00000-of-00001-365806a8fce42050.parquet",
     ],
-    "test": [
-        _URL + "test_without_answers-00000-of-00001-49c3b81d44c12b52.parquet",
-    ],
+    # "test": [
+    #     _URL + "test_without_answers-00000-of-00001-49c3b81d44c12b52.parquet",
+    # ],
 }
 
 logger = logging.get_logger(__name__)
@@ -52,7 +52,7 @@ class NQRAGDataset(datasets.GeneratorBasedBuilder):
         return [
             datasets.SplitGenerator(name=datasets.Split.TRAIN, gen_kwargs={"filepaths": file_path["train"]}),
             datasets.SplitGenerator(name=datasets.Split.VALIDATION, gen_kwargs={"filepaths": file_path["dev"]}),
-            datasets.SplitGenerator(name=datasets.Split.TEST, gen_kwargs={"filepaths": file_path["test"]})
+            # datasets.SplitGenerator(name=datasets.Split.TEST, gen_kwargs={"filepaths": file_path["test"]})
         ]
 
     def _generate_examples(self, filepaths: List[str]):
