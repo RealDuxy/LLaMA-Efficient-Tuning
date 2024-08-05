@@ -28,7 +28,7 @@ flash_attn: fa2
 #report_to: wandb
 
 # dataset
-dataset: nq_bm25_top100_kilt
+eval_dataset: nq_bm25_top100_kilt
 template: llama3
 cutoff_len: 1800
 overwrite_cache: true
