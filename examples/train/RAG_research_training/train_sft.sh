@@ -27,5 +27,6 @@ CUDA_VISIBLE_DEVICES=0 nohup python src/train.py examples/train/RAG_research_tra
 
 # no nohup
 CUDA_VISIBLE_DEVICES=0 python src/train.py examples/train/RAG_research_training/train_boolq.yaml
-
+CUDA_VISIBLE_DEVICES=0 python src/train.py examples/train/RAG_research_training/train_obqa_fs.yaml
+CUDA_VISIBLE_DEVICES=0 python src/train.py examples/train/RAG_research_training/train_obqa_zs.yaml
 

@@ -27,7 +27,7 @@ packing: false
 # output
 output_dir: checkpoints/llama3/0805-llama3-8b-lora-boolq-exp1
 logging_steps: 5
-save_steps: 14
+save_steps: 100
 plot_loss: true
 overwrite_output_dir: true
 
@@ -43,4 +43,4 @@ bf16: true
 # eval
 per_device_eval_batch_size: 1
 evaluation_strategy: steps
-eval_steps: 6
+eval_steps: 70
