@@ -243,8 +243,15 @@
     },
     "ranking": true
   },
-
-
+  "boolq": {
+    "file_name": "boolq.json"
+  },
+  "openbookQA_few_shot": {
+    "file_name": "openbookQA_few_shot.json"
+  },
+  "openbookQA_zero_shot": {
+    "file_name": "openbookQA_zero_shot.json"
+  },
   "alpaca_en": {
     "file_name": "alpaca_data_en_52k.json"
   },
@@ -851,5 +858,6 @@
       "prompt": "content"
     },
     "folder": "python"
-  }
+  },
+
 }
