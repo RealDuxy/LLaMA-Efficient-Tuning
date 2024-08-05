@@ -23,12 +23,11 @@ val_size: 0.01
 overwrite_cache: true
 preprocessing_num_workers: 16
 packing: false
-resize_vocab: true
 
 # output
 output_dir: /root/autodl-tmp/checkpoints/llama3/0805-llama3-8b-lora-alpaca-exp1
 logging_steps: 5
-save_steps: 1600
+save_steps: 2000
 plot_loss: true
 overwrite_output_dir: true
 
@@ -44,4 +43,4 @@ bf16: true
 # eval
 per_device_eval_batch_size: 1
 evaluation_strategy: steps
-eval_steps: 300
+eval_steps: 500
