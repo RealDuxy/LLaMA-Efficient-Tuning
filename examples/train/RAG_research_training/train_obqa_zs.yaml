@@ -26,7 +26,7 @@ packing: false
 resize_vocab: true
 
 # output
-output_dir: checkpoints/llama3/0805-llama3-8b-lora-obqa-zs-exp1
+output_dir: /root/autodl-tmp/checkpoints/llama3/0805-llama3-8b-lora-obqa-zs-exp1
 logging_steps: 5
 save_steps: 80
 plot_loss: true
