@@ -10,7 +10,7 @@
 #model_name_or_path: /root/autodl-tmp/qwen/Qwen2-7B-Instruct
 #model_name_or_path: /root/autodl-tmp/qwen/Qwen1_5-14B-Chat-GPTQ-Int4
 model_name_or_path: /root/autodl-tmp/llama3-8b
-adapter_name_or_path: checkpoints/llama3/0729-llama3-8b-lora-alpaca
+adapter_name_or_path: checkpoints/llama3/0805-llama3-8b-lora-alpaca-exp1
 
 # method
 stage: sft
@@ -36,16 +36,17 @@ cutoff_len: 1800
 overwrite_cache: true
 preprocessing_num_workers: 16
 packing: false
+resize_vocab: true
 
 # output
-output_dir: checkpoints/llama3/0729-llama3-8b-lora-alpaca-nq-mix
+output_dir: checkpoints/llama3/0729-llama3-8b-lora-alpaca-nq-mix-exp1
 logging_steps: 5
-save_steps: 80
+save_steps: 320
 plot_loss: true
 overwrite_output_dir: true
 
 # train
-per_device_train_batch_size: 4
+per_device_train_batch_size: 1
 gradient_accumulation_steps: 16
 learning_rate: 0.0002
 num_train_epochs: 2.0
@@ -56,4 +57,4 @@ bf16: true
 # eval
 per_device_eval_batch_size: 1
 evaluation_strategy: steps
-eval_steps: 40
+eval_steps: 160

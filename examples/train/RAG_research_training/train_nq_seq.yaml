@@ -25,16 +25,17 @@ cutoff_len: 1800
 overwrite_cache: true
 preprocessing_num_workers: 16
 packing: false
+resize_vocab: true
 
 # output
 output_dir: checkpoints/llama3/0729-llama3-8b-lora-alpaca-nq-seq-exp1
 logging_steps: 5
-save_steps: 14
+save_steps: 56
 plot_loss: true
 overwrite_output_dir: true
 
 # train
-per_device_train_batch_size: 4
+per_device_train_batch_size: 1
 gradient_accumulation_steps: 16
 learning_rate: 0.0002
 num_train_epochs: 2.0
@@ -45,4 +46,4 @@ bf16: true
 # eval
 per_device_eval_batch_size: 1
 evaluation_strategy: steps
-eval_steps: 6
+eval_steps: 24

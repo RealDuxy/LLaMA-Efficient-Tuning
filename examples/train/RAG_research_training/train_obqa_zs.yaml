@@ -23,6 +23,7 @@ cutoff_len: 1024
 overwrite_cache: true
 preprocessing_num_workers: 16
 packing: false
+resize_vocab: true
 
 # output
 output_dir: checkpoints/llama3/0805-llama3-8b-lora-obqa-zs-exp1

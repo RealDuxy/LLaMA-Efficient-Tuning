@@ -9,11 +9,11 @@
 
 #CUDA_VISIBLE_DEVICES=0 python src/train.py examples/train/RAG_research_training/train_alpaca_instruct.yaml
 #
-#CUDA_VISIBLE_DEVICES=0 python src/train.py examples/train/RAG_research_training/train_rag.yaml
+#CUDA_VISIBLE_DEVICES=0 python src/train.py examples/train/RAG_research_training/train_nq_mix.yaml
 #
-#CUDA_VISIBLE_DEVICES=0 python src/train.py examples/train/RAG_research_training/train_rag_sft.yaml
+#CUDA_VISIBLE_DEVICES=0 python src/train.py examples/train/RAG_research_training/train_nq_seq.yaml
 
-#CUDA_VISIBLE_DEVICES=0 nohup python src/train.py examples/train/RAG_research_training/train_alpaca_instruct.yaml > log/llama3-alpaca-lora.log 2>&1 &
+CUDA_VISIBLE_DEVICES=0 nohup python src/train.py examples/train/RAG_research_training/train_alpaca_instruct.yaml > log/llama3-alpaca-lora.log 2>&1 &
 
 CUDA_VISIBLE_DEVICES=0 nohup python src/train.py examples/train/RAG_research_training/train_rag_sft.yaml > log/0729-llama3-8b-lora-alpaca-nq-seq.log 2>&1
 
