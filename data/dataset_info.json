@@ -122,6 +122,36 @@
       "history": "history"
     }
   },
+  "insurance_product_qa": {
+    "script_url": "insurance_product_qa",
+    "num_samples": 6000,
+    "columns": {
+      "system": "system",
+      "prompt": "instruction",
+      "query": "input",
+      "response": "output"
+    }
+  },
+  "insurance_qa": {
+    "script_url": "insurance_qa",
+    "num_samples": 6000,
+    "columns": {
+      "system": "system",
+      "prompt": "instruction",
+      "query": "input",
+      "response": "output"
+    }
+  },
+  "insurance_context_rank": {
+    "script_url": "insurance_context_rank",
+    "num_samples": 6000,
+    "columns": {
+      "system": "system",
+      "prompt": "instruction",
+      "query": "input",
+      "response": "output"
+    }
+  },
   "askbob_qa_comparison": {
     "file_name": "askbob_0321_4k_comparison.json",
     "columns": {
