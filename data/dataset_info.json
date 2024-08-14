@@ -152,6 +152,25 @@
       "response": "output"
     }
   },
+  "nq_bm25_top100_kilt": {
+    "script_url": "nq_bm25_top100_kilt",
+    "columns": {
+      "system": "system",
+      "prompt": "instruction",
+      "query": "input",
+      "response": "output"
+    }
+  },
+  "context_rank_training_stage1_zh": {
+    "script_url": "context_rank_training_stage1_zh",
+    "columns": {
+      "system": "system",
+      "prompt": "instruction",
+      "query": "input",
+      "response": "output",
+      "history": "history"
+    }
+  },
   "askbob_qa_comparison": {
     "file_name": "askbob_0321_4k_comparison.json",
     "columns": {
@@ -254,7 +273,15 @@
     },
     "ranking": true
   },
-
+  "boolq": {
+    "file_name": "boolq.json"
+  },
+  "openbookQA_few_shot": {
+    "file_name": "openbookQA_few_shot.json"
+  },
+  "openbookQA_zero_shot": {
+    "file_name": "openbookQA_zero_shot.json"
+  },
   "alpaca_en": {
     "file_name": "alpaca_data_en_52k.json"
   },

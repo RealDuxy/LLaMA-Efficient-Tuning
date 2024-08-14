@@ -6,7 +6,12 @@
 @Email   : du.xi.yang@qq.com
 @Software: PyCharm
 """
-from data.rag_training_stage1_zh.rag_training_stage1_zh import RAGDataset,_URLS
+import json
+
+import pandas as pd
+
+from data.nq_bm25_top100_kilt.nq_bm25_top100_kilt import NQRAGDataset, _URLS
+from evaluation.src.run_evaluation import token_len, describe
 
 # import json
 #
@@ -35,9 +40,27 @@ from data.rag_training_stage1_zh.rag_training_stage1_zh import RAGDataset,_URLS
 #           ensure_ascii=False, indent=4)
 
 
-dataset = RAGDataset()
+# dataset = RAGDataset()
+# for key, new_example in dataset._generate_examples(filepaths=_URLS["train"]):
+#     if key % 10000 == 0:
+#         print(key)
+# print(key)
+
+
+dataset = NQRAGDataset("train")
+all_examples = []
+all_data = []
 for key, new_example in dataset._generate_examples(filepaths=_URLS["train"]):
-    if key % 10000 == 0:
-        print(key)
-print(key)
+    all_examples.append(new_example["system"]+new_example["instruction"]+new_example["output"])
+    all_data.append(new_example)
+json.dump(all_data, open("data/nq_bm25_top100_kilt/nq_bm25_top100_kilt_train.json", "w", encoding="utf-8"), indent=4)
+
+token_length = token_len(all_examples)
+print(describe(token_length))
+
+# import pandas as pd
+#
+# splits = {'dev': 'data/dev-00000-of-00001-365806a8fce42050.parquet', 'test_without_answers': 'data/test_without_answers-00000-of-00001-49c3b81d44c12b52.parquet', 'train': 'data/train-00000-of-00001-9a5d4b2855a1daa0.parquet'}
+# df = pd.read_parquet("hf://datasets/iohadrubin/nq_bm25_top100_kilt/" + splits["train"]).to_dict("records")
+
 
