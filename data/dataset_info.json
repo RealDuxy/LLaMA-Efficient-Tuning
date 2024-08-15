@@ -114,6 +114,7 @@
   },
   "rag_training_stage1_zh": {
     "script_url": "rag_training_stage1_zh",
+    "num_samples": 6111,
     "columns": {
       "system": "system",
       "prompt": "instruction",
