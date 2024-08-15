@@ -114,7 +114,6 @@
   },
   "rag_training_stage1_zh": {
     "script_url": "rag_training_stage1_zh",
-    "num_samples": 6111,
     "columns": {
       "system": "system",
       "prompt": "instruction",
@@ -125,7 +124,6 @@
   },
   "insurance_product_qa": {
     "script_url": "insurance_product_qa",
-    "num_samples": 6000,
     "columns": {
       "system": "system",
       "prompt": "instruction",
@@ -135,7 +133,6 @@
   },
   "insurance_qa": {
     "script_url": "insurance_qa",
-    "num_samples": 6000,
     "columns": {
       "system": "system",
       "prompt": "instruction",
@@ -145,7 +142,6 @@
   },
   "insurance_context_rank": {
     "script_url": "insurance_context_rank",
-    "num_samples": 6000,
     "columns": {
       "system": "system",
       "prompt": "instruction",
