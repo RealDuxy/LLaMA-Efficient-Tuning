@@ -114,6 +114,7 @@
   },
   "rag_training_stage1_zh": {
     "script_url": "rag_training_stage1_zh",
+    "num_samples": 19038,
     "columns": {
       "system": "system",
       "prompt": "instruction",
@@ -124,6 +125,7 @@
   },
   "insurance_product_qa": {
     "script_url": "insurance_product_qa",
+    "num_samples": 5461,
     "columns": {
       "system": "system",
       "prompt": "instruction",
@@ -133,6 +135,7 @@
   },
   "insurance_qa": {
     "script_url": "insurance_qa",
+    "num_samples": 5884,
     "columns": {
       "system": "system",
       "prompt": "instruction",
@@ -142,6 +145,7 @@
   },
   "insurance_context_rank": {
     "script_url": "insurance_context_rank",
+    "num_samples": 2936,
     "columns": {
       "system": "system",
       "prompt": "instruction",
@@ -160,6 +164,7 @@
   },
   "context_rank_training_stage1_zh": {
     "script_url": "context_rank_training_stage1_zh",
+    "num_samples": 2000,
     "columns": {
       "system": "system",
       "prompt": "instruction",
@@ -574,6 +579,7 @@
   },
   "neo_sft": {
     "hf_hub_url": "m-a-p/neo_sft_phase2",
+    "num_samples": 10944,
     "formatting": "sharegpt"
   },
   "magpie_pro_300k": {
