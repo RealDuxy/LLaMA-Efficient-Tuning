@@ -26,7 +26,6 @@ flash_attn: fa2
 #report_to: wandb
 
 # dataset
-#dataset: instruction_only_rag
 dataset: context_rank_training_stage1_zh,rag_training_stage1_zh,neo_sft,insurance_product_qa,insurance_qa,insurance_context_rank
 eval_dataset: insurance_product_qa,insurance_qa,insurance_context_rank
 template: qwen
@@ -38,7 +37,7 @@ packing: true
 # output
 output_dir: /root/autodl-tmp/checkpoints/qwen/0815_qwen15_stage2_rag_exp1
 logging_steps: 5
-save_steps: 1200
+save_steps: 200
 plot_loss: true
 overwrite_output_dir: true
 
@@ -55,4 +54,4 @@ fp16: true
 # eval
 per_device_eval_batch_size: 1
 evaluation_strategy: steps
-eval_steps: 300
+eval_steps: 100
