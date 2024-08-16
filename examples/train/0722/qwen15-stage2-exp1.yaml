@@ -27,7 +27,7 @@ flash_attn: fa2
 
 # dataset
 dataset: context_rank_training_stage1_zh,rag_training_stage1_zh,neo_sft,insurance_product_qa,insurance_qa,insurance_context_rank
-eval_dataset: insurance_product_qa,insurance_qa,insurance_context_rank
+eval_dataset: insurance_product_qa_eval,insurance_qa_eval,insurance_context_rank_eval
 template: qwen
 cutoff_len: 4096
 overwrite_cache: true
@@ -54,4 +54,4 @@ fp16: true
 # eval
 per_device_eval_batch_size: 1
 evaluation_strategy: steps
-eval_steps: 100
+eval_steps: 200
