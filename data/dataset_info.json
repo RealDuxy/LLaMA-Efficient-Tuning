@@ -133,6 +133,16 @@
       "response": "output"
     }
   },
+  "insurance_product_qa_eval": {
+    "script_url": "insurance_product_qa",
+    "split": "validation",
+    "columns": {
+      "system": "system",
+      "prompt": "instruction",
+      "query": "input",
+      "response": "output"
+    }
+  },
   "insurance_qa": {
     "script_url": "insurance_qa",
     "num_samples": 5884,
@@ -143,9 +153,29 @@
       "response": "output"
     }
   },
+  "insurance_qa_eval": {
+    "script_url": "insurance_qa",
+    "split": "validation",
+    "columns": {
+      "system": "system",
+      "prompt": "instruction",
+      "query": "input",
+      "response": "output"
+    }
+  },
   "insurance_context_rank": {
     "script_url": "insurance_context_rank",
     "num_samples": 2936,
+    "columns": {
+      "system": "system",
+      "prompt": "instruction",
+      "query": "input",
+      "response": "output"
+    }
+  },
+  "insurance_context_rank_eval": {
+    "script_url": "insurance_context_rank",
+    "split": "validation",
     "columns": {
       "system": "system",
       "prompt": "instruction",
