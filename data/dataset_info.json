@@ -135,7 +135,7 @@
   },
   "insurance_product_qa_eval": {
     "script_url": "insurance_product_qa",
-    "split": "test",
+    "split": "valiadation",
     "columns": {
       "system": "system",
       "prompt": "instruction",
