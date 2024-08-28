@@ -7,9 +7,9 @@ stage: sft
 do_predict: true
 finetuning_type: lora
 flash_attn: fa2
-### engine
-infer_backend: vllm
-vllm_enforce_eager: true
+#### engine
+#infer_backend: vllm
+#vllm_enforce_eager: true
 
 
 ### dataset
@@ -18,6 +18,7 @@ template: qwen
 cutoff_len: 4096
 overwrite_cache: true
 preprocessing_num_workers: 16
+max_samples: 10
 
 ### output
 output_dir: /root/autodl-tmp/checkpoints/qwen/0815_qwen15_stage2_rag_exp1/predict
