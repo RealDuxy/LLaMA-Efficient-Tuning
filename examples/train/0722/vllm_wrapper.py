@@ -41,6 +41,10 @@ class vLLMWrapper:
         self.generation_config = GenerationConfig.from_pretrained(model_dir, trust_remote_code=True)
 
         # 加载分词器
+        if lora_request:
+            self.tokenizer = AutoTokenizer.from_pretrained(lora_request.lora_local_path, trust_remote_code=True)
+        else:
+            self.tokenizer = AutoTokenizer.from_pretrained(model_dir, trust_remote_code=True)
         self.tokenizer = AutoTokenizer.from_pretrained(model_dir, trust_remote_code=True)
         self.tokenizer.eos_token_id = self.generation_config.eos_token_id
         # 推理终止词，遇到这些词停止继续推理
