@@ -9,19 +9,18 @@
 from vllm import LLM, SamplingParams
 from vllm.lora.request import LoRARequest
 
-model = LLM(model="/root/autodl-tmp/qwen/Qwen1_5-14B-Chat-GPTQ-Int4", enable_lora=True)
+from vllm_wrapper import vLLMWrapper
 
-lora_request = LoRARequest("stage2",
-                           1,
-                           "/root/autodl-tmp/checkpoints/qwen/0722_qwen15_rag_sft_exp1")
+model_path = "/root/autodl-tmp/qwen/Qwen1_5-14B-Chat-GPTQ-Int4"
+vllm_model = vLLMWrapper(model_path,
+                         dtype="float16",
+                         tensor_parallel_size=1,
+                         gpu_memory_utilization=0.9)
 
-
-sampling_params = SamplingParams(
-    temperature=0.0,
-    max_tokens=256,
-    stop=["[/assistant]"]
-)
-
-prompts = [
-    "[user] Your prompt here [/user] [assistant]"
-]
+history=None
+while True:
+    Q=input('提问:')
+    response, history = vllm_model.chat(query=Q,
+                                        history=history)
+    print(response)
+    history=history[:20]
